@@ -370,7 +370,11 @@ p.pages a:hover {
     width: 221px;
 }
 
-.product p:last-child {
+.product p:first-of-type {
+    height: 30px;
+}
+
+.product p:last-of-type {
     font-weight: bold;
 }
 
