@@ -1,7 +1,93 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ShopController!{% endblock %}
-
 {% block body %}
-<p>This is the shop page</p>
+<div id="sidebar">
+    <div id="sidebarActive">
+        <ul>
+        {% for type, values in options %}
+            {% for val in values %}
+                {% if val.removeLink %}
+                    <li><a href="{{ val.removeLink }}"><b>❌ {{ type|capitalize }}: </b>{{ val.name }}</a></li>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+        </ul>
+    </div>
+
+    {% for type, values in options %}
+        {% if values|length > 1 %}
+            <p>{{ type|capitalize }}</p>
+            <ul>
+            {% for val in values %}
+                {% if val.addLink %}
+                <li><a href="{{ val.addLink }}">{{ val.name }}</a></li>
+                {% endif %}
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endfor %}
+</div>
+
+<div id="products">
+    <h4>{{ count }} Product{% if count != 1 %}s{% endif %}</h4>
+
+    {% if products %}
+        <p class="sort">
+            <b>Sort:</b> 
+            {% for title, link in sortLinks %}
+                {% if link %}
+                    <a href="{{ link }}">{{ title }}</a>
+                {% else %}
+                    <span>{{ title }}</span>
+                {% endif %} 
+            {% endfor %}
+        </p>
+
+        {% if pageLinks|length > 1 %}
+            <p class="pages">
+                {% for title, link in pageLinks %}
+                    {% if link %}
+                        <a href="{{ link }}">{{ title }}</a>
+                    {% else %}
+                        <span>{{ title }}</span>
+                    {% endif %} 
+                {% endfor %}
+            </p>
+        {% endif %}
+
+
+        {% for product in products %}
+            <div class="product">
+                <a href="">
+                    <img 
+                        src="{{ asset('img/product/' ~ "%03d"|format(product.id) ~ '.jpg') }}" 
+                        alt="{{ product.name }}" 
+                    />
+                    <p>{{ product.name }}</p>
+                    <p>&pound;{{ product.price / 100 }}</p>
+                </a>
+                {% if product.productGroup %}
+                    {% for productInGroup in product.productGroup.products %}
+                        <a  class="group {{ productInGroup.colour.name|lower }} {% if product.id == productInGroup.id %}current{% endif %}" 
+                            href="" 
+                            title="{{ productInGroup.colour.name }}">
+                        </a>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        {% if pageLinks|length > 1 %}
+            <p class="pages">
+                {% for title, link in pageLinks %}
+                    {% if link %}
+                        <a href="{{ link }}">{{ title }}</a>
+                    {% else %}
+                        <span>{{ title }}</span>
+                    {% endif %} 
+                {% endfor %}
+            </p>
+        {% endif %}
+    {% endif %}
+</div>
 {% endblock %}
