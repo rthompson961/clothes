@@ -1,13 +1,33 @@
 <!doctype html>
 <html>
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{% block title %}Fashion Shop{% endblock %}</title>
-{% block stylesheets %}{% endblock %}
+{% block stylesheets %}
+<link href="{{ asset('css/style.css') }}" rel="stylesheet" />
+{% endblock %}
 </head>
 
 <body>
+<div id="container">
+<div id="header" class="clearfix">
+    <div id="header-left">
+        <h1><a href="{{ path('shop') }}">Clothes Shop</a></h1>
+    </div>
+    <div id="header-right">
+
+    </div>
+</div>
+
+<div id="main" class="clearfix">
 {% block body %}{% endblock %}
+</div>
+
+<div id="footer">
+    <p>Clothes Shop &copy; {{ "now"|date("Y") }}</p>
+</div>
+</div>
 {% block javascripts %}{% endblock %}
 </body>
 </html>

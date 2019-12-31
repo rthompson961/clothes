@@ -36,9 +36,9 @@
             <b>Sort:</b> 
             {% for title, link in sortLinks %}
                 {% if link %}
-                    <a href="{{ link }}">{{ title }}</a>
+                    <a href="{{ link }}">{{ title|capitalize }}</a>
                 {% else %}
-                    <span>{{ title }}</span>
+                    <span>{{ title|capitalize }}</span>
                 {% endif %} 
             {% endfor %}
         </p>
