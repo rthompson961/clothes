@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+<div id="product-image">
+    <img src="{{ asset('img/product/' ~ "%03d"|format(product.id) ~ '.jpg') }}" alt="{{ product.name }}" />
+</div>
+
+<div class="product">
+    <h2>{{ product.name }}</h2>
+    <h3>&pound;{{ product.price / 100 }}</h3>
+    <p><b>Colour:</b> {{ product.colour.name }}</p>
+    <p><b>Brand:</b> {{ product.brand.name }}</p>
+    
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+    {{ form_end(form) }}
+    
+    {% if product.productGroup.products is defined %}
+        <p>Other colours:</p>
+        {% for productInGroup in product.productGroup.products %}
+            <a class="group {{ productInGroup.colour.name|lower }} {% if product.id == productInGroup.id %}current{% endif %}" 
+               href="{{ path('product', {'id' : productInGroup.id}) }}" 
+               title="{{ productInGroup.colour.name }}">
+            </a>
+        {% endfor %}
+    {% endif %}
+
+</div>
+{% endblock %}

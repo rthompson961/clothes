@@ -400,7 +400,7 @@ p.pages a:hover {
 }
 
 .product a.navy {
-    background-color: #0000b3;
+    background-color: #000080;
 }
 
 .product a.aqua {
@@ -448,7 +448,15 @@ p.pages a:hover {
 }
 
 .product a.olive {
-    background-color: #446600;
+    background-color: #336600;
+}
+
+.product a.orange {
+    background-color: #ff3300;
+}
+
+.product a.stone {
+    background-color: #cc9900;
 }
 
 /* marketplace page */
