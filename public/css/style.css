@@ -531,6 +531,7 @@ p.pages a:hover {
     background-color: #f5f5f5;
     border: 1px solid #e3e3e3;
     border-radius: 5px;
+    margin-bottom: 20px;
     max-width: 600px;
     padding: 20px;
 }
