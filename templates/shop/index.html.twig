@@ -29,6 +29,9 @@
 </div>
 
 <div id="products">
+    {% for flash_message in app.session.flashBag.get('order') %}
+        <p class="flash">{{ flash_message }}</p>
+    {% endfor %}
     <h4>{{ count }} Product{% if count != 1 %}s{% endif %}</h4>
 
     {% if products %}

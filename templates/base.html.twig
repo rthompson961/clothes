@@ -29,9 +29,6 @@
 </div>
 
 <div id="main" class="clearfix">
-{% for flash_message in app.session.flashBag.get('order') %}
-    <p class="flash">{{ flash_message }}</p>
-{% endfor %}
 {% block body %}{% endblock %}
 </div>
 
