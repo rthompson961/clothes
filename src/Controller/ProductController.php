@@ -8,27 +8,28 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\Request;
 
 class ProductController extends AbstractController
 {
     /**
      * @Route("/product/{id}", name="product")
      */
-    public function index(Product $product)
+    public function index(Product $product, Request $request)
     {
         // Get size names & disable those without stock
-        $attr = array();
+        $attr = [];
         foreach ($product->getProductStockItems() as $item) {
             $name = $item->getSize()->getName();
             $sizes[$name] = $item->getId();
             if (!$item->getStock()) {
-                $attr[$name] = array('disabled' => true);
+                $attr[$name] = ['disabled' => true];
             }
         }
 
-        // Build the form & hide size select box if one size only
+        // Build the form
         $formBuilder = $this->createFormBuilder(null, array('method' => 'post'));
-        $formBuilder->add('size', ChoiceType::class, array(
+        $formBuilder->add('product', ChoiceType::class, array(
             'choices'  => $sizes,
             'choice_attr' => $attr, 
             'placeholder' => 'Choose Size',
@@ -38,9 +39,11 @@ class ProductController extends AbstractController
         $formBuilder->add('submit', SubmitType::class, array('label' => 'Add to Basket'));
         $form = $formBuilder->getForm();
 
+        $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $item = $this->getDoctrine()->getRepository(ProductStockItem::class)->find($data['size']);
+            $item = $this->getDoctrine()->getRepository(ProductStockItem::class)->find($data['product']);
             // In stock
             if ($item->getStock()) {
                 // Items currently in basket
@@ -48,13 +51,13 @@ class ProductController extends AbstractController
                     // Add to existing basket contents
                     $basket = $this->get('session')->get('basket');
                 } 
-                $basket[$data['size']] = 1;
+                $basket[$data['product']] = 1;
                 $this->get('session')->set('basket', $basket);
 
                 return $this->redirectToRoute('basket');                
             }
             // No stock - return to product page
-            return $this->redirectToRoute('product', array('id' => $product->getId()));
+            return $this->redirectToRoute('product', ['id' => $product->getId()]);
         }
 
         return $this->render('product/index.html.twig', [

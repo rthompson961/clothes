@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Basket{% endblock %}
+
+{% block body %}
+<div id="basket">
+    <h2>Basket</h2>
+
+    {% if contents %}
+        <table>
+            <tr>
+                <th colspan="2">Item</th>
+                <th>Size</th>
+                <th>Price</th>
+            </tr>
+            {% for item in contents %}
+            <tr>
+                <td>
+                    <a href="{{ path('product', {'id' : item.product.id}) }}">
+                        <img src="{{ asset('img/product/' ~ "%03d"|format(item.product.id) ~ '.jpg') }}" alt="{{ item.product.name }}" />
+                    </a>
+                </td>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.size.name }}</td>
+                <td>&pound;{{ item.product.price / 100 }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <th colspan="3"><a class="empty" href="{{ path('empty') }}"><button>Empty Basket</button></a></th>
+                <th class="total">&pound;{{ total / 100 }}</th>
+            </tr>
+        </table>
+
+        <a href="{{ path('checkout') }}"><button>Checkout</button></a>
+    {% else %}
+        <p>Your shopping basket is empty</p>
+    {% endif %}
+</div>
+{% endblock %}
