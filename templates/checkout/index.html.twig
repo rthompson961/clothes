@@ -1,7 +1,24 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello CheckoutController!{% endblock %}
+{% block title %}Checkout{% endblock %}
 
 {% block body %}
-<p>This is the checkout page</p>
+    <div id="details">
+        <p>This is a <b>DEMO SITE</b> so only the following card details will work: </p>
+        <p><b>Name:</b> Any name</p>
+        <p><b>Card:</b> 4929000000006</p>
+        <p><b>Expiry:</b> Any future Month &amp; Year (MMYY)</p>
+        <p><b>CVS / Security Code:</b> 123</p>
+    </div>
+
+    <form>
+        <div id="sp-container"></div>
+        <div id="submit-container">
+            <input name="key" type="hidden" value="{{ merchantSessionKey }}"/>
+            <input type="submit"/>
+        </div>
+    </form>
+    <script>
+    sagepayCheckout({ merchantSessionKey: '{{ merchantSessionKey }}' }).form();
+    </script>
 {% endblock %}

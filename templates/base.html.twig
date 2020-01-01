@@ -6,6 +6,7 @@
 <title>{% block title %}Fashion Shop{% endblock %}</title>
 {% block stylesheets %}
 <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
+<script src="https://pi-test.sagepay.com/api/v1/js/sagepay.js"></script>
 {% endblock %}
 </head>
 
@@ -28,6 +29,9 @@
 </div>
 
 <div id="main" class="clearfix">
+{% for flash_message in app.session.flashBag.get('order') %}
+    <p class="flash">{{ flash_message }}</p>
+{% endfor %}
 {% block body %}{% endblock %}
 </div>
 
