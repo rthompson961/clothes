@@ -161,8 +161,8 @@ button, input[type=submit]  {
 #header-right a.basket {
     background-image: url('../img/basket.png');
     background-repeat: no-repeat;
-    background-position: left center;
-    padding-left: 22px;
+    background-position: right center;
+    padding-right: 22px;
 }
 
 #nav {
