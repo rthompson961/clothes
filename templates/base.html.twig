@@ -16,7 +16,14 @@
         <h1><a href="{{ path('shop') }}">Clothes Shop</a></h1>
     </div>
     <div id="header-right">
-
+        {% if is_granted('ROLE_USER') %}
+            <p><b>Hello,</b> {{ app.user.email }}</p>
+            <p><a href="{{ path('app_logout') }}">Logout</a></p> 
+        {% else %}
+            <p><b>Hello,</b> Guest</p>
+            <p><a href="{{ path('app_login') }}">Login</a></p>          
+        {% endif %}
+        <p><a class="basket" href="{{ path('basket') }}">Basket</a></p>
     </div>
 </div>
 
