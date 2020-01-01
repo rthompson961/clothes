@@ -7,9 +7,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\OrderRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\OrderTotalRepository")
  */
-class Order
+class OrderTotal
 {
     /**
      * @ORM\Id()
@@ -30,7 +30,7 @@ class Order
     private $total;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\OrderLineItem", mappedBy="OrderParent")
+     * @ORM\OneToMany(targetEntity="App\Entity\OrderLineItem", mappedBy="OrderTotal")
      */
     private $orderLineItems;
 

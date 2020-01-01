@@ -17,10 +17,10 @@ class OrderLineItem
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Order", inversedBy="orderLineItems")
+     * @ORM\ManyToOne(targetEntity="App\Entity\OrderTotal", inversedBy="orderLineItems")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $OrderParent;
+    private $OrderTotal;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\ProductStockItem", inversedBy="orderLineItems")
@@ -43,14 +43,14 @@ class OrderLineItem
         return $this->id;
     }
 
-    public function getOrderParent(): ?Order
+    public function getOrderTotal(): ?OrderTotal
     {
-        return $this->OrderParent;
+        return $this->OrderTotal;
     }
 
-    public function setOrderParent(?Order $OrderParent): self
+    public function setOrderTotal(?Order $OrderTotal): self
     {
-        $this->OrderParent = $OrderParent;
+        $this->OrderTotal = $OrderTotal;
 
         return $this;
     }

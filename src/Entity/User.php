@@ -36,7 +36,7 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Order", mappedBy="User")
+     * @ORM\OneToMany(targetEntity="App\Entity\OrderTotal", mappedBy="User")
      */
     private $orders;
 
@@ -131,20 +131,20 @@ class User implements UserInterface
         return $this->orders;
     }
 
-    public function addOrder(Order $order): self
+    public function addOrder(OrderTotal $orderTotal): self
     {
-        if (!$this->orders->contains($order)) {
-            $this->orders[] = $order;
+        if (!$this->orders->contains($orderTotal)) {
+            $this->orders[] = $orderTotal;
             $order->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeOrder(Order $order): self
+    public function removeOrder(OrderTotal $orderTotal): self
     {
-        if ($this->orders->contains($order)) {
-            $this->orders->removeElement($order);
+        if ($this->orders->contains($orderTotal)) {
+            $this->orders->removeElement($orderTotal);
             // set the owning side to null (unless already changed)
             if ($order->getUser() === $this) {
                 $order->setUser(null);
