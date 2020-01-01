@@ -158,6 +158,10 @@ button, input[type=submit]  {
     margin-bottom: 40px;
 }
 
+#header-right p {
+    margin-bottom: 5px;
+}
+
 #header-right a.basket {
     background-image: url('../img/basket.png');
     background-repeat: no-repeat;
