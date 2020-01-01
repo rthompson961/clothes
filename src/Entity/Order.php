@@ -7,9 +7,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\ProductStockItemRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\OrderRepository")
  */
-class ProductStockItem
+class Order
 {
     /**
      * @ORM\Id()
@@ -19,24 +19,18 @@ class ProductStockItem
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Product", inversedBy="productStockItems")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="orders")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $product;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Size")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $size;
+    private $User;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $stock;
+    private $total;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\OrderLineItem", mappedBy="ProductStockItem")
+     * @ORM\OneToMany(targetEntity="App\Entity\OrderLineItem", mappedBy="OrderParent")
      */
     private $orderLineItems;
 
@@ -50,38 +44,26 @@ class ProductStockItem
         return $this->id;
     }
 
-    public function getProduct(): ?Product
+    public function getUser(): ?User
     {
-        return $this->product;
+        return $this->User;
     }
 
-    public function setProduct(?Product $product): self
+    public function setUser(?User $User): self
     {
-        $this->product = $product;
+        $this->User = $User;
 
         return $this;
     }
 
-    public function getSize(): ?Size
+    public function getTotal(): ?int
     {
-        return $this->size;
+        return $this->total;
     }
 
-    public function setSize(?Size $size): self
+    public function setTotal(int $total): self
     {
-        $this->size = $size;
-
-        return $this;
-    }
-
-    public function getStock(): ?int
-    {
-        return $this->stock;
-    }
-
-    public function setStock(int $stock): self
-    {
-        $this->stock = $stock;
+        $this->total = $total;
 
         return $this;
     }
@@ -98,7 +80,7 @@ class ProductStockItem
     {
         if (!$this->orderLineItems->contains($orderLineItem)) {
             $this->orderLineItems[] = $orderLineItem;
-            $orderLineItem->setProductStockItem($this);
+            $orderLineItem->setOrderParent($this);
         }
 
         return $this;
@@ -109,8 +91,8 @@ class ProductStockItem
         if ($this->orderLineItems->contains($orderLineItem)) {
             $this->orderLineItems->removeElement($orderLineItem);
             // set the owning side to null (unless already changed)
-            if ($orderLineItem->getProductStockItem() === $this) {
-                $orderLineItem->setProductStockItem(null);
+            if ($orderLineItem->getOrderParent() === $this) {
+                $orderLineItem->setOrderParent(null);
             }
         }
 
