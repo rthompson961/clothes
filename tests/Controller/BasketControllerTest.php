@@ -43,7 +43,7 @@ class BasketControllerTest extends WebTestCase
         $crawler = $this->client->click($link);
         $this->assertResponseRedirects('/basket');
         $crawler = $this->client->request('GET', '/basket');
-        $this->assertSelectorTextSame('p', 'Your shopping basket is empty');
+        $this->assertSelectorTextSame('p.empty', 'Your shopping basket is empty');
         $this->assertEquals(0, $crawler->filter('tr')->count());
     }
 }
