@@ -10,7 +10,15 @@ class CategoryFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-        $values = ['Fleeces', 'Jackets', 'Parkas', 'Sweatshirts'];
+        $values = [
+            'Fleeces', 
+            'Jackets', 
+            'Parkas', 
+            'Sweatshirts',
+            'Hoodies',
+            'T-Shirts',
+            'Jeans'
+        ];
         foreach ($values as $val) {
             $category = new Category();
             $category->setName($val);

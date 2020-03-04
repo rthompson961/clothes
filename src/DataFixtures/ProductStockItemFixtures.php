@@ -13,12 +13,15 @@ class ProductStockItemFixtures extends Fixture implements DependentFixtureInterf
 {
     public function load(ObjectManager $manager)
     {
-        for ($i = 1; $i <= 30; $i++) {
+        $productCount = 66;
+        $maxStock = 30;
+
+        for ($i = 1; $i <= $productCount; $i++) {
             foreach (['small', 'medium', 'large'] as $size) {
                 if (mt_rand(1, 5) == 5) {
                     $stock = 0;
                 } else {
-                    $stock = mt_rand(1, 30);
+                    $stock = mt_rand(1, $maxStock);
                 }
                 $item = new ProductStockItem();
                 $item->setProduct($this->getReference('product-' . $i));

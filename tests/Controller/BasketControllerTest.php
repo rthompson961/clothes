@@ -30,7 +30,7 @@ class BasketControllerTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/product/24');
         $form = $crawler->selectButton('form[submit]')->form();
-        $form['form[product]'] = 71;
+        $form['form[product]'] = 72;
         $crawler = $this->client->submit($form);
         $this->assertResponseRedirects('/basket');
 
