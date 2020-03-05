@@ -99,7 +99,10 @@ class ShopControllerTest extends WebTestCase
 
     public function testShopWithBrands()
     {
-        $crawler = $this->client->request('GET', '/shop?page=2&sort=name&brand[]=1&brand[]=6&brand[]=7&brand[]=3&brand[]=2');
+        $crawler = $this->client->request(
+            'GET',
+            '/shop?page=2&sort=name&brand[]=1&brand[]=6&brand[]=7&brand[]=3&brand[]=2'
+        );
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextSame('h4', '34 Products');
@@ -107,15 +110,30 @@ class ShopControllerTest extends WebTestCase
 
         $links = $crawler->filter('#sidebar a');
         $this->assertEquals('?page=2&sort=name&brand[]=6&brand[]=7&brand[]=3&brand[]=2', $links->first()->attr('href'));
-        $this->assertEquals('?page=2&sort=name&brand[]=1&brand[]=6&brand[]=7&brand[]=3&brand[]=2&colour[]=10', $links->last()->attr('href'));
+        $this->assertEquals(
+            '?page=2&sort=name&brand[]=1&brand[]=6&brand[]=7&brand[]=3&brand[]=2&colour[]=10',
+            $links->last()->attr('href')
+        );
 
         $links = $crawler->filter('p.sort a');
-        $this->assertEquals('?page=2&sort=first&brand[]=1&brand[]=6&brand[]=7&brand[]=3&brand[]=2', $links->first()->attr('href'));
-        $this->assertEquals('?page=2&sort=high&brand[]=1&brand[]=6&brand[]=7&brand[]=3&brand[]=2', $links->last()->attr('href'));
+        $this->assertEquals(
+            '?page=2&sort=first&brand[]=1&brand[]=6&brand[]=7&brand[]=3&brand[]=2',
+            $links->first()->attr('href')
+        );
+        $this->assertEquals(
+            '?page=2&sort=high&brand[]=1&brand[]=6&brand[]=7&brand[]=3&brand[]=2',
+            $links->last()->attr('href')
+        );
 
         $links = $crawler->filter('p.pages a');
-        $this->assertEquals('?page=1&sort=name&brand[]=1&brand[]=6&brand[]=7&brand[]=3&brand[]=2', $links->first()->attr('href'));
-        $this->assertEquals('?page=6&sort=name&brand[]=1&brand[]=6&brand[]=7&brand[]=3&brand[]=2', $links->last()->attr('href'));
+        $this->assertEquals(
+            '?page=1&sort=name&brand[]=1&brand[]=6&brand[]=7&brand[]=3&brand[]=2',
+            $links->first()->attr('href')
+        );
+        $this->assertEquals(
+            '?page=6&sort=name&brand[]=1&brand[]=6&brand[]=7&brand[]=3&brand[]=2',
+            $links->last()->attr('href')
+        );
     }
 
     public function testShopWithColours()
@@ -129,7 +147,10 @@ class ShopControllerTest extends WebTestCase
         // Filter links
         $links = $crawler->filter('#sidebar a');
         $this->assertEquals('?page=2&sort=first&colour[]=9&colour[]=7', $links->first()->attr('href'));
-        $this->assertEquals('?page=2&sort=first&colour[]=5&colour[]=9&colour[]=7&colour[]=10', $links->last()->attr('href'));
+        $this->assertEquals(
+            '?page=2&sort=first&colour[]=5&colour[]=9&colour[]=7&colour[]=10',
+            $links->last()->attr('href')
+        );
 
         // Sort links
         $links = $crawler->filter('p.sort a');
@@ -144,7 +165,10 @@ class ShopControllerTest extends WebTestCase
 
     public function testShopWithAll()
     {
-        $crawler = $this->client->request('GET', '/shop?page=1&sort=low&category[]=2&category[]=3&brand[]=5&brand[]=3&colour[]=2');
+        $crawler = $this->client->request(
+            'GET',
+            '/shop?page=1&sort=low&category[]=2&category[]=3&brand[]=5&brand[]=3&colour[]=2'
+        );
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextSame('h4', '2 Products');
@@ -152,13 +176,25 @@ class ShopControllerTest extends WebTestCase
 
         // Filter links
         $links = $crawler->filter('#sidebar a');
-        $this->assertEquals('?page=1&sort=low&category[]=3&brand[]=5&brand[]=3&colour[]=2', $links->first()->attr('href'));
-        $this->assertEquals('?page=1&sort=low&category[]=2&category[]=3&brand[]=5&brand[]=3&colour[]=2&colour[]=10', $links->last()->attr('href'));
+        $this->assertEquals(
+            '?page=1&sort=low&category[]=3&brand[]=5&brand[]=3&colour[]=2',
+            $links->first()->attr('href')
+        );
+        $this->assertEquals(
+            '?page=1&sort=low&category[]=2&category[]=3&brand[]=5&brand[]=3&colour[]=2&colour[]=10',
+            $links->last()->attr('href')
+        );
 
         // Sort links
         $links = $crawler->filter('p.sort a');
-        $this->assertEquals('?page=1&sort=first&category[]=2&category[]=3&brand[]=5&brand[]=3&colour[]=2', $links->first()->attr('href'));
-        $this->assertEquals('?page=1&sort=high&category[]=2&category[]=3&brand[]=5&brand[]=3&colour[]=2', $links->last()->attr('href'));
+        $this->assertEquals(
+            '?page=1&sort=first&category[]=2&category[]=3&brand[]=5&brand[]=3&colour[]=2',
+            $links->first()->attr('href')
+        );
+        $this->assertEquals(
+            '?page=1&sort=high&category[]=2&category[]=3&brand[]=5&brand[]=3&colour[]=2',
+            $links->last()->attr('href')
+        );
     }
     
 }
