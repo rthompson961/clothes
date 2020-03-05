@@ -195,6 +195,5 @@ class ShopControllerTest extends WebTestCase
             '?page=1&sort=high&category[]=2&category[]=3&brand[]=5&brand[]=3&colour[]=2',
             $links->last()->attr('href')
         );
-    }
-    
+    }  
 }
