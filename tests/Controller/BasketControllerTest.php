@@ -15,8 +15,8 @@ class BasketControllerTest extends WebTestCase
 
     public function testResponse()
     {
-       $this->client->request('GET', '/basket');
-       $this->assertResponseIsSuccessful();
+        $this->client->request('GET', '/basket');
+        $this->assertResponseIsSuccessful();
     }
 
     public function testBasket()

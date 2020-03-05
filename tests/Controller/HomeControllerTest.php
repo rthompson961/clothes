@@ -8,8 +8,8 @@ class HomeControllerTest extends WebTestCase
 {
     public function testResponse()
     {
-       $client = static::createClient();
-       $client->request('GET', '/');
-       $this->assertResponseIsSuccessful();
+        $client = static::createClient();
+        $client->request('GET', '/');
+        $this->assertResponseIsSuccessful();
     }
 }

@@ -15,8 +15,8 @@ class SecurityControllerTest extends WebTestCase
 
     public function testResponse()
     {
-       $this->client->request('GET', '/login');
-       $this->assertResponseIsSuccessful();
+        $this->client->request('GET', '/login');
+        $this->assertResponseIsSuccessful();
     }
 
     public function testCorrectLogin()
