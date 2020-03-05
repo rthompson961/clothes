@@ -9,7 +9,7 @@ class LoremIpsumControllerTest extends WebTestCase
 
    /**
      * @dataProvider pageProvider
-     */    
+     */
     public function testResponse($page)
     {
         $client = static::createClient();
