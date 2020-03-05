@@ -16,3 +16,7 @@
 ###< symfony/phpunit-bridge ###
 
 public/img
+###> squizlabs/php_codesniffer ###
+/.phpcs-cache
+/phpcs.xml
+###< squizlabs/php_codesniffer ###
