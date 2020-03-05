@@ -248,23 +248,23 @@ p.flash {
     text-align: center;
 }
 
-#categories div {
+#home div {
     border: 1px solid black;
     float: left;
     margin: 0 55px 60px 0;
     text-align: center;
 }
 
-#categories img {
+#home img {
     height: 336px;
     width: 224px;
 }
 
-#categories a {
+#home a {
     color: #000;
 }
 
-#categories a:hover h3 {
+#home a:hover h3 {
     text-decoration: underline;
 }
 

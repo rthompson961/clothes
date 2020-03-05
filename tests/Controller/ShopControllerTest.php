@@ -15,7 +15,7 @@ class ShopControllerTest extends WebTestCase
 
     public function testShopHome()
     {
-       $crawler = $this->client->request('GET', '/');
+       $crawler = $this->client->request('GET', '/shop');
 
        $this->assertResponseIsSuccessful();
        $this->assertSelectorTextSame('h4', '66 Products');
@@ -36,7 +36,7 @@ class ShopControllerTest extends WebTestCase
 
     public function testShopWithPages()
     {
-       $crawler = $this->client->request('GET', '/?page=5&sort=first');
+       $crawler = $this->client->request('GET', '/shop?page=5&sort=first');
 
        $this->assertResponseIsSuccessful();
        $this->assertSelectorTextSame('h4', '66 Products');
@@ -57,7 +57,7 @@ class ShopControllerTest extends WebTestCase
 
     public function testShopWithSort()
     {
-       $crawler = $this->client->request('GET', '?page=3&sort=low');
+       $crawler = $this->client->request('GET', '/shop?page=3&sort=low');
 
        $this->assertResponseIsSuccessful();
        $this->assertSelectorTextSame('h4', '66 Products');
@@ -78,7 +78,7 @@ class ShopControllerTest extends WebTestCase
 
     public function testShopWithCategories()
     {
-       $crawler = $this->client->request('GET', '?page=3&sort=first&category[]=4&category[]=1');
+       $crawler = $this->client->request('GET', '/shop?page=3&sort=first&category[]=4&category[]=1');
 
        $this->assertResponseIsSuccessful();
        $this->assertSelectorTextSame('h4', '13 Products');
@@ -99,7 +99,7 @@ class ShopControllerTest extends WebTestCase
 
     public function testShopWithBrands()
     {
-       $crawler = $this->client->request('GET', '?page=2&sort=name&brand[]=1&brand[]=6&brand[]=7&brand[]=3&brand[]=2');
+       $crawler = $this->client->request('GET', '/shop?page=2&sort=name&brand[]=1&brand[]=6&brand[]=7&brand[]=3&brand[]=2');
 
        $this->assertResponseIsSuccessful();
        $this->assertSelectorTextSame('h4', '34 Products');
@@ -120,7 +120,7 @@ class ShopControllerTest extends WebTestCase
 
     public function testShopWithColours()
     {
-       $crawler = $this->client->request('GET', '?page=2&sort=first&colour[]=5&colour[]=9&colour[]=7');
+       $crawler = $this->client->request('GET', '/shop?page=2&sort=first&colour[]=5&colour[]=9&colour[]=7');
 
        $this->assertResponseIsSuccessful();
        $this->assertSelectorTextSame('h4', '21 Products');
@@ -144,7 +144,7 @@ class ShopControllerTest extends WebTestCase
 
     public function testShopWithAll()
     {
-       $crawler = $this->client->request('GET', '?page=1&sort=low&category[]=2&category[]=3&brand[]=5&brand[]=3&colour[]=2');
+       $crawler = $this->client->request('GET', '/shop?page=1&sort=low&category[]=2&category[]=3&brand[]=5&brand[]=3&colour[]=2');
 
        $this->assertResponseIsSuccessful();
        $this->assertSelectorTextSame('h4', '2 Products');

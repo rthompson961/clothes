@@ -18,6 +18,6 @@ security:
                     - App\Security\LoginFormAuthenticator
             logout:
                 path: app_logout
-                target: shop
+                target: home
     access_control:
         - { path: ^/checkout, roles: ROLE_USER }
