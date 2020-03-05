@@ -11,9 +11,9 @@ class CategoryFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         $values = [
-            'Fleeces', 
-            'Jackets', 
-            'Parkas', 
+            'Fleeces',
+            'Jackets',
+            'Parkas',
             'Sweatshirts',
             'Hoodies',
             'T-Shirts',

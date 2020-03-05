@@ -11,7 +11,7 @@ class ColourFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         $values = [
-            'Blue', 
+            'Blue',
             'Black',
             'Olive',
             'Grey',

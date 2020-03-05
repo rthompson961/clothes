@@ -12,11 +12,11 @@ class BrandFixtures extends Fixture
     {
         $values = [
             'berghaus' => 'Berghaus',
-            'hugo' => 'Hugo Boss', 
-            'jack' => 'Jack & Jones', 
-            'next' => 'Next', 
-            'superdry' => 'Superdry', 
-            'threadbare' => 'Threadbare', 
+            'hugo' => 'Hugo Boss',
+            'jack' => 'Jack & Jones',
+            'next' => 'Next',
+            'superdry' => 'Superdry',
+            'threadbare' => 'Threadbare',
             'tommy' => 'Tommy Hilfiger'
         ];
         foreach ($values as $key => $val) {

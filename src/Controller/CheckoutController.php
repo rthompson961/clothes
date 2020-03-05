@@ -30,7 +30,7 @@ class CheckoutController extends AbstractController
         );
         
         // Form submission - Carry out transaction
-        if ($request->query->get('card-identifier') && $request->query->get('key')) {       
+        if ($request->query->get('card-identifier') && $request->query->get('key')) {
             $cardIdentifier = $request->query->get('card-identifier');
             $merchantSessionKey = $request->query->get('key');
             $basket = $this->get('session')->get('basket');
@@ -38,7 +38,7 @@ class CheckoutController extends AbstractController
             foreach ($basket as $key => $id) {
                 $item = $this->getDoctrine()->getRepository(ProductStockItem::Class)->find($key);
                 $total += $item->getProduct()->getPrice();
-            }       
+            }
             $total = (int) ($total / 100);
             
             $curl = curl_init();
@@ -75,14 +75,14 @@ class CheckoutController extends AbstractController
             $err = curl_error($curl);
             curl_close($curl);
             $response = json_decode($response, true);
-            if (!isset($response['errors'])) {              
+            if (!isset($response['errors'])) {
                 // Success, empty basket and redirect
                 $this->get('session')->remove('basket');
                 $this->addFlash('order', 'Thank you for your order!');
                 return $this->redirectToRoute('shop');
             }
         }
-        // Generate form - including card identifier 
+        // Generate form - including card identifier
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_URL => "https://pi-test.sagepay.com/api/v1/merchant-session-keys",
@@ -92,7 +92,7 @@ class CheckoutController extends AbstractController
             CURLOPT_HTTPHEADER => $headers
         ));
         $response = curl_exec($curl);
-        $err = curl_error($curl);    
+        $err = curl_error($curl);
         curl_close($curl);
         
         $response = json_decode($response, true);

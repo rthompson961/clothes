@@ -45,13 +45,13 @@ class ShopController extends AbstractController
             }
         }
 
-        // Add clickable links to either add or remove product filters        
+        // Add clickable links to either add or remove product filters
         foreach ($options as $key => $option) {
             foreach ($option as $opt) {
                 if (in_array($opt->getId(), $filters[$key])) {
                     $opt->setRemoveLink($this->buildLink($page, $sort, $filters, $opt, 'remove'));
                 } else {
-                    $opt->setAddLink($this->buildLink($page, $sort, $filters, $opt, 'add'));                   
+                    $opt->setAddLink($this->buildLink($page, $sort, $filters, $opt, 'add'));
                 }
             }
         }
@@ -105,9 +105,9 @@ class ShopController extends AbstractController
         $link .= '&sort=' . $sort;
         foreach ($filters as $key => $values) {
             foreach ($values as $val) {
-                $link .= '&' . $key . '[]=' . $val; 
+                $link .= '&' . $key . '[]=' . $val;
             }
-        }    
+        }
 
         return $link;
     }

@@ -27,7 +27,7 @@ class ProductStockItemFixtures extends Fixture implements DependentFixtureInterf
                 $item->setProduct($this->getReference('product-' . $i));
                 $item->setSize($this->getReference('size-' . $size));
                 $item->setStock($stock);
-                $manager->persist($item);          
+                $manager->persist($item);
             }
         }
         $manager->flush();

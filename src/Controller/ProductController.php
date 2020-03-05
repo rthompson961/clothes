@@ -31,7 +31,7 @@ class ProductController extends AbstractController
         $formBuilder = $this->createFormBuilder(null, array('method' => 'post'));
         $formBuilder->add('product', ChoiceType::class, array(
             'choices'  => $sizes,
-            'choice_attr' => $attr, 
+            'choice_attr' => $attr,
             'placeholder' => 'Choose Size',
             'label' => false
         ));
@@ -50,11 +50,11 @@ class ProductController extends AbstractController
                 if ($this->get('session')->has('basket')) {
                     // Add to existing basket contents
                     $basket = $this->get('session')->get('basket');
-                } 
+                }
                 $basket[$data['product']] = 1;
                 $this->get('session')->set('basket', $basket);
 
-                return $this->redirectToRoute('basket');                
+                return $this->redirectToRoute('basket');
             }
             // No stock - return to product page
             return $this->redirectToRoute('product', ['id' => $product->getId()]);

@@ -36,7 +36,7 @@ class BasketController extends AbstractController
  
     /**
      * @Route("/empty", name="empty")
-     */   
+     */
     public function empty(Request $request)
     {
         $this->get('session')->remove('basket');

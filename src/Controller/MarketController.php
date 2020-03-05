@@ -17,7 +17,7 @@ class MarketController extends AbstractController
         $error = false;
 
         // URL to call
-        $endpoint = 'http://svcs.ebay.com/services/search/FindingService/v1';  
+        $endpoint = 'http://svcs.ebay.com/services/search/FindingService/v1';
         // XML data
         $xmlRequest  = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         $xmlRequest .= "<findItemsByKeywordsRequest xmlns=\"http://www.ebay.com/marketplace/search/v1/services\">\n";
@@ -35,12 +35,12 @@ class MarketController extends AbstractController
         );
 
         // Create a curl session
-        $session = curl_init($endpoint);                     
-        curl_setopt($session, CURLOPT_POST, true);            
-        curl_setopt($session, CURLOPT_HTTPHEADER, $headers); 
-        curl_setopt($session, CURLOPT_POSTFIELDS, $xmlRequest); 
+        $session = curl_init($endpoint);
+        curl_setopt($session, CURLOPT_POST, true);
+        curl_setopt($session, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($session, CURLOPT_POSTFIELDS, $xmlRequest);
         // Return values as a string, not to std out
-        curl_setopt($session, CURLOPT_RETURNTRANSFER, true);    
+        curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
 
         // Send request
         $responseXml = curl_exec($session);
@@ -49,11 +49,11 @@ class MarketController extends AbstractController
 
         if ($response->ack != "Success") {
             $error = 'Could not connect to eBay';
-        } 
+        }
     
         return $this->render('market/index.html.twig', [
-            'title' => 'Marketplace', 
-            'search' => $search, 
+            'title' => 'Marketplace',
+            'search' => $search,
             'response' => $response,
             'error' => $error
         ]);
