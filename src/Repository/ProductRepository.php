@@ -58,14 +58,14 @@ class ProductRepository extends ServiceEntityRepository
         switch ($sort) {
             case 'name':
                 $field = 'name';
-            break;
+                break;
             case 'low':
             case 'high':
                 $field = 'price';
-            break;
+                break;
             default:
                 $field = 'id';
-            break;
+                break;
         }
         $dir = $sort == 'high' ? 'DESC' : 'ASC';
         $qb->orderBy('p.' . $field, $dir)

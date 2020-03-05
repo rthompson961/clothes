@@ -20,13 +20,13 @@ class LoremIpsumController extends AbstractController
         switch ($_route) {
             case 'faq':
                 $title = 'FAQ';
-            break;
+                break;
             case 'terms':
                 $title = 'Terms & Conditions';
-            break;
+                break;
             default:
                 $title = ucfirst($_route);
-            break;
+                break;
         }
 
         $ipsum[] = <<<'EOD'
