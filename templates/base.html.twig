@@ -28,11 +28,37 @@
     </div>
 </div>
 
+<div id="nav" class="clearfix">
+    <ul id="nav-header">
+        <li>Menu <span>&#9776;</span></li>
+    </ul>
+    <ul id="nav-links">
+        <li><a href="{{ path('shop') }}">All</a></li>
+        <li><a href="{{ path('shop', {'category[]': 2}) }}">Jackets</a></li>
+        <li><a href="{{ path('shop', {'category[]': 1}) }}">Fleeces</a></li>
+        <li><a href="{{ path('shop', {'category[]': 3}) }}">Parkas</a></li>
+        <li><a href="{{ path('shop', {'category[]': 4}) }}">Sweatshirts</a></li>
+        <li><a href="{{ path('shop', {'category[]': 5}) }}">Hoodies</a></li>
+        <li><a href="{{ path('shop', {'category[]': 6}) }}">T-Shirts</a></li>
+        <li><a href="{{ path('shop', {'category[]': 7}) }}">Jeans</a></li>
+    </ul>
+</div>
+
 <div id="main" class="clearfix">
 {% block body %}{% endblock %}
 </div>
 
 </div>
-{% block javascripts %}{% endblock %}
+{% block javascripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.slim.min.js"></script>
+
+<script>
+$(document).ready(function(){
+    $('#nav-header').click(function() {
+        $('#nav-links').toggle();
+    });
+}); 
+</script>
+{% endblock %}
 </body>
 </html>
