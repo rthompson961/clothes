@@ -124,7 +124,7 @@ class User implements UserInterface
     }
 
     /**
-     * @return Collection|Order[]
+     * @return Collection|OrderTotal[]
      */
     public function getOrders(): Collection
     {
