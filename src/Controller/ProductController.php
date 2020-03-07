@@ -18,7 +18,8 @@ class ProductController extends AbstractController
     public function index(Product $product, Request $request)
     {
         // Get size names & disable those without stock
-        $attr = [];
+        $attr  = [];
+        $sizes = [];
         foreach ($product->getProductStockItems() as $item) {
             $name = $item->getSize()->getName();
             $sizes[$name] = $item->getId();

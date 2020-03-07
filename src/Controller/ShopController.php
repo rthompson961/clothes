@@ -88,6 +88,8 @@ class ShopController extends AbstractController
         // option type e.g category/brand/colour
         if ($opt) {
             $type = strtolower(substr(strrchr(get_class($opt), '\\'), 1));
+        } else {
+            $type = null;
         }
 
         // Add current id to this types list of filters

@@ -122,6 +122,8 @@ Phasellus sed lacus enim.
 EOD;
 
         shuffle($ipsum);
+
+        $paragraphs = [];
         for ($i = 1; $i <= 3; $i++) {
             $paragraphs[] = $ipsum[$i];
         }
