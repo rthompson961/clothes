@@ -91,24 +91,24 @@ class Product
         return $this;
     }
 
-    public function getCategory(): ?category
+    public function getCategory(): ?Category
     {
         return $this->category;
     }
 
-    public function setCategory(?category $category): self
+    public function setCategory(?Category $category): self
     {
         $this->category = $category;
 
         return $this;
     }
 
-    public function getBrand(): ?brand
+    public function getBrand(): ?Brand
     {
         return $this->brand;
     }
 
-    public function setBrand(?brand $brand): self
+    public function setBrand(?Brand $brand): self
     {
         $this->brand = $brand;
 
