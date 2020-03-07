@@ -48,7 +48,7 @@ class OrderLineItem
         return $this->OrderTotal;
     }
 
-    public function setOrderTotal(?Order $OrderTotal): self
+    public function setOrderTotal(?OrderTotal $OrderTotal): self
     {
         $this->OrderTotal = $OrderTotal;
 
