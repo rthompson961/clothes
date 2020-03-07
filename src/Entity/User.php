@@ -135,7 +135,7 @@ class User implements UserInterface
     {
         if (!$this->orders->contains($orderTotal)) {
             $this->orders[] = $orderTotal;
-            $order->setUser($this);
+            $orderTotal->setUser($this);
         }
 
         return $this;
@@ -146,8 +146,8 @@ class User implements UserInterface
         if ($this->orders->contains($orderTotal)) {
             $this->orders->removeElement($orderTotal);
             // set the owning side to null (unless already changed)
-            if ($order->getUser() === $this) {
-                $order->setUser(null);
+            if ($orderTotal->getUser() === $this) {
+                $orderTotal->setUser(null);
             }
         }
 
