@@ -11,6 +11,8 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  * @method Product|null findOneBy(array $criteria, array $orderBy = null)
  * @method Product[]    findAll()
  * @method Product[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method int|null     findProductCount(array $filters)
+ * @method Product[]    findProducts(array $filters, string $sort, int $offset, int $limit)
  */
 class ProductRepository extends ServiceEntityRepository
 {
@@ -19,7 +21,7 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-    public function findProductCount($filters)
+    public function findProductCount(array $filters): ?int
     {
         $qb = $this->createQueryBuilder('p')
             ->select('count(p.id)');
@@ -39,7 +41,7 @@ class ProductRepository extends ServiceEntityRepository
         return $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function findProducts($filters, $sort, $offset, $limit)
+    public function findProducts(array $filters, string $sort, int $offset, int $limit): ?array
     {
         $qb = $this->createQueryBuilder('p');
 
