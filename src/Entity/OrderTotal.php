@@ -80,7 +80,7 @@ class OrderTotal
     {
         if (!$this->orderLineItems->contains($orderLineItem)) {
             $this->orderLineItems[] = $orderLineItem;
-            $orderLineItem->setOrderParent($this);
+            $orderLineItem->setOrderTotal($this);
         }
 
         return $this;
@@ -91,8 +91,8 @@ class OrderTotal
         if ($this->orderLineItems->contains($orderLineItem)) {
             $this->orderLineItems->removeElement($orderLineItem);
             // set the owning side to null (unless already changed)
-            if ($orderLineItem->getOrderParent() === $this) {
-                $orderLineItem->setOrderParent(null);
+            if ($orderLineItem->getOrderTotal() === $this) {
+                $orderLineItem->setOrderTotal(null);
             }
         }
 
