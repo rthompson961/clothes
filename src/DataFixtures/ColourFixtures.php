@@ -8,7 +8,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class ColourFixtures extends Fixture
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $values = [
             'Blue',
@@ -28,6 +28,7 @@ class ColourFixtures extends Fixture
             $manager->persist($colour);
             $this->addReference('colour-' . strtolower($val), $colour);
         }
+
         $manager->flush();
     }
 }

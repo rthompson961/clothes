@@ -8,7 +8,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class ProductGroupFixtures extends Fixture
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $values = [
             1 => 'Next Down Filled Jacket',

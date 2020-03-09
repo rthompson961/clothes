@@ -8,7 +8,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class BrandFixtures extends Fixture
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $values = [
             'berghaus' => 'Berghaus',
@@ -25,6 +25,7 @@ class BrandFixtures extends Fixture
             $manager->persist($brand);
             $this->addReference('brand-' . $key, $brand);
         }
+
         $manager->flush();
     }
 }

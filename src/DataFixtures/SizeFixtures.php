@@ -8,7 +8,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class SizeFixtures extends Fixture
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $values = ['Small', 'Medium', 'Large'];
         foreach ($values as $val) {
@@ -17,6 +17,7 @@ class SizeFixtures extends Fixture
             $manager->persist($size);
             $this->addReference('size-' . strtolower($val), $size);
         }
+        
         $manager->flush();
     }
 }

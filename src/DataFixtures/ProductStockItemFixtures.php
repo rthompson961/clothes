@@ -11,7 +11,7 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
 class ProductStockItemFixtures extends Fixture implements DependentFixtureInterface
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $productCount = 66;
         $maxStock = 30;
@@ -33,7 +33,7 @@ class ProductStockItemFixtures extends Fixture implements DependentFixtureInterf
         $manager->flush();
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             ProductFixtures::class,
