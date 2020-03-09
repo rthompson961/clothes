@@ -36,6 +36,7 @@ class User implements UserInterface
     private string $password;
 
     /**
+     * @var Collection<OrderTotal>
      * @ORM\OneToMany(targetEntity="App\Entity\OrderTotal", mappedBy="User")
      */
     private Collection $orders;

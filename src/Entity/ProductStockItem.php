@@ -36,6 +36,7 @@ class ProductStockItem
     private int $stock;
 
     /**
+     * @var Collection<OrderLineItem>
      * @ORM\OneToMany(targetEntity="App\Entity\OrderLineItem", mappedBy="ProductStockItem")
      */
     private Collection $orderLineItems;

@@ -30,9 +30,10 @@ class OrderTotal
     private int $total;
 
     /**
+     * @var Collection<OrderLineItem>
      * @ORM\OneToMany(targetEntity="App\Entity\OrderLineItem", mappedBy="OrderTotal")
      */
-    private ArrayCollection $orderLineItems;
+    private Collection $orderLineItems;
 
     public function __construct()
     {

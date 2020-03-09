@@ -24,6 +24,7 @@ class ProductGroup
     private string $name;
 
     /**
+     * @var Collection<Product>
      * @ORM\OneToMany(targetEntity="App\Entity\Product", mappedBy="productGroup")
      */
     private Collection $products;

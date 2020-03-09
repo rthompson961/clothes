@@ -1,9 +1,10 @@
 parameters:
+    level: 6
     autoload_files:
         - %rootDir%/../../../bin/.phpunit/phpunit-7.5-0/vendor/autoload.php
-    level: 6
-
-    checkMissingIterableValueType: false # generics
-    checkGenericClassInNonGenericObjectType: false # generics
+    doctrine:
+        objectManagerLoader: %rootDir%/../../../tests/phpstan/doctrine-orm-bootstrap.php
     excludes_analyse:
         - %rootDir%/../../../src/Security/*
+    checkMissingIterableValueType: false # generics
+    checkGenericClassInNonGenericObjectType: false # generics

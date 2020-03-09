@@ -53,6 +53,7 @@ class Product
     private ?ProductGroup $productGroup;
 
     /**
+     * @var Collection<ProductStockItem>
      * @ORM\OneToMany(targetEntity="App\Entity\ProductStockItem", mappedBy="product")
      */
     private Collection $productStockItems;
