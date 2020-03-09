@@ -14,16 +14,16 @@ class Colour
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=15)
      */
-    private $name;
+    private string $name;
 
-    private $addLink;
+    private string $addLink = '';
 
-    private $removeLink;
+    private string $removeLink = '';
 
     public function getId(): ?int
     {

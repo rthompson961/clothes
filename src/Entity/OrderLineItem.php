@@ -14,29 +14,29 @@ class OrderLineItem
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\OrderTotal", inversedBy="orderLineItems")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $OrderTotal;
+    private OrderTotal $OrderTotal;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\ProductStockItem", inversedBy="orderLineItems")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $ProductStockItem;
+    private ProductStockItem $ProductStockItem;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $price;
+    private int $price;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $quantity;
+    private int $quantity;
 
     public function getId(): ?int
     {

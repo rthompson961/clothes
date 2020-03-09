@@ -16,17 +16,17 @@ class ProductGroup
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=45)
      */
-    private $name;
+    private string $name;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Product", mappedBy="productGroup")
      */
-    private $products;
+    private Collection $products;
 
     public function __construct()
     {

@@ -16,23 +16,23 @@ class OrderTotal
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="orders")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $User;
+    private User $User;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $total;
+    private int $total;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\OrderLineItem", mappedBy="OrderTotal")
      */
-    private $orderLineItems;
+    private ArrayCollection $orderLineItems;
 
     public function __construct()
     {

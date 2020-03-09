@@ -16,46 +16,46 @@ class Product
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=45)
      */
-    private $name;
+    private string $name;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $price;
+    private int $price;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Category")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $category;
+    private Category $category;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Brand")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $brand;
+    private Brand $brand;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Colour")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $colour;
+    private Colour $colour;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\ProductGroup", inversedBy="products")
      * @ORM\JoinColumn(nullable=true)
      */
-    private $productGroup;
+    private ?ProductGroup $productGroup;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\ProductStockItem", mappedBy="product")
      */
-    private $productStockItems;
+    private Collection $productStockItems;
 
     public function __construct()
     {

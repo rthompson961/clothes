@@ -14,12 +14,12 @@ class Size
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=15)
      */
-    private $name;
+    private string $name;
 
     public function getId(): ?int
     {

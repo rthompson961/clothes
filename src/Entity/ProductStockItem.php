@@ -16,29 +16,29 @@ class ProductStockItem
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Product", inversedBy="productStockItems")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $product;
+    private Product $product;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Size")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $size;
+    private Size $size;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $stock;
+    private int $stock;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\OrderLineItem", mappedBy="ProductStockItem")
      */
-    private $orderLineItems;
+    private Collection $orderLineItems;
 
     public function __construct()
     {
