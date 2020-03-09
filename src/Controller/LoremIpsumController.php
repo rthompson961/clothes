@@ -16,7 +16,7 @@ class LoremIpsumController extends AbstractController
      * @Route("/terms", name="terms")
      * @Route("/returns", name="returns")
      */
-    public function index($_route): Response
+    public function index(string $_route): Response
     {
         switch ($_route) {
             case 'faq':

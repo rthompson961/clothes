@@ -84,8 +84,13 @@ class ShopController extends AbstractController
     /**
     * Builds a url used by all shop navigation links
     */
-    private function buildLink($page, $sort, $filters, $opt = null, $mode = 'default'): string
-    {
+    private function buildLink(
+        int $page,
+        string $sort,
+        array $filters,
+        object $opt = null,
+        string $mode = 'default'
+    ): string {
         // option type e.g category/brand/colour
         if ($opt) {
             $type = strtolower(substr(strrchr(get_class($opt), '\\'), 1));
