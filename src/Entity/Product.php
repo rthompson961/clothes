@@ -16,7 +16,7 @@ class Product
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private int $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=45)
@@ -50,7 +50,7 @@ class Product
      * @ORM\ManyToOne(targetEntity="App\Entity\ProductGroup", inversedBy="products")
      * @ORM\JoinColumn(nullable=true)
      */
-    private ?ProductGroup $productGroup;
+    private ?ProductGroup $productGroup = null;
 
     /**
      * @var Collection<ProductStockItem>
