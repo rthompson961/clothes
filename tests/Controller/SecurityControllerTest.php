@@ -2,24 +2,25 @@
 
 namespace App\Tests\Controller;
 
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class SecurityControllerTest extends WebTestCase
 {
-    private $client;
+    private KernelBrowser $client;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->client = static::createClient();
     }
 
-    public function testResponse()
+    public function testResponse(): void
     {
         $this->client->request('GET', '/login');
         $this->assertResponseIsSuccessful();
     }
 
-    public function testCorrectLogin()
+    public function testCorrectLogin(): void
     {
         $crawler = $this->client->request('GET', '/login');
 
@@ -31,7 +32,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertResponseRedirects('/');
     }
 
-    public function testIncorrectLogin()
+    public function testIncorrectLogin(): void
     {
         $crawler = $this->client->request('GET', '/login');
 

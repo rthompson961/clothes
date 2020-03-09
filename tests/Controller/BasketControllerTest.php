@@ -2,35 +2,36 @@
 
 namespace App\Tests\Controller;
 
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class BasketControllerTest extends WebTestCase
 {
-    private $client;
+    private KernelBrowser $client;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->client = static::createClient();
     }
 
-    public function testResponse()
+    public function testResponse(): void
     {
         $this->client->request('GET', '/basket');
         $this->assertResponseIsSuccessful();
     }
 
-    public function testBasket()
+    public function testBasket(): void
     {
         // Add two products
         $crawler = $this->client->request('GET', '/product/2');
         $form = $crawler->selectButton('form[submit]')->form();
-        $form['form[product]'] = 6;
+        $form['form[product]'] = '6';
         $crawler = $this->client->submit($form);
         $this->assertResponseRedirects('/basket');
 
         $crawler = $this->client->request('GET', '/product/24');
         $form = $crawler->selectButton('form[submit]')->form();
-        $form['form[product]'] = 72;
+        $form['form[product]'] = '72';
         $crawler = $this->client->submit($form);
         $this->assertResponseRedirects('/basket');
 

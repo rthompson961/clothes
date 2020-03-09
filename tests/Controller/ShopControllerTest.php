@@ -2,18 +2,19 @@
 
 namespace App\Tests\Controller;
 
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ShopControllerTest extends WebTestCase
 {
-    private $client;
+    private KernelBrowser $client;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->client = static::createClient();
     }
 
-    public function testShopHome()
+    public function testShopHome(): void
     {
         $crawler = $this->client->request('GET', '/shop');
 
@@ -34,7 +35,7 @@ class ShopControllerTest extends WebTestCase
         $this->assertEquals('?page=11&sort=first', $links->last()->attr('href'));
     }
 
-    public function testShopWithPages()
+    public function testShopWithPages(): void
     {
         $crawler = $this->client->request('GET', '/shop?page=5&sort=first');
 
@@ -55,7 +56,7 @@ class ShopControllerTest extends WebTestCase
         $this->assertEquals('?page=11&sort=first', $links->last()->attr('href'));
     }
 
-    public function testShopWithSort()
+    public function testShopWithSort(): void
     {
         $crawler = $this->client->request('GET', '/shop?page=3&sort=low');
 
@@ -76,7 +77,7 @@ class ShopControllerTest extends WebTestCase
         $this->assertEquals('?page=11&sort=low', $links->last()->attr('href'));
     }
 
-    public function testShopWithCategories()
+    public function testShopWithCategories(): void
     {
         $crawler = $this->client->request('GET', '/shop?page=3&sort=first&category[]=4&category[]=1');
 
@@ -97,7 +98,7 @@ class ShopControllerTest extends WebTestCase
         $this->assertEquals('?page=2&sort=first&category[]=4&category[]=1', $links->last()->attr('href'));
     }
 
-    public function testShopWithBrands()
+    public function testShopWithBrands(): void
     {
         $crawler = $this->client->request(
             'GET',
@@ -136,7 +137,7 @@ class ShopControllerTest extends WebTestCase
         );
     }
 
-    public function testShopWithColours()
+    public function testShopWithColours(): void
     {
         $crawler = $this->client->request('GET', '/shop?page=2&sort=first&colour[]=5&colour[]=9&colour[]=7');
 
@@ -163,7 +164,7 @@ class ShopControllerTest extends WebTestCase
         $this->assertEquals('?page=4&sort=first&colour[]=5&colour[]=9&colour[]=7', $links->last()->attr('href'));
     }
 
-    public function testShopWithAll()
+    public function testShopWithAll(): void
     {
         $crawler = $this->client->request(
             'GET',

@@ -10,14 +10,14 @@ class LoremIpsumControllerTest extends WebTestCase
    /**
      * @dataProvider pageProvider
      */
-    public function testResponse($page)
+    public function testResponse(string $page): void
     {
         $client = static::createClient();
         $client->request('GET', '/' . $page);
         $this->assertResponseIsSuccessful();
     }
 
-    public function pageProvider()
+    public function pageProvider(): array
     {
         return [
             ['about'],

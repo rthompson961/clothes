@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ProductControllerTest extends WebTestCase
 {
-    public function testProduct()
+    public function testProduct(): void
     {
         $client = static::createClient();
 

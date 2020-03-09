@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class MarketControllerTest extends WebTestCase
 {
-    public function testMarket()
+    public function testMarket(): void
     {
         $client = static::createClient();
 

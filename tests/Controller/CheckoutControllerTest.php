@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class CheckoutControllerTest extends WebTestCase
 {
-    public function testGuestResponse()
+    public function testGuestResponse(): void
     {
         $client = static::createClient();
 
@@ -14,7 +14,7 @@ class CheckoutControllerTest extends WebTestCase
         $this->assertResponseRedirects('/login');
     }
 
-    public function testUserResponse()
+    public function testUserResponse(): void
     {
         $client = static::createClient();
 
