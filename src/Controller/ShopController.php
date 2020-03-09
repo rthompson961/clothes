@@ -7,15 +7,16 @@ use App\Entity\Category;
 use App\Entity\Colour;
 use App\Entity\Product;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 class ShopController extends AbstractController
 {
     /**
      * @Route("/shop", name="shop")
      */
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $options['category'] = $this->getDoctrine()->getRepository(Category::class)->findAll();
         $options['brand'] = $this->getDoctrine()->getRepository(Brand::class)->findAll();
@@ -83,7 +84,7 @@ class ShopController extends AbstractController
     /**
     * Builds a url used by all shop navigation links
     */
-    private function buildLink($page, $sort, $filters, $opt = null, $mode = 'default')
+    private function buildLink($page, $sort, $filters, $opt = null, $mode = 'default'): string
     {
         // option type e.g category/brand/colour
         if ($opt) {

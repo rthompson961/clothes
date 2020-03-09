@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class LoremIpsumController extends AbstractController
@@ -15,7 +16,7 @@ class LoremIpsumController extends AbstractController
      * @Route("/terms", name="terms")
      * @Route("/returns", name="returns")
      */
-    public function index($_route)
+    public function index($_route): Response
     {
         switch ($_route) {
             case 'faq':

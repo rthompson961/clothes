@@ -5,17 +5,18 @@ namespace App\Controller;
 use App\Entity\Product;
 use App\Entity\ProductStockItem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 class ProductController extends AbstractController
 {
     /**
      * @Route("/product/{id}", name="product")
      */
-    public function index(Product $product, Request $request)
+    public function index(Product $product, Request $request): Response
     {
         // Get size names & disable those without stock
         $attr  = [];

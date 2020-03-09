@@ -4,15 +4,17 @@ namespace App\Controller;
 
 use App\Entity\ProductStockItem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Routing\Annotation\Route;
 
 class BasketController extends AbstractController
 {
     /**
      * @Route("/basket", name="basket")
      */
-    public function index()
+    public function index(): Response
     {
         $contents = [];
         $total = 0;
@@ -37,7 +39,7 @@ class BasketController extends AbstractController
     /**
      * @Route("/empty", name="empty")
      */
-    public function empty(Request $request)
+    public function empty(Request $request): RedirectResponse
     {
         $this->get('session')->remove('basket');
 
