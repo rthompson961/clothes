@@ -27,7 +27,7 @@ class CheckoutControllerTest extends WebTestCase
         // A product must be added to basket before accessing checkout
         $crawler = $client->request('GET', '/product/2');
         $form = $crawler->selectButton('form[submit]')->form();
-        $form['form[product]'] = 6;
+        $form['form[product]'] = '6';
         $crawler = $client->submit($form);
         $this->assertResponseRedirects('/basket');
 
