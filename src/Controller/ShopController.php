@@ -92,7 +92,7 @@ class ShopController extends AbstractController
         string $mode = 'default'
     ): string {
         // option type e.g category/brand/colour
-        if ($opt) {
+        if ($opt && strrchr(get_class($opt), '\\') !== false) {
             $type = strtolower(substr(strrchr(get_class($opt), '\\'), 1));
         } else {
             $type = null;
