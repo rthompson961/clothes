@@ -37,19 +37,24 @@ class MarketController extends AbstractController
 
         // Create a curl session
         $session = curl_init($endpoint);
-        curl_setopt($session, CURLOPT_POST, true);
-        curl_setopt($session, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($session, CURLOPT_POSTFIELDS, $xmlRequest);
-        // Return values as a string, not to std out
-        curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
+        if ($session !== false) {
+            curl_setopt($session, CURLOPT_POST, true);
+            curl_setopt($session, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($session, CURLOPT_POSTFIELDS, $xmlRequest);
+            // Return values as a string, not to std out
+            curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
 
-        // Send request
-        $responseXml = curl_exec($session);
-        curl_close($session);
-        $response = simplexml_load_string($responseXml);
+            // Send request
+            $responseXml = curl_exec($session);
+            curl_close($session);
+            $response = simplexml_load_string($responseXml);
 
-        if ($response->ack != "Success") {
-            $error = 'Could not connect to eBay';
+            if ($response->ack != "Success") {
+                $error = 'Could not connect to eBay';
+            }
+        } else {
+            $response = false;
+            $error = 'Could not start eBay session';
         }
     
         return $this->render('market/index.html.twig', [
