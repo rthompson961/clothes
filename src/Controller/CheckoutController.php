@@ -76,7 +76,7 @@ class CheckoutController extends AbstractController
             $err = curl_error($curl);
             curl_close($curl);
             if (!is_bool($response)) {
-              $response = json_decode($response, true);
+                $response = json_decode($response, true);
             }
             
             if (!isset($response['errors'])) {
@@ -100,7 +100,7 @@ class CheckoutController extends AbstractController
         curl_close($curl);
         
         if (!is_bool($response)) {
-          $response = json_decode($response, true);
+            $response = json_decode($response, true);
         }
         
         return $this->render('checkout/index.html.twig', [
