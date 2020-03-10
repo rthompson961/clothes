@@ -83,6 +83,14 @@ class ShopController extends AbstractController
 
     /**
     * Builds a url used by all shop navigation links
+    *
+    * @param int $page
+    * @param string $sort
+    * @param array $filters
+    * @param Category|Colour|Brand $opt
+    * @param string $mode
+    *
+    * @return string
     */
     private function buildLink(
         int $page,
