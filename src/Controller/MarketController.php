@@ -13,9 +13,10 @@ class MarketController extends AbstractController
      */
     public function index(): Response
     {
-        $products = array();
+        $products = [];
         $search = 'mens jackets';
         $error = false;
+        $response = null;
 
         // URL to call
         $endpoint = 'http://svcs.ebay.com/services/search/FindingService/v1';
@@ -47,13 +48,14 @@ class MarketController extends AbstractController
             // Send request
             $responseXml = curl_exec($session);
             curl_close($session);
-            $response = simplexml_load_string($responseXml);
 
-            if ($response->ack != "Success") {
-                $error = 'Could not connect to eBay';
+            if (!is_bool($responseXml)) {
+                $response = simplexml_load_string($responseXml);
+                if ($response !== false && $response->ack != "Success") {
+                    $error = 'Could not connect to eBay';
+                }
             }
         } else {
-            $response = false;
             $error = 'Could not start eBay session';
         }
     
