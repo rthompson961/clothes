@@ -72,7 +72,7 @@ repellat.
 EOD;
 
         $ipsum[] = <<<'EOD'
-Etiam tellus nisl, ornare vel volutpat sodales, ullamcorper a leo.
+Tellus nisl, ornare vel volutpat sodales, ullamcorper a leo.
 Etiam consequat augue finibus massa aliquam tincidunt. Proin posuere risus 
 lacinia, elementum risus at, rhoncus ligula. 
 Etiam vehicula, sapien eget bibendum hendrerit, nunc lectus aliquet 
@@ -121,17 +121,12 @@ nec, dapibus orci. Praesent quis leo sit amet mauris dignissim aliquet eget
 mattis ligula. Nullam sit amet enim a felis gravida dapibus in a leo. 
 Phasellus sed lacus enim. 
 EOD;
-
+    
         shuffle($ipsum);
-
-        $paragraphs = [];
-        for ($i = 1; $i <= 3; $i++) {
-            $paragraphs[] = $ipsum[$i];
-        }
 
         return $this->render('lorem_ipsum/index.html.twig', [
             'title' => $title,
-            'paragraphs' => $paragraphs
+            'paragraphs' => $ipsum
         ]);
     }
 }
