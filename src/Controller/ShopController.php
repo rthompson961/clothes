@@ -108,11 +108,17 @@ class ShopController extends AbstractController
 
         // Add current id to this types list of filters
         if ($mode == 'add') {
+            if ($opt === null || $opt->getId() === null) {
+                throw new \Exception('Unable to retrieve option');
+            }
             array_push($filters[$type], $opt->getId());
         }
 
         // Remove current id to this types list of filters
         if ($mode == 'remove') {
+            if ($opt === null || $opt->getId() === null) {
+                throw new \Exception('Unable to retrieve option');
+            }
             $filters[$type] = array_diff($filters[$type], [$opt->getId()]);
         }
 

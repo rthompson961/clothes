@@ -26,6 +26,9 @@ class BasketController extends AbstractController
             foreach ($basket as $id => $quantity) {
                 $item = $this->getDoctrine()->getRepository(ProductStockItem::Class)->find($id);
                 $contents[] = $item;
+                if ($item === null || $item->getProduct() === null) {
+                    throw new \Exception('Unable to retrieve product');
+                }
                 $total += $item->getProduct()->getPrice();
             }
         }

@@ -38,6 +38,9 @@ class CheckoutController extends AbstractController
             $total = 0;
             foreach ($basket as $key => $id) {
                 $item = $this->getDoctrine()->getRepository(ProductStockItem::Class)->find($key);
+                if ($item === null || $item->getProduct() === null) {
+                    throw new \Exception('Unable to retrieve product');
+                }
                 $total += $item->getProduct()->getPrice();
             }
             $total = (int) ($total / 100);

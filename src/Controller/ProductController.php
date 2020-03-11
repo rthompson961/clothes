@@ -22,6 +22,9 @@ class ProductController extends AbstractController
         $attr  = [];
         $sizes = [];
         foreach ($product->getProductStockItems() as $item) {
+            if ($item->getSize() === null) {
+                throw new \Exception('Unable to retrieve size');
+            }
             $name = $item->getSize()->getName();
             $sizes[$name] = $item->getId();
             if (!$item->getStock()) {
@@ -46,6 +49,9 @@ class ProductController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $item = $this->getDoctrine()->getRepository(ProductStockItem::class)->find($data['product']);
+            if ($item === null || $item->getStock() === null) {
+                throw new \Exception('Unable to retrieve stock');
+            }
             // In stock
             if ($item->getStock()) {
                 // Items currently in basket
