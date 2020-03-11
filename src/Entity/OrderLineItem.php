@@ -43,24 +43,24 @@ class OrderLineItem
         return $this->id;
     }
 
-    public function getOrderTotal(): ?OrderTotal
+    public function getOrderTotal(): OrderTotal
     {
         return $this->OrderTotal;
     }
 
-    public function setOrderTotal(?OrderTotal $OrderTotal): self
+    public function setOrderTotal(OrderTotal $OrderTotal): self
     {
         $this->OrderTotal = $OrderTotal;
 
         return $this;
     }
 
-    public function getProductStockItem(): ?ProductStockItem
+    public function getProductStockItem(): ProductStockItem
     {
         return $this->ProductStockItem;
     }
 
-    public function setProductStockItem(?ProductStockItem $ProductStockItem): self
+    public function setProductStockItem(ProductStockItem $ProductStockItem): self
     {
         $this->ProductStockItem = $ProductStockItem;
 

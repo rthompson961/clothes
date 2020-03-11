@@ -97,7 +97,7 @@ class Product
         return $this->category;
     }
 
-    public function setCategory(?Category $category): self
+    public function setCategory(Category $category): self
     {
         $this->category = $category;
 
@@ -109,7 +109,7 @@ class Product
         return $this->brand;
     }
 
-    public function setBrand(?Brand $brand): self
+    public function setBrand(Brand $brand): self
     {
         $this->brand = $brand;
 
@@ -121,7 +121,7 @@ class Product
         return $this->colour;
     }
 
-    public function setColour(?Colour $colour): self
+    public function setColour(Colour $colour): self
     {
         $this->colour = $colour;
 
@@ -153,19 +153,6 @@ class Product
         if (!$this->productStockItems->contains($productStockItem)) {
             $this->productStockItems[] = $productStockItem;
             $productStockItem->setProduct($this);
-        }
-
-        return $this;
-    }
-
-    public function removeProductStockItem(ProductStockItem $productStockItem): self
-    {
-        if ($this->productStockItems->contains($productStockItem)) {
-            $this->productStockItems->removeElement($productStockItem);
-            // set the owning side to null (unless already changed)
-            if ($productStockItem->getProduct() === $this) {
-                $productStockItem->setProduct(null);
-            }
         }
 
         return $this;

@@ -143,17 +143,4 @@ class User implements UserInterface
 
         return $this;
     }
-
-    public function removeOrder(OrderTotal $orderTotal): self
-    {
-        if ($this->orders->contains($orderTotal)) {
-            $this->orders->removeElement($orderTotal);
-            // set the owning side to null (unless already changed)
-            if ($orderTotal->getUser() === $this) {
-                $orderTotal->setUser(null);
-            }
-        }
-
-        return $this;
-    }
 }

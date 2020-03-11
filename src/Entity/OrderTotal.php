@@ -45,12 +45,12 @@ class OrderTotal
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->User;
     }
 
-    public function setUser(?User $User): self
+    public function setUser(User $User): self
     {
         $this->User = $User;
 
@@ -82,19 +82,6 @@ class OrderTotal
         if (!$this->orderLineItems->contains($orderLineItem)) {
             $this->orderLineItems[] = $orderLineItem;
             $orderLineItem->setOrderTotal($this);
-        }
-
-        return $this;
-    }
-
-    public function removeOrderLineItem(OrderLineItem $orderLineItem): self
-    {
-        if ($this->orderLineItems->contains($orderLineItem)) {
-            $this->orderLineItems->removeElement($orderLineItem);
-            // set the owning side to null (unless already changed)
-            if ($orderLineItem->getOrderTotal() === $this) {
-                $orderLineItem->setOrderTotal(null);
-            }
         }
 
         return $this;

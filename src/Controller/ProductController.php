@@ -22,9 +22,6 @@ class ProductController extends AbstractController
         $attr  = [];
         $sizes = [];
         foreach ($product->getProductStockItems() as $item) {
-            if ($item->getSize() === null) {
-                throw new \Exception('Unable to retrieve size');
-            }
             $name = $item->getSize()->getName();
             $sizes[$name] = $item->getId();
             if (!$item->getStock()) {

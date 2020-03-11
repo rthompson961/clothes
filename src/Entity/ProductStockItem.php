@@ -51,24 +51,24 @@ class ProductStockItem
         return $this->id;
     }
 
-    public function getProduct(): ?Product
+    public function getProduct(): Product
     {
         return $this->product;
     }
 
-    public function setProduct(?Product $product): self
+    public function setProduct(Product $product): self
     {
         $this->product = $product;
 
         return $this;
     }
 
-    public function getSize(): ?Size
+    public function getSize(): Size
     {
         return $this->size;
     }
 
-    public function setSize(?Size $size): self
+    public function setSize(Size $size): self
     {
         $this->size = $size;
 
@@ -100,19 +100,6 @@ class ProductStockItem
         if (!$this->orderLineItems->contains($orderLineItem)) {
             $this->orderLineItems[] = $orderLineItem;
             $orderLineItem->setProductStockItem($this);
-        }
-
-        return $this;
-    }
-
-    public function removeOrderLineItem(OrderLineItem $orderLineItem): self
-    {
-        if ($this->orderLineItems->contains($orderLineItem)) {
-            $this->orderLineItems->removeElement($orderLineItem);
-            // set the owning side to null (unless already changed)
-            if ($orderLineItem->getProductStockItem() === $this) {
-                $orderLineItem->setProductStockItem(null);
-            }
         }
 
         return $this;
