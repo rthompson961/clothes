@@ -595,4 +595,8 @@ p.pages a:hover {
         display: inline;
         margin-right: 15px;
     }
+
+    #footer a.red {
+        color: #ff1a1a;
+    }
 }
