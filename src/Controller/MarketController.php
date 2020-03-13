@@ -13,57 +13,53 @@ class MarketController extends AbstractController
      */
     public function index(): Response
     {
-        $products = [];
-        $search = 'mens jackets';
-        $error = false;
-        $response = null;
-
-        // URL to call
         $endpoint = 'http://svcs.ebay.com/services/search/FindingService/v1';
-        // XML data
-        $xmlRequest  = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-        $xmlRequest .= "<findItemsByKeywordsRequest xmlns=\"http://www.ebay.com/marketplace/search/v1/services\">\n";
-        $xmlRequest .= "<keywords>$search</keywords>\n";
-        $xmlRequest .= "<paginationInput>\n <entriesPerPage>8</entriesPerPage>\n</paginationInput>\n";
-        $xmlRequest .= "</findItemsByKeywordsRequest>";
-        // HTTP headers
-        $headers = array(
+
+        $search   = 'mens jacket';
+        $count    = 8;
+        $request  = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+        $request .= "<findItemsByKeywordsRequest xmlns=\"http://www.ebay.com/marketplace/search/v1/services\">\n";
+        $request .= "<keywords>$search</keywords>\n";
+        $request .= "<paginationInput>\n <entriesPerPage>$count</entriesPerPage>\n</paginationInput>\n";
+        $request .= "</findItemsByKeywordsRequest>";
+
+        $headers = [
             'X-EBAY-SOA-OPERATION-NAME: findItemsByKeywords',
             'X-EBAY-SOA-SERVICE-VERSION: 1.3.0',
             'X-EBAY-SOA-REQUEST-DATA-FORMAT: XML',
             'X-EBAY-SOA-GLOBAL-ID: EBAY-US',
-            'X-EBAY-SOA-SECURITY-APPNAME: ' .  $_SERVER['EBAY_APPNAME'],
+            'X-EBAY-SOA-SECURITY-APPNAME: ' . $_SERVER['EBAY_APPNAME'],
             'Content-Type: text/xml;charset=utf-8',
-        );
+        ];
 
-        // Create a curl session
-        $session = curl_init($endpoint);
-        if ($session !== false) {
-            curl_setopt($session, CURLOPT_POST, true);
-            curl_setopt($session, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($session, CURLOPT_POSTFIELDS, $xmlRequest);
-            // Return values as a string, not to std out
-            curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
+        $curl = curl_init($endpoint);
+        if ($curl === false) {
+            throw new \Exception('Could not initiate ebay curl session');
+        }
 
-            // Send request
-            $responseXml = curl_exec($session);
-            curl_close($session);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $request);
+        // Return value rather than outputting
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
-            if (!is_bool($responseXml)) {
-                $response = simplexml_load_string($responseXml);
-                if ($response !== false && $response->ack != "Success") {
-                    $error = 'Could not connect to eBay';
-                }
-            }
-        } else {
-            $error = 'Could not start eBay session';
+        $response = curl_exec($curl);
+        curl_close($curl);
+        // curl_exec can return both true and false when RETURNTRANSFER is false
+        if (is_bool($response)) {
+            throw new \Exception('Could not execute ebay curl session');
+        }
+
+        // convert xml to object
+        $response = simplexml_load_string($response);
+        if ($response === false || $response->ack != "Success") {
+            throw new \Exception('Ebay response did not acknowledge success');
         }
     
         return $this->render('market/index.html.twig', [
             'title' => 'Marketplace',
             'search' => $search,
-            'response' => $response,
-            'error' => $error
+            'response' => $response
         ]);
     }
 }

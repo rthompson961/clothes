@@ -1,14 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello MarketController!{% endblock %}
-
 {% block body %}
 <div id="market">
     <h2>{{ title }}</h2>
     <p>All results gathered from eBay API</p>
     <p class="terms">Search term: "{{ search }}"</p>
-
-    {% if error %}<p>{{ error }}</p>{% endif %}
 
     {% if response.searchResult is defined %}
         {% for item in response.searchResult.item %}
