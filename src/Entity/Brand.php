@@ -21,10 +21,6 @@ class Brand
      */
     private string $name;
 
-    private string $addLink = '';
-
-    private string $removeLink = '';
-
     public function getId(): ?int
     {
         return $this->id;
@@ -38,30 +34,6 @@ class Brand
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getAddLink(): ?string
-    {
-        return $this->addLink;
-    }
-
-    public function setAddLink(string $addLink): self
-    {
-        $this->addLink = $addLink;
-
-        return $this;
-    }
-
-    public function getRemoveLink(): ?string
-    {
-        return $this->removeLink;
-    }
-
-    public function setRemoveLink(string $removeLink): self
-    {
-        $this->removeLink = $removeLink;
 
         return $this;
     }

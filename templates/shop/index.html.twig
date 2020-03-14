@@ -4,23 +4,23 @@
 <div id="sidebar">
     <div id="sidebarActive">
         <ul>
-        {% for type, values in options %}
+        {% for type, values in filters %}
             {% for val in values %}
-                {% if val.removeLink %}
-                    <li><a href="{{ val.removeLink }}"><b>❌ {{ type|capitalize }}: </b>{{ val.name }}</a></li>
+                {% if val.active %}
+                    <li><a href="{{ val.url }}"><b>❌ {{ type|capitalize }}: </b>{{ val.name }}</a></li>
                 {% endif %}
             {% endfor %}
         {% endfor %}
         </ul>
     </div>
 
-    {% for type, values in options %}
+    {% for type, values in filters %}
         {% if values|length > 1 %}
             <p>{{ type|capitalize }}</p>
             <ul>
             {% for val in values %}
-                {% if val.addLink %}
-                <li><a href="{{ val.addLink }}">{{ val.name }}</a></li>
+                {% if not val.active %}
+                    <li><a href="{{ val.url }}">{{ val.name }}</a></li>
                 {% endif %}
             {% endfor %}
             </ul>

@@ -10,6 +10,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  * @method Colour|null find($id, $lockMode = null, $lockVersion = null)
  * @method Colour|null findOneBy(array $criteria, array $orderBy = null)
  * @method Colour[]    findAll()
+ * @method array       findAllAsArray()
  * @method Colour[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class ColourRepository extends ServiceEntityRepository
@@ -19,15 +20,10 @@ class ColourRepository extends ServiceEntityRepository
         parent::__construct($registry, Colour::class);
     }
 
-    /*
-    public function findOneBySomeField($value): ?Colour
+    public function findAllAsArray(): ?Array
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getArrayResult();
     }
-    */
 }

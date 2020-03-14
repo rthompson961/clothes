@@ -18,9 +18,9 @@ class ShopController extends AbstractController
      */
     public function index(Request $request): Response
     {
-        $options['category'] = $this->getDoctrine()->getRepository(Category::class)->findAll();
-        $options['brand'] = $this->getDoctrine()->getRepository(Brand::class)->findAll();
-        $options['colour'] = $this->getDoctrine()->getRepository(Colour::class)->findAll();
+        $options['category'] = $this->getDoctrine()->getRepository(Category::class)->findAllAsArray();
+        $options['brand'] = $this->getDoctrine()->getRepository(Brand::class)->findAllAsArray();
+        $options['colour'] = $this->getDoctrine()->getRepository(Colour::class)->findAllAsArray();
         $validSort = ['first', 'name', 'low', 'high'];
         $page = 1;
         $sort = 'first';
@@ -47,12 +47,16 @@ class ShopController extends AbstractController
         }
 
         // Add clickable links to either add or remove product filters
-        foreach ($options as $key => $option) {
-            foreach ($option as $opt) {
-                if (in_array($opt->getId(), $filters[$key])) {
-                    $opt->setRemoveLink($this->buildLink($page, $sort, $filters, $opt, 'remove'));
-                } else {
-                    $opt->setAddLink($this->buildLink($page, $sort, $filters, $opt, 'add'));
+        foreach ($options as $key => &$option) {
+            if ($option != null) {
+                foreach ($option as &$opt) {
+                    if (in_array($opt['id'], $filters[$key])) {
+                        $opt['active'] = true;
+                        $opt['url'] = $this->buildLink($page, $sort, $filters, $key, $opt, 'remove');
+                    } else {
+                        $opt['active'] = false;
+                        $opt['url'] = $this->buildLink($page, $sort, $filters, $key, $opt, 'add');
+                    }
                 }
             }
         }
@@ -73,7 +77,7 @@ class ShopController extends AbstractController
         $products = $repo->findProducts($filters, $sort, $offset, $limit);
 
         return $this->render('shop/index.html.twig', [
-            'options'   => $options,
+            'filters'   => $options,
             'count'     => $count,
             'sortLinks' => $sortLinks,
             'pageLinks' => $pageLinks,
@@ -87,7 +91,8 @@ class ShopController extends AbstractController
     * @param int $page
     * @param string $sort
     * @param array $filters
-    * @param Category|Colour|Brand $opt
+    * @param string $type
+    * @param array $opt
     * @param string $mode
     *
     * @return string
@@ -96,30 +101,24 @@ class ShopController extends AbstractController
         int $page,
         string $sort,
         array $filters,
-        object $opt = null,
+        string $type = null,
+        array $opt = null,
         string $mode = 'default'
     ): string {
-        // option type e.g category/brand/colour
-        if ($opt && strrchr(get_class($opt), '\\') !== false) {
-            $type = strtolower(substr(strrchr(get_class($opt), '\\'), 1));
-        } else {
-            $type = null;
-        }
-
         // Add current id to this types list of filters
         if ($mode == 'add') {
-            if ($opt === null || $opt->getId() === null) {
+            if ($opt === null || $opt['id'] === null) {
                 throw new \Exception('Unable to retrieve option');
             }
-            array_push($filters[$type], $opt->getId());
+            array_push($filters[$type], $opt['id']);
         }
 
         // Remove current id to this types list of filters
         if ($mode == 'remove') {
-            if ($opt === null || $opt->getId() === null) {
+            if ($opt === null || $opt['id'] === null) {
                 throw new \Exception('Unable to retrieve option');
             }
-            $filters[$type] = array_diff($filters[$type], [$opt->getId()]);
+            $filters[$type] = array_diff($filters[$type], [$opt['id']]);
         }
 
         // Build link string

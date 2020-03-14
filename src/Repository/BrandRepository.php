@@ -10,6 +10,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  * @method Brand|null find($id, $lockMode = null, $lockVersion = null)
  * @method Brand|null findOneBy(array $criteria, array $orderBy = null)
  * @method Brand[]    findAll()
+ * @method array      findAllAsArray()
  * @method Brand[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class BrandRepository extends ServiceEntityRepository
@@ -19,15 +20,10 @@ class BrandRepository extends ServiceEntityRepository
         parent::__construct($registry, Brand::class);
     }
 
-    /*
-    public function findOneBySomeField($value): ?Brand
+    public function findAllAsArray(): ?Array
     {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
-            ->setParameter('val', $value)
+        return $this->createQueryBuilder('c')
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getArrayResult();
     }
-    */
 }
