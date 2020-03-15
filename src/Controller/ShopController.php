@@ -52,10 +52,10 @@ class ShopController extends AbstractController
                 foreach ($option as &$opt) {
                     if (in_array($opt['id'], $filters[$key])) {
                         $opt['active'] = true;
-                        $opt['url'] = $this->buildLink($page, $sort, $filters, $key, $opt, 'remove');
+                        $opt['url'] = $this->buildUrl($page, $sort, $filters, $key, $opt, 'remove');
                     } else {
                         $opt['active'] = false;
-                        $opt['url'] = $this->buildLink($page, $sort, $filters, $key, $opt, 'add');
+                        $opt['url'] = $this->buildUrl($page, $sort, $filters, $key, $opt, 'add');
                     }
                 }
             }
@@ -65,12 +65,12 @@ class ShopController extends AbstractController
         $count = $repo->findProductCount($filters);
 
         foreach ($validSort as $val) {
-            $sortLinks[$val] = $val == $sort ? null : $this->buildLink($page, $val, $filters);
+            $sortLinks[$val] = $val == $sort ? null : $this->buildUrl($page, $val, $filters);
         }
 
         $pageLinks = [];
         for ($i = 1; $i <= (int) ceil($count / $limit); $i++) {
-            $pageLinks[$i] = $i == $page ? null : $this->buildLink($i, $sort, $filters);
+            $pageLinks[$i] = $i == $page ? null : $this->buildUrl($i, $sort, $filters);
         }
 
         $offset = $page * $limit - $limit;
@@ -86,7 +86,7 @@ class ShopController extends AbstractController
     }
 
     /**
-    * Builds a url used by all shop navigation links
+    * Builds a url used to apply filter, sort order and page choices.
     *
     * @param int $page
     * @param string $sort
@@ -97,7 +97,7 @@ class ShopController extends AbstractController
     *
     * @return string
     */
-    private function buildLink(
+    private function buildUrl(
         int $page,
         string $sort,
         array $filters,
