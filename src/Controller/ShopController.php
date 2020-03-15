@@ -18,26 +18,21 @@ class ShopController extends AbstractController
      */
     public function index(Request $request): Response
     {
-        $options['category'] = $this->getDoctrine()->getRepository(Category::class)->findAllAsArray();
-        $options['brand'] = $this->getDoctrine()->getRepository(Brand::class)->findAllAsArray();
-        $options['colour'] = $this->getDoctrine()->getRepository(Colour::class)->findAllAsArray();
-        $validSort = ['first', 'name', 'low', 'high'];
-        $page = 1;
-        $sort = 'first';
-        $filters = ['category' => [], 'brand' => [], 'colour' => []];
-        $limit = 6;
-
         // Store requested page number as a positive int
+        $page = 1;
         if ($request->query->get('page')) {
             $page = abs((int) $request->query->get('page'));
         }
 
         // Store requested sort order value if valid
+        $validSort = ['first', 'name', 'low', 'high'];
+        $sort = 'first';
         if (in_array($request->query->get('sort'), $validSort)) {
             $sort = $request->query->get('sort');
         }
 
         // Store requested filter values as positive ints
+        $filters = ['category' => [], 'brand' => [], 'colour' => []];
         foreach (['category', 'brand', 'colour'] as $key) {
             if (is_array($request->query->get($key))) {
                 foreach ($request->query->get($key) as $val) {
@@ -47,6 +42,9 @@ class ShopController extends AbstractController
         }
 
         // Add clickable links to either add or remove product filters
+        $options['category'] = $this->getDoctrine()->getRepository(Category::class)->findAllAsArray();
+        $options['brand'] = $this->getDoctrine()->getRepository(Brand::class)->findAllAsArray();
+        $options['colour'] = $this->getDoctrine()->getRepository(Colour::class)->findAllAsArray();
         foreach ($options as $key => &$option) {
             if ($option != null) {
                 foreach ($option as &$opt) {
@@ -63,18 +61,20 @@ class ShopController extends AbstractController
 
         $repo = $this->getDoctrine()->getRepository(Product::class);
         $count = $repo->findProductCount($filters);
+        $productsPerPage = 6;
 
         foreach ($validSort as $val) {
             $sortLinks[$val] = $val == $sort ? null : $this->buildUrl($page, $val, $filters);
         }
 
         $pageLinks = [];
-        for ($i = 1; $i <= (int) ceil($count / $limit); $i++) {
+        for ($i = 1; $i <= (int) ceil($count / $productsPerPage); $i++) {
             $pageLinks[$i] = $i == $page ? null : $this->buildUrl($i, $sort, $filters);
         }
 
-        $offset = $page * $limit - $limit;
-        $products = $repo->findProducts($filters, $sort, $offset, $limit);
+
+        $offset = $page * $productsPerPage- $productsPerPage;
+        $products = $repo->findProducts($filters, $sort, $offset, $productsPerPage);
 
         return $this->render('shop/index.html.twig', [
             'filters'   => $options,
