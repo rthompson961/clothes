@@ -43,15 +43,23 @@ class ShopController extends AbstractController
         $options['category'] = $this->getDoctrine()->getRepository(Category::class)->findAllAsArray();
         $options['brand'] = $this->getDoctrine()->getRepository(Brand::class)->findAllAsArray();
         $options['colour'] = $this->getDoctrine()->getRepository(Colour::class)->findAllAsArray();
-        foreach ($options as $key => &$option) {
-            if ($option != null) {
-                foreach ($option as &$opt) {
-                    if (in_array($opt['id'], $filters[$key])) {
+        foreach ($options as $optionType => &$optionTypeVals) {
+            if ($optionTypeVals) {
+                foreach ($optionTypeVals as &$opt) {
+                    if (in_array($opt['id'], $filters[$optionType])) {
                         $opt['active'] = true;
-                        $opt['url'] = $this->buildUrl($page, $sort, $filters, $key, $opt, 'remove');
+                        $opt['url'] = $this->buildUrl(
+                            $page,
+                            $sort,
+                            $this->removeFilter($filters, $optionType, $opt['id'])
+                        );
                     } else {
                         $opt['active'] = false;
-                        $opt['url'] = $this->buildUrl($page, $sort, $filters, $key, $opt, 'add');
+                        $opt['url'] = $this->buildUrl(
+                            $page,
+                            $sort,
+                            $this->addFilter($filters, $optionType, $opt['id'])
+                        );
                     }
                 }
             }
@@ -83,51 +91,30 @@ class ShopController extends AbstractController
         ]);
     }
 
-    /**
-    * Builds a url used to apply filter, sort order and page choices.
-    *
-    * @param int $page
-    * @param string $sort
-    * @param array $filters
-    * @param string $type
-    * @param array $opt
-    * @param string $mode
-    *
-    * @return string
-    */
-    private function buildUrl(
-        int $page,
-        string $sort,
-        array $filters,
-        string $type = null,
-        array $opt = null,
-        string $mode = 'default'
-    ): string {
-        // Add current id to this types list of filters
-        if ($mode == 'add') {
-            if ($opt === null || $opt['id'] === null) {
-                throw new \Exception('Unable to retrieve option');
-            }
-            array_push($filters[$type], $opt['id']);
-        }
+    private function addFilter(array $filters, string $key, int $item): array
+    {
+        $filters[$key][] = $item;
 
-        // Remove current id to this types list of filters
-        if ($mode == 'remove') {
-            if ($opt === null || $opt['id'] === null) {
-                throw new \Exception('Unable to retrieve option');
-            }
-            $filters[$type] = array_diff($filters[$type], [$opt['id']]);
-        }
+        return $filters;
+    }
 
-        // Build link string
-        $link  = '?page=' . $page;
-        $link .= '&sort=' . $sort;
-        foreach ($filters as $key => $values) {
-            foreach ($values as $val) {
-                $link .= '&' . $key . '[]=' . $val;
+    private function removeFilter(array $filters, string $key, int $item): array
+    {
+        $filters[$key] = array_diff($filters[$key], [$item]);
+
+        return $filters;
+    }
+
+    private function buildUrl(int $page, string $sort, array $filters): string
+    {
+        $url  = '?page=' . $page;
+        $url .= '&sort=' . $sort;
+        foreach ($filters as $filterType => $filterTypeVals) {
+            foreach ($filterTypeVals as $val) {
+                $url .= '&' . $filterType . '[]=' . $val;
             }
         }
 
-        return $link;
+        return $url;
     }
 }
