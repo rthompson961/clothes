@@ -19,19 +19,17 @@ class ShopController extends AbstractController
     public function index(Request $request): Response
     {
         // Store requested page number as a positive int
-        $page = 1;
-        if ($request->query->get('page')) {
-            $page = abs((int) $request->query->get('page'));
-        }
+        $page = abs((int) $request->query->get('page', 1));
 
-        // Store requested sort order value if valid
+        // Store requested sort order if valid
         $validSort = ['first', 'name', 'low', 'high'];
-        $sort = 'first';
         if (in_array($request->query->get('sort'), $validSort)) {
             $sort = $request->query->get('sort');
+        } else {
+            $sort = 'first';
         }
 
-        // Store requested filter values as positive ints
+        // Store requested filter id values as positive ints
         $filters = ['category' => [], 'brand' => [], 'colour' => []];
         foreach (['category', 'brand', 'colour'] as $key) {
             if (is_array($request->query->get($key))) {
