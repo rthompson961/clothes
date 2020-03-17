@@ -43,22 +43,14 @@ class ShopController extends AbstractController
         $filterOptions['category'] = $this->getDoctrine()->getRepository(Category::class)->findAllAsArray();
         $filterOptions['brand'] = $this->getDoctrine()->getRepository(Brand::class)->findAllAsArray();
         $filterOptions['colour'] = $this->getDoctrine()->getRepository(Colour::class)->findAllAsArray();
-        foreach ($filterOptions as $filterType => &$optionTypeVals) {
-            foreach ($optionTypeVals as &$opt) {
-                if (in_array($opt['id'], $filters[$filterType])) {
+        foreach ($filterOptions as $optionType => &$options) {
+            foreach ($options as &$opt) {
+                if (in_array($opt['id'], $filters[$optionType])) {
                     $opt['active'] = true;
-                    $opt['url'] = $this->buildUrl(
-                        $page,
-                        $sort,
-                        $this->removeFilter($filters, $filterType, $opt['id'])
-                    );
+                    $opt['url'] = $this->buildUrl($page, $sort, $this->removeFilter($filters, $optionType, $opt['id']));
                 } else {
                     $opt['active'] = false;
-                    $opt['url'] = $this->buildUrl(
-                        $page,
-                        $sort,
-                        $this->addFilter($filters, $filterType, $opt['id'])
-                    );
+                    $opt['url'] = $this->buildUrl($page, $sort, $this->addFilter($filters, $optionType, $opt['id']));
                 }
             }
         }
