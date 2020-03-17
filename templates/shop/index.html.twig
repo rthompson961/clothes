@@ -37,7 +37,7 @@
     {% if products %}
         <p class="sort">
             <b>Sort:</b> 
-            {% for title, link in sortLinks %}
+            {% for title, link in sortOptions %}
                 {% if link %}
                     <a href="{{ link }}">{{ title|capitalize }}</a>
                 {% else %}
@@ -46,9 +46,9 @@
             {% endfor %}
         </p>
 
-        {% if pageLinks|length > 1 %}
+        {% if pageOptions|length > 1 %}
             <p class="pages">
-                {% for title, link in pageLinks %}
+                {% for title, link in pageOptions %}
                     {% if link %}
                         <a href="{{ link }}">{{ title }}</a>
                     {% else %}
@@ -80,9 +80,9 @@
             </div>
         {% endfor %}
 
-        {% if pageLinks|length > 1 %}
+        {% if pageOptions|length > 1 %}
             <p class="pages">
-                {% for title, link in pageLinks %}
+                {% for title, link in pageOptions %}
                     {% if link %}
                         <a href="{{ link }}">{{ title }}</a>
                     {% else %}

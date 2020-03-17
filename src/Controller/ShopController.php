@@ -78,8 +78,8 @@ class ShopController extends AbstractController
         return $this->render('shop/index.html.twig', [
             'filters'   => $filterOptions,
             'count'     => $count,
-            'sortLinks' => $sortOptions,
-            'pageLinks' => $pageOptions,
+            'sortOptions' => $sortOptions,
+            'pageOptions' => $pageOptions,
             'products'  => $products
         ]);
     }
