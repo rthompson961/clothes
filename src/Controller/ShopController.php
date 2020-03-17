@@ -58,17 +58,16 @@ class ShopController extends AbstractController
         $count = $this->getDoctrine()->getRepository(Product::class)->findProductCount($filters);
         $productsPerPage = 6;
 
+        // Add clickable links to change sort order (current sort order not required)
         foreach ($validSort as $val) {
-            // build a clickable link if the current value is not already set
             $sortOptions[$val] = $val == $sort ? null : $this->buildUrl($page, $val, $filters);
         }
 
+        // Add clickable links to change page (current page not required)
         $pageOptions = [];
         for ($i = 1; $i <= (int) ceil($count / $productsPerPage); $i++) {
-            // build a clickable link if the current value is not already set
             $pageOptions[$i] = $i == $page ? null : $this->buildUrl($i, $sort, $filters);
         }
-
 
         $offset = $page * $productsPerPage - $productsPerPage;
         $products = $this->getDoctrine()
