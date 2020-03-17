@@ -20,10 +20,12 @@ class CategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Category::class);
     }
 
-    public function findAllAsArray(): ?Array
+    public function findAllAsArray(): array
     {
-        return $this->createQueryBuilder('c')
+        $result = $this->createQueryBuilder('c')
             ->getQuery()
             ->getArrayResult();
+
+        return $result ?? [];
     }
 }

@@ -20,10 +20,12 @@ class ColourRepository extends ServiceEntityRepository
         parent::__construct($registry, Colour::class);
     }
 
-    public function findAllAsArray(): ?Array
+    public function findAllAsArray(): array
     {
-        return $this->createQueryBuilder('c')
+        $result = $this->createQueryBuilder('c')
             ->getQuery()
             ->getArrayResult();
+
+        return $result ?? [];
     }
 }

@@ -20,10 +20,12 @@ class BrandRepository extends ServiceEntityRepository
         parent::__construct($registry, Brand::class);
     }
 
-    public function findAllAsArray(): ?Array
+    public function findAllAsArray(): array
     {
-        return $this->createQueryBuilder('c')
+        $result = $this->createQueryBuilder('b')
             ->getQuery()
             ->getArrayResult();
+
+        return $result ?? [];
     }
 }
