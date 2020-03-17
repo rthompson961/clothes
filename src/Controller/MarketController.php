@@ -13,7 +13,7 @@ class MarketController extends AbstractController
      */
     public function index(): Response
     {
-        $endpoint = 'http://svcs.ebay.com/services/search/FindingService/v1';
+        $endpoint = 'https://svcs.ebay.com/services/search/FindingService/v1';
 
         $search   = 'mens jacket';
         $count    = 8;
