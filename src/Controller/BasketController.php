@@ -16,25 +16,26 @@ class BasketController extends AbstractController
      */
     public function index(): Response
     {
-        $contents = [];
+        $products = [];
         $total = 0;
 
-        // If the basket session variable exists
+        // if the basket session variable exists
         if ($this->get('session')->has('basket')) {
             $basket = $this->get('session')->get('basket');
             
             foreach ($basket as $id => $quantity) {
-                $item = $this->getDoctrine()->getRepository(ProductStockItem::Class)->find($id);
-                $contents[] = $item;
+                $item = $this->getDoctrine()->getRepository(ProductStockItem::class)->find($id);
                 if ($item === null) {
                     throw new \Exception('Unable to retrieve product stock item');
                 }
+                $products[] = $item;
+
                 $total += $item->getProduct()->getPrice();
             }
         }
                                 
         return $this->render('basket/index.html.twig', [
-            'contents' => $contents,
+            'products' => $products,
             'total' => $total
         ]);
     }
