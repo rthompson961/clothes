@@ -40,24 +40,24 @@ class ShopController extends AbstractController
         }
 
         // Add clickable links to either add or remove product filters
-        $options['category'] = $this->getDoctrine()->getRepository(Category::class)->findAllAsArray();
-        $options['brand'] = $this->getDoctrine()->getRepository(Brand::class)->findAllAsArray();
-        $options['colour'] = $this->getDoctrine()->getRepository(Colour::class)->findAllAsArray();
-        foreach ($options as $optionType => &$optionTypeVals) {
+        $filterOptions['category'] = $this->getDoctrine()->getRepository(Category::class)->findAllAsArray();
+        $filterOptions['brand'] = $this->getDoctrine()->getRepository(Brand::class)->findAllAsArray();
+        $filterOptions['colour'] = $this->getDoctrine()->getRepository(Colour::class)->findAllAsArray();
+        foreach ($filterOptions as $filterType => &$optionTypeVals) {
             foreach ($optionTypeVals as &$opt) {
-                if (in_array($opt['id'], $filters[$optionType])) {
+                if (in_array($opt['id'], $filters[$filterType])) {
                     $opt['active'] = true;
                     $opt['url'] = $this->buildUrl(
                         $page,
                         $sort,
-                        $this->removeFilter($filters, $optionType, $opt['id'])
+                        $this->removeFilter($filters, $filterType, $opt['id'])
                     );
                 } else {
                     $opt['active'] = false;
                     $opt['url'] = $this->buildUrl(
                         $page,
                         $sort,
-                        $this->addFilter($filters, $optionType, $opt['id'])
+                        $this->addFilter($filters, $filterType, $opt['id'])
                     );
                 }
             }
@@ -81,7 +81,7 @@ class ShopController extends AbstractController
         $products = $repo->findProducts($filters, $sort, $offset, $productsPerPage);
 
         return $this->render('shop/index.html.twig', [
-            'filters'   => $options,
+            'filters'   => $filterOptions,
             'count'     => $count,
             'sortLinks' => $sortLinks,
             'pageLinks' => $pageLinks,
