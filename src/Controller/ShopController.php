@@ -55,28 +55,31 @@ class ShopController extends AbstractController
             }
         }
 
-        $repo = $this->getDoctrine()->getRepository(Product::class);
-        $count = $repo->findProductCount($filters);
+        $count = $this->getDoctrine()->getRepository(Product::class)->findProductCount($filters);
         $productsPerPage = 6;
 
         foreach ($validSort as $val) {
-            $sortLinks[$val] = $val == $sort ? null : $this->buildUrl($page, $val, $filters);
+            // build a clickable link if the current value is not already set
+            $sortOptions[$val] = $val == $sort ? null : $this->buildUrl($page, $val, $filters);
         }
 
-        $pageLinks = [];
+        $pageOptions = [];
         for ($i = 1; $i <= (int) ceil($count / $productsPerPage); $i++) {
-            $pageLinks[$i] = $i == $page ? null : $this->buildUrl($i, $sort, $filters);
+            // build a clickable link if the current value is not already set
+            $pageOptions[$i] = $i == $page ? null : $this->buildUrl($i, $sort, $filters);
         }
 
 
-        $offset = $page * $productsPerPage- $productsPerPage;
-        $products = $repo->findProducts($filters, $sort, $offset, $productsPerPage);
+        $offset = $page * $productsPerPage - $productsPerPage;
+        $products = $this->getDoctrine()
+            ->getRepository(Product::class)
+            ->findProducts($filters, $sort, $offset, $productsPerPage);
 
         return $this->render('shop/index.html.twig', [
             'filters'   => $filterOptions,
             'count'     => $count,
-            'sortLinks' => $sortLinks,
-            'pageLinks' => $pageLinks,
+            'sortLinks' => $sortOptions,
+            'pageLinks' => $pageOptions,
             'products'  => $products
         ]);
     }
