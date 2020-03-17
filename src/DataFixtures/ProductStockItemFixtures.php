@@ -18,7 +18,13 @@ class ProductStockItemFixtures extends Fixture implements DependentFixtureInterf
 
         for ($i = 1; $i <= $productCount; $i++) {
             foreach (['small', 'medium', 'large'] as $size) {
-                if (mt_rand(1, 5) == 5) {
+                if ($i === 1 && $size == 'small') {
+                    // in stock item needed for testing
+                    $stock = 20;
+                } elseif ($i === 1 && $size == 'medium') {
+                    // out of stock item needed for testing
+                    $stock = 0;
+                } elseif (mt_rand(1, 5) == 5) {
                     $stock = 0;
                 } else {
                     $stock = mt_rand(1, $maxStock);

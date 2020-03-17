@@ -18,14 +18,15 @@ class ProductController extends AbstractController
      */
     public function index(Product $product, Request $request): Response
     {
-        // Get size names & disable those without stock
-        $attr  = [];
+        // Get each size for the current product
         $sizes = [];
+        $attr  = [];
         foreach ($product->getProductStockItems() as $item) {
-            $name = $item->getSize()->getName();
-            $sizes[$name] = $item->getId();
+            $size = $item->getSize()->getName();
+            $sizes[$size] = $item->getId();
+            // disable items without stock
             if (!$item->getStock()) {
-                $attr[$name] = ['disabled' => true];
+                $attr[$size] = ['disabled' => true];
             }
         }
 
@@ -37,7 +38,6 @@ class ProductController extends AbstractController
             'placeholder' => 'Choose Size',
             'label' => false
         ));
-
         $formBuilder->add('submit', SubmitType::class, array('label' => 'Add to Basket'));
         $form = $formBuilder->getForm();
 
@@ -46,23 +46,25 @@ class ProductController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $item = $this->getDoctrine()->getRepository(ProductStockItem::class)->find($data['product']);
-            if ($item === null || $item->getStock() === null) {
-                throw new \Exception('Unable to retrieve stock');
-            }
-            // In stock
-            if ($item->getStock()) {
-                // Items currently in basket
-                if ($this->get('session')->has('basket')) {
-                    // Add to existing basket contents
-                    $basket = $this->get('session')->get('basket');
-                }
-                $basket[$data['product']] = 1;
-                $this->get('session')->set('basket', $basket);
 
-                return $this->redirectToRoute('basket');
+            // get the current basket if there is one
+            if ($this->get('session')->has('basket')) {
+                $basket = $this->get('session')->get('basket');
+            } else {
+                $basket = [];
             }
-            // No stock - return to product page
-            return $this->redirectToRoute('product', ['id' => $product->getId()]);
+
+            // add one more of the current item to the basket
+            if (array_key_exists($data['product'], $basket)) {
+                $basket[$data['product']]++;
+            } else {
+                $basket[$data['product']] = 1;
+            }
+
+            // update session variable to the new basket
+            $this->get('session')->set('basket', $basket);
+
+            return $this->redirectToRoute('basket');
         }
 
         return $this->render('product/index.html.twig', [

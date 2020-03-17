@@ -10,10 +10,9 @@ class ProductControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $crawler = $client->request('GET', '/product/2');
-        $this->assertResponseIsSuccessful();
+        $crawler = $client->request('GET', '/product/1');
         $form = $crawler->selectButton('form[submit]')->form();
-        $form['form[product]'] = '6';
+        $form['form[product]'] = '3';
         $crawler = $client->submit($form);
         $this->assertResponseRedirects('/basket');
     }
