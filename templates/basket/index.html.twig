@@ -6,27 +6,33 @@
 <div id="basket">
     <h2>Basket</h2>
 
-    {% if contents %}
+    {% if basket %}
         <table>
             <tr>
                 <th colspan="2">Item</th>
                 <th>Size</th>
                 <th>Price</th>
+                <th>Quantity</th>
+                <th>Sub Total</th>
             </tr>
-            {% for item in contents %}
+            {% for item in basket %}
             <tr>
                 <td>
-                    <a href="{{ path('product', {'id' : item.product.id}) }}">
-                        <img src="{{ asset('img/product/' ~ "%03d"|format(item.product.id) ~ '.jpg') }}" alt="{{ item.product.name }}" />
+                    <a href="{{ path('product', {'id' : item.product_id}) }}">
+                        <img src="{{ asset('img/product/' ~ "%03d"|format(item.product_id) ~ '.jpg') }}" 
+                            alt="{{ item.name }}" 
+                        />
                     </a>
                 </td>
-                <td>{{ item.product.name }}</td>
-                <td>{{ item.size.name }}</td>
-                <td>&pound;{{ item.product.price / 100 }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.size }}</td>
+                <td>&pound;{{ item.price / 100 }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>&pound;{{ item.subtotal / 100 }}</td>
             </tr>
             {% endfor %}
             <tr>
-                <th colspan="3"><a class="empty" href="{{ path('empty') }}"><button>Empty Basket</button></a></th>
+                <th colspan="5"><a class="empty" href="{{ path('empty') }}"><button>Empty Basket</button></a></th>
                 <th class="total">&pound;{{ total / 100 }}</th>
             </tr>
         </table>

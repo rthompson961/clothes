@@ -64,6 +64,13 @@ class ProductController extends AbstractController
             // update session variable to the new basket
             $this->get('session')->set('basket', $basket);
 
+            // store the total number of items in the basket
+            $count = 0;
+            foreach ($basket as $quantity) {
+                $count += $quantity;
+            }
+            $this->get('session')->set('basket_count', $count);
+
             return $this->redirectToRoute('basket');
         }
 
