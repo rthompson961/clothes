@@ -12,7 +12,7 @@ class ProductControllerTest extends WebTestCase
 
         $crawler = $client->request('GET', '/product/1');
         $form = $crawler->selectButton('form[submit]')->form();
-        $form['form[product]'] = '3';
+        $form['form[product]'] = '1';
         $crawler = $client->submit($form);
         $this->assertResponseRedirects('/basket');
     }

@@ -14,37 +14,49 @@ class BasketControllerTest extends WebTestCase
         $this->client = static::createClient();
     }
 
-    public function testResponse(): void
+    public function testAdd(): array
     {
-        $this->client->request('GET', '/basket');
-        $this->assertResponseIsSuccessful();
+        // Add two of product item 1 and one of product item 2
+        foreach (['1', '1', '2'] as $id) {
+            $crawler = $this->client->request('GET', '/product/1');
+            $form = $crawler->selectButton('form[submit]')->form();
+            $form['form[product]'] = $id;
+            $crawler = $this->client->submit($form);
+            $this->assertResponseRedirects('/basket');
+        }
+        $crawler = $this->client->request('GET', '/basket');
+        $this->assertSelectorTextSame('th.total', '£149.97');
+
+        return $this->client->getContainer()->get('session')->get('basket');
     }
 
-    public function testBasket(): void
+    /**
+     * @depends testAdd
+     */
+    public function testRemove(array $basket): void
     {
-        // Add two products
-        $crawler = $this->client->request('GET', '/product/2');
-        $form = $crawler->selectButton('form[submit]')->form();
-        $form['form[product]'] = '6';
-        $crawler = $this->client->submit($form);
-        $this->assertResponseRedirects('/basket');
-
-        $crawler = $this->client->request('GET', '/product/24');
-        $form = $crawler->selectButton('form[submit]')->form();
-        $form['form[product]'] = '72';
-        $crawler = $this->client->submit($form);
-        $this->assertResponseRedirects('/basket');
+        $this->client->getContainer()->get('session')->set('basket', $basket);
 
         $crawler = $this->client->request('GET', '/basket');
-        $this->assertEquals(4, $crawler->filter('tr')->count());
-        $this->assertSelectorTextSame('th.total', '£71.98');
+        $link = $crawler->filter('a.remove')->link();
+        $crawler = $this->client->click($link);
+        $this->assertResponseRedirects('/basket');
+        $crawler = $this->client->request('GET', '/basket');
+        $this->assertSelectorTextSame('th.total', '£49.99');
+    }
 
-        // Empty basket
+    /**
+     * @depends testAdd
+     */
+    public function testEmpty(array $basket): void
+    {
+        $this->client->getContainer()->get('session')->set('basket', $basket);
+
+        $crawler = $this->client->request('GET', '/basket');
         $link = $crawler->filter('a.empty')->link();
         $crawler = $this->client->click($link);
         $this->assertResponseRedirects('/basket');
         $crawler = $this->client->request('GET', '/basket');
         $this->assertSelectorTextSame('p.empty', 'Your shopping basket is empty');
-        $this->assertEquals(0, $crawler->filter('tr')->count());
     }
 }
