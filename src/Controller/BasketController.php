@@ -53,6 +53,13 @@ class BasketController extends AbstractController
             $basket = $this->get('session')->get('basket');
             unset($basket[$id]);
             $this->get('session')->set('basket', $basket);
+
+            // update the total number of items in the basket
+            $count = 0;
+            foreach ($basket as $quantity) {
+                $count += $quantity;
+            }
+            $this->get('session')->set('basket_count', $count);
         }
 
         return $this->redirectToRoute('basket');
