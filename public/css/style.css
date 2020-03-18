@@ -525,6 +525,14 @@ p.pages a:hover {
     text-decoration: none;
 }
 
+#basket td {
+    text-align: center;
+}
+
+#basket td.name {
+    text-align: left;
+}
+
 /* checkout page */
 
 #details {
