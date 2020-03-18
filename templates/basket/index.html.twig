@@ -6,7 +6,7 @@
 <div id="basket">
     <h2>Basket</h2>
 
-    {% if basket %}
+    {% if items %}
         <table>
             <tr>
                 <th colspan="2">Item</th>
@@ -15,7 +15,7 @@
                 <th>Quantity</th>
                 <th>Sub Total</th>
             </tr>
-            {% for item in basket %}
+            {% for item in items %}
             <tr>
                 <td>
                     <a href="{{ path('product', {'id' : item.product_id}) }}">

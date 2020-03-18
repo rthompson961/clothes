@@ -16,30 +16,30 @@ class BasketController extends AbstractController
      */
     public function index(): Response
     {
-        $basket = [];
+        $items = [];
         $total = 0;
+        if ($this->get('session')->has('basket') && is_array($this->get('session')->get('basket'))) {
+            $basket = $this->get('session')->get('basket');
+            $products = $this->getDoctrine()
+                ->getRepository(ProductStockItem::class)
+                ->findBy(['id' => array_keys($basket)]);
 
-        if ($this->get('session')->has('basket')) {
-            foreach ($this->get('session')->get('basket') as $id => $quantity) {
-                $product = $this->getDoctrine()->getRepository(ProductStockItem::class)->find($id);
-                if (!$product) {
-                    throw new \Exception('Unable to retrieve product stock item');
-                }
+            foreach ($products as $product) {
                 $item['id']         = $product->getId();
                 $item['product_id'] = $product->getProduct()->getId();
                 $item['name']       = $product->getProduct()->getName();
                 $item['size']       = $product->getSize()->getName();
                 $item['price']      = $product->getProduct()->getPrice();
-                $item['quantity']   = $quantity;
-                $item['subtotal']   = $item['price'] * $quantity;
+                $item['quantity']   = $basket[$item['id']];
+                $item['subtotal']   = $item['price'] * $item['quantity'];
 
-                $basket[] = $item;
+                $items[] = $item;
                 $total += $item['subtotal'];
             }
         }
                                 
         return $this->render('basket/index.html.twig', [
-            'basket' => $basket,
+            'items' => $items,
             'total' => $total
         ]);
     }
