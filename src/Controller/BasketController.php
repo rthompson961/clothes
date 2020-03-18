@@ -43,6 +43,20 @@ class BasketController extends AbstractController
             'total' => $total
         ]);
     }
+
+    /**
+     * @Route("/remove/{id}", name="remove", requirements={"id"="\d+"})
+     */
+    public function remove(int $id, Request $request): RedirectResponse
+    {
+        if ($this->get('session')->has('basket') && is_array($this->get('session')->get('basket'))) {
+            $basket = $this->get('session')->get('basket');
+            unset($basket[$id]);
+            $this->get('session')->set('basket', $basket);
+        }
+
+        return $this->redirectToRoute('basket');
+    }
  
     /**
      * @Route("/empty", name="empty")
