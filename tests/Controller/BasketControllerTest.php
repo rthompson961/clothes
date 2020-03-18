@@ -17,15 +17,22 @@ class BasketControllerTest extends WebTestCase
     public function testAdd(): array
     {
         // Add two of product item 1 and one of product item 2
-        foreach (['1', '1', '2'] as $id) {
+        $values = [
+            ['id' => '1', 'quantity' => '7'],
+            ['id' => '1', 'quantity' => '3'],
+            ['id' => '2', 'quantity' => '1'],
+        ];
+
+        foreach ($values as $val) {
             $crawler = $this->client->request('GET', '/product/1');
             $form = $crawler->selectButton('form[submit]')->form();
-            $form['form[product]'] = $id;
+            $form['form[product]'] = $val['id'];
+            $form['form[quantity]'] = $val['quantity'];
             $crawler = $this->client->submit($form);
             $this->assertResponseRedirects('/basket');
         }
         $crawler = $this->client->request('GET', '/basket');
-        $this->assertSelectorTextSame('th.total', '£149.97');
+        $this->assertSelectorTextSame('th.total', '£549.89');
 
         return $this->client->getContainer()->get('session')->get('basket');
     }

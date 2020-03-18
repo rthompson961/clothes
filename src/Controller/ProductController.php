@@ -30,15 +30,25 @@ class ProductController extends AbstractController
             }
         }
 
+        // list of 1 to 10 for quantity selection
+        $quantities = [];
+        for ($i = 1; $i <= 10; $i++) {
+            $quantities[$i] = $i;
+        }
+
         // Build the form
-        $formBuilder = $this->createFormBuilder(null, array('method' => 'post'));
-        $formBuilder->add('product', ChoiceType::class, array(
+        $formBuilder = $this->createFormBuilder(null, ['method' => 'post']);
+        $formBuilder->add('product', ChoiceType::class, [
             'choices'  => $sizes,
             'choice_attr' => $attr,
             'placeholder' => 'Choose Size',
             'label' => false
-        ));
-        $formBuilder->add('submit', SubmitType::class, array('label' => 'Add to Basket'));
+        ]);
+        $formBuilder->add('quantity', ChoiceType::class, [
+            'choices'  => $quantities,
+            'label' => false
+        ]);
+        $formBuilder->add('submit', SubmitType::class, ['label' => 'Add to Basket']);
         $form = $formBuilder->getForm();
 
         $form->handleRequest($request);
@@ -54,14 +64,20 @@ class ProductController extends AbstractController
                 $basket = [];
             }
 
-            // add one more of the current item to the basket
-            if (array_key_exists($data['product'], $basket)) {
-                $basket[$data['product']]++;
-            } else {
-                $basket[$data['product']] = 1;
+            // validate supplied quantity as positive int between 1 and 10
+            $data['quantity'] = abs((int) $data['quantity']);
+            if ($data['quantity'] < 1 || $data['quantity'] > 10) {
+                $data['quantity'] = 1;
             }
 
-            // update session variable to the new basket
+            // add the current item to the basket
+            if (array_key_exists($data['product'], $basket)) {
+                $basket[$data['product']] += $data['quantity'];
+            } else {
+                $basket[$data['product']] = $data['quantity'];
+            }
+
+            // update session variable to match the new basket
             $this->get('session')->set('basket', $basket);
 
             // store the total number of items in the basket
