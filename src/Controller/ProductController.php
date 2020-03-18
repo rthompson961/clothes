@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProductController extends AbstractController
 {
     /**
-     * @Route("/product/{id}", name="product")
+     * @Route("/product/{id}", name="product", requirements={"id"="\d+"})
      */
     public function index(Product $product, Request $request): Response
     {
