@@ -374,12 +374,8 @@ p.pages a:hover {
     width: 221px;
 }
 
-.product p:first-of-type {
+.product p.name {
     height: 30px;
-}
-
-.product p:last-of-type {
-    font-weight: bold;
 }
 
 .product a.group {

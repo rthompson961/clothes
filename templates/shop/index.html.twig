@@ -66,8 +66,8 @@
                         src="{{ asset('img/product/' ~ "%03d"|format(product.id) ~ '.jpg') }}" 
                         alt="{{ product.name }}" 
                     />
-                    <p>{{ product.name }}</p>
-                    <p>&pound;{{ (product.price / 100)|number_format(2, '.', ',') }}</p>
+                    <p class="name">{{ product.name }}</p>
+                    <p><b>&pound;{{ (product.price / 100)|number_format(2, '.', ',') }}</b></p>
                 </a>
                 {% if product.productGroup %}
                     {% for productInGroup in product.productGroup.products %}
