@@ -3,8 +3,6 @@
 namespace App\DataFixtures;
 
 use App\Entity\ProductStockItem;
-use App\DataFixtures\ProductFixtures;
-use App\DataFixtures\SizeFixtures;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;

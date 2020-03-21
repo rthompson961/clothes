@@ -3,10 +3,6 @@
 namespace App\DataFixtures;
 
 use App\Entity\Product;
-use App\DataFixtures\CategoryFixtures;
-use App\DataFixtures\BrandFixtures;
-use App\DataFixtures\ColourFixtures;
-use App\DataFixtures\ProductGroupFixtures;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
