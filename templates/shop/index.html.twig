@@ -67,7 +67,7 @@
                         alt="{{ product.name }}" 
                     />
                     <p>{{ product.name }}</p>
-                    <p>&pound;{{ product.price / 100 }}</p>
+                    <p>&pound;{{ (product.price / 100)||number_format(2, '.', ',') }}</p>
                 </a>
                 {% if product.productGroup %}
                     {% for productInGroup in product.productGroup.products %}

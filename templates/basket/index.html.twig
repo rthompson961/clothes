@@ -31,15 +31,15 @@
                 </td>
                 <td class="name">{{ item.name }}</td>
                 <td>{{ item.size }}</td>
-                <td>&pound;{{ item.price / 100 }}</td>
+                <td>&pound;{{ (item.price / 100)|number_format(2, '.', ',') }}</td>
                 <td>{{ item.quantity }}</td>
-                <td>&pound;{{ item.subtotal / 100 }}</td>
+                <td>&pound;{{ (item.subtotal / 100)|number_format(2, '.', ',') }}</td>
                 <td><a class="remove" href="{{ path('remove', {'id' : item.id }) }}">❌</a></td>
             </tr>
             {% endfor %}
             <tr>
                 <th colspan="5"><a class="empty" href="{{ path('empty') }}"><button>Empty Basket</button></a></th>
-                <th class="total">&pound;{{ total / 100 }}</th>
+                <th class="total">&pound;{{ (total / 100)|number_format(2, '.', ',') }}</th>
             </tr>
         </table>
 
