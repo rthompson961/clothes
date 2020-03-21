@@ -41,9 +41,16 @@ class User implements UserInterface
      */
     private Collection $orders;
 
+    /**
+     * @var Collection<Address>
+     * @ORM\OneToMany(targetEntity="App\Entity\Address", mappedBy="user", orphanRemoval=true)
+     */
+    private Collection $addresses;
+
     public function __construct()
     {
         $this->orders = new ArrayCollection();
+        $this->addresses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -139,6 +146,24 @@ class User implements UserInterface
         if (!$this->orders->contains($orderTotal)) {
             $this->orders[] = $orderTotal;
             $orderTotal->setUser($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Address[]
+     */
+    public function getAddresses(): Collection
+    {
+        return $this->addresses;
+    }
+
+    public function addAddress(Address $address): self
+    {
+        if (!$this->addresses->contains($address)) {
+            $this->addresses[] = $address;
+            $address->setUser($this);
         }
 
         return $this;
