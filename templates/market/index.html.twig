@@ -16,7 +16,6 @@
                 <p><b>Price: </b>&dollar;{{ item.sellingStatus.currentPrice|number_format(2, '.', ',') }}</p>
                 <p><b>Condition: </b>{{ item.condition.conditionDisplayName }}</p>
                 <p><b>Location: </b>{{ item.location }}</p>
-                <p><b>Payment: </b>{{ item.paymentMethod }}</p>
                 <p><b>Shipping: </b>{{ item.shippingInfo.shippingType }}</p>
                 <p><b>Ships To: </b>{{ item.shippingInfo.shipToLocations }}</p>
                 <p><b>One Day Shipping: </b>{% if item.shippingInfo.oneDayShippingAvailable %}Yes{% else %}No{% endif %}</p>
