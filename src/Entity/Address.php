@@ -41,7 +41,7 @@ class Address
     /**
      * @ORM\Column(type="string", length=50, nullable=true)
      */
-    private ?string $address3;
+    private ?string $address3 = null;
 
     /**
      * @ORM\Column(type="string", length=50)

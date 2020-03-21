@@ -23,6 +23,7 @@ class UserFixtures extends Fixture
         $user->setEmail('user@user.com');
         $user->setPassword($this->passwordEncoder->encodePassword($user, 'pass'));
         $manager->persist($user);
+        $this->addReference('user-test', $user);
 
         $manager->flush();
     }

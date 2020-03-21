@@ -34,6 +34,20 @@ class ProductStockItemFixtures extends Fixture implements DependentFixtureInterf
                 $item->setSize($this->getReference('size-' . $size));
                 $item->setStock($stock);
                 $manager->persist($item);
+
+                // used for order line item fixtures
+                if ($i === 10 && $size == 'large') {
+                    $this->addReference('orderitem-one', $item);
+                }
+                if ($i === 34 && $size == 'medium') {
+                    $this->addReference('orderitem-two', $item);
+                }
+                if ($i === 43 && $size == 'medium') {
+                    $this->addReference('orderitem-three', $item);
+                }
+                if ($i === 60 && $size == 'small') {
+                    $this->addReference('orderitem-four', $item);
+                }
             }
         }
         $manager->flush();
