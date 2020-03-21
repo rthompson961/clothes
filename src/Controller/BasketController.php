@@ -18,7 +18,7 @@ class BasketController extends AbstractController
     {
         $items = [];
         $total = 0;
-        if ($this->get('session')->has('basket') && is_array($this->get('session')->get('basket'))) {
+        if ($this->get('session')->has('basket')) {
             $basket = $this->get('session')->get('basket');
             $products = $this->getDoctrine()
                 ->getRepository(ProductStockItem::class)
@@ -49,17 +49,15 @@ class BasketController extends AbstractController
      */
     public function remove(int $id, Request $request): RedirectResponse
     {
-        if ($this->get('session')->has('basket') && is_array($this->get('session')->get('basket'))) {
+        if ($this->get('session')->has('basket') && array_key_exists($id, $this->get('session')->get('basket'))) {
             $basket = $this->get('session')->get('basket');
+            // remove quantity from basket item  count
+            $count = $this->get('session')->get('basket_count');
+            $this->get('session')->set('basket_count', $count - $basket[$id]);
+
+            // remove item and update basket
             unset($basket[$id]);
             $this->get('session')->set('basket', $basket);
-
-            // update the total number of items in the basket
-            $count = 0;
-            foreach ($basket as $quantity) {
-                $count += $quantity;
-            }
-            $this->get('session')->set('basket_count', $count);
         }
 
         return $this->redirectToRoute('basket');
@@ -71,6 +69,7 @@ class BasketController extends AbstractController
     public function empty(Request $request): RedirectResponse
     {
         $this->get('session')->remove('basket');
+        $this->get('session')->remove('basket_count');
 
         return $this->redirectToRoute('basket');
     }

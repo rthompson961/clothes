@@ -7,6 +7,10 @@
     <h2>Basket</h2>
 
     {% if items %}
+        <p class="count">
+        You have {{ app.session.get('basket_count') }} Item{% if app.session.get('basket_count') > 1 %}s{% endif %}
+        </p>
+
         <table>
             <tr>
                 <th colspan="2">Item</th>
