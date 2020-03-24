@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class CheckoutControllerTest extends WebTestCase
 {
-    public function testGuestResponse(): void
+    public function testRedirect(): void
     {
         $client = static::createClient();
 
@@ -14,7 +14,7 @@ class CheckoutControllerTest extends WebTestCase
         $this->assertResponseRedirects('/login');
     }
 
-    public function testUserResponse(): void
+    public function testCheckout(): void
     {
         $client = static::createClient();
 
@@ -24,10 +24,15 @@ class CheckoutControllerTest extends WebTestCase
         $form['password'] = 'pass';
         $crawler = $client->submit($form);
 
-        // A product must be added to basket before accessing checkout
-        $crawler = $client->request('GET', '/product/2');
+        $crawler = $client->request('GET', '/product/1');
         $form = $crawler->selectButton('form[submit]')->form();
-        $form['form[product]'] = '6';
+        $form['form[product]'] = '1';
+        $crawler = $client->submit($form);
+        $this->assertResponseRedirects('/basket');
+
+        $crawler = $client->request('GET', '/product/1');
+        $form = $crawler->selectButton('form[submit]')->form();
+        $form['form[product]'] = '2';
         $crawler = $client->submit($form);
         $this->assertResponseRedirects('/basket');
 
