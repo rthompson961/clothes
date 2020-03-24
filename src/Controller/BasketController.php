@@ -28,6 +28,7 @@ class BasketController extends AbstractController
                 $item['product_id'] = $product->getProduct()->getId();
                 $item['name']       = $product->getProduct()->getName();
                 $item['size']       = $product->getSize()->getName();
+                $item['stock']      = $product->getStock();
                 $item['price']      = $product->getProduct()->getPrice();
                 $item['quantity']   = $basket[$item['id']];
                 $item['subtotal']   = $item['price'] * $item['quantity'];

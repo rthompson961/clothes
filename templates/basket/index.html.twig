@@ -7,6 +7,10 @@
     <h2>Basket</h2>
 
     {% if items %}
+        {% for flash_message in app.session.flashBag.get('basket') %}
+            <p class="flash">{{ flash_message }}</p>
+        {% endfor %}
+
         <p class="count">
         You have {{ app.session.get('basket_count') }} Item{% if app.session.get('basket_count') > 1 %}s{% endif %}
         </p>
@@ -15,6 +19,7 @@
             <tr>
                 <th colspan="2">Item</th>
                 <th>Size</th>
+                <th>Stock</th>
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>Sub Total</th>
@@ -31,6 +36,7 @@
                 </td>
                 <td class="name">{{ item.name }}</td>
                 <td>{{ item.size }}</td>
+                <td>{{ item.stock }}</td>
                 <td>&pound;{{ (item.price / 100)|number_format(2, '.', ',') }}</td>
                 <td>{{ item.quantity }}</td>
                 <td>&pound;{{ (item.subtotal / 100)|number_format(2, '.', ',') }}</td>
@@ -38,7 +44,7 @@
             </tr>
             {% endfor %}
             <tr>
-                <th colspan="5"><a class="empty" href="{{ path('empty') }}"><button>Empty Basket</button></a></th>
+                <th colspan="6"><a class="empty" href="{{ path('empty') }}"><button>Empty Basket</button></a></th>
                 <th class="total">&pound;{{ (total / 100)|number_format(2, '.', ',') }}</th>
             </tr>
         </table>

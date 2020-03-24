@@ -73,6 +73,7 @@ class CheckoutController extends AbstractController
             if (isset($response['statusCode']) && $response['statusCode'] === "2007") {
                 /** @var User */
                 $user = $this->getUser();
+                $inStock = true;
                 $entityManager = $this->getDoctrine()->getManager();
 
                 // insert order into database
@@ -83,6 +84,10 @@ class CheckoutController extends AbstractController
                 $entityManager->persist($orderTotal);
 
                 foreach ($basketItems as $item) {
+                    if ($item->getStock() === 0) {
+                        $inStock = false;
+                    }
+
                     // insert order line items into database
                     $orderLineItem = new OrderLineItem();
                     $orderLineItem->setOrderTotal($orderTotal);
@@ -103,15 +108,20 @@ class CheckoutController extends AbstractController
                     }
                 }
 
-                $entityManager->flush();
+                if ($inStock) {
+                    $entityManager->flush();
 
-                // empty basket
-                $this->get('session')->remove('basket');
-                $this->get('session')->remove('basket_count');
+                    // empty basket
+                    $this->get('session')->remove('basket');
+                    $this->get('session')->remove('basket_count');
 
-                // redirect
-                $this->addFlash('order', 'Thank you for your order!');
-                return $this->redirectToRoute('shop');
+                    // redirect
+                    $this->addFlash('order', 'Thank you for your order!');
+                    return $this->redirectToRoute('shop');
+                } else {
+                    $this->addFlash('basket', 'There are items in your basket that are out of stock');
+                    return $this->redirectToRoute('basket');
+                }
             }
         }
 
