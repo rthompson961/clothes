@@ -39,7 +39,7 @@ class ProductGroup
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -57,28 +57,5 @@ class ProductGroup
     public function getProducts(): Collection
     {
         return $this->products;
-    }
-
-    public function addProduct(Product $product): self
-    {
-        if (!$this->products->contains($product)) {
-            $this->products[] = $product;
-            $product->setProductGroup($this);
-        }
-
-        return $this;
-    }
-
-    public function removeProduct(Product $product): self
-    {
-        if ($this->products->contains($product)) {
-            $this->products->removeElement($product);
-            // set the owning side to null (unless already changed)
-            if ($product->getProductGroup() === $this) {
-                $product->setProductGroup(null);
-            }
-        }
-
-        return $this;
     }
 }

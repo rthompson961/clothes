@@ -35,17 +35,6 @@ class ProductStockItem
      */
     private int $stock;
 
-    /**
-     * @var Collection<OrderLineItem>
-     * @ORM\OneToMany(targetEntity="App\Entity\OrderLineItem", mappedBy="ProductStockItem")
-     */
-    private Collection $orderLineItems;
-
-    public function __construct()
-    {
-        $this->orderLineItems = new ArrayCollection();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -75,7 +64,7 @@ class ProductStockItem
         return $this;
     }
 
-    public function getStock(): ?int
+    public function getStock(): int
     {
         return $this->stock;
     }
@@ -83,24 +72,6 @@ class ProductStockItem
     public function setStock(int $stock): self
     {
         $this->stock = $stock;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|OrderLineItem[]
-     */
-    public function getOrderLineItems(): Collection
-    {
-        return $this->orderLineItems;
-    }
-
-    public function addOrderLineItem(OrderLineItem $orderLineItem): self
-    {
-        if (!$this->orderLineItems->contains($orderLineItem)) {
-            $this->orderLineItems[] = $orderLineItem;
-            $orderLineItem->setProductStockItem($this);
-        }
 
         return $this;
     }

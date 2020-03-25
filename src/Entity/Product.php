@@ -68,7 +68,7 @@ class Product
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -92,7 +92,7 @@ class Product
         return $this;
     }
 
-    public function getCategory(): ?Category
+    public function getCategory(): Category
     {
         return $this->category;
     }
@@ -104,7 +104,7 @@ class Product
         return $this;
     }
 
-    public function getBrand(): ?Brand
+    public function getBrand(): Brand
     {
         return $this->brand;
     }
@@ -116,7 +116,7 @@ class Product
         return $this;
     }
 
-    public function getColour(): ?Colour
+    public function getColour(): Colour
     {
         return $this->colour;
     }
@@ -146,15 +146,5 @@ class Product
     public function getProductStockItems(): Collection
     {
         return $this->productStockItems;
-    }
-
-    public function addProductStockItem(ProductStockItem $productStockItem): self
-    {
-        if (!$this->productStockItems->contains($productStockItem)) {
-            $this->productStockItems[] = $productStockItem;
-            $productStockItem->setProduct($this);
-        }
-
-        return $this;
     }
 }

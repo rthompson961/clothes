@@ -82,7 +82,7 @@ class Address
         return $this;
     }
 
-    public function getAddress1(): ?string
+    public function getAddress1(): string
     {
         return $this->address1;
     }
@@ -94,7 +94,7 @@ class Address
         return $this;
     }
 
-    public function getAddress2(): ?string
+    public function getAddress2(): string
     {
         return $this->address2;
     }
@@ -118,7 +118,7 @@ class Address
         return $this;
     }
 
-    public function getCounty(): ?string
+    public function getCounty(): string
     {
         return $this->county;
     }
@@ -130,7 +130,7 @@ class Address
         return $this;
     }
 
-    public function getPostcode(): ?string
+    public function getPostcode(): string
     {
         return $this->postcode;
     }

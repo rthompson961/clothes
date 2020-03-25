@@ -22,18 +22,7 @@ class OrderTotal
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="orders")
      * @ORM\JoinColumn(nullable=false)
      */
-    private User $User;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private int $total;
-
-    /**
-     * @var Collection<OrderLineItem>
-     * @ORM\OneToMany(targetEntity="App\Entity\OrderLineItem", mappedBy="OrderTotal")
-     */
-    private Collection $orderLineItems;
+    private User $user;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Address")
@@ -47,6 +36,17 @@ class OrderTotal
      */
     private OrderStatus $status;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private int $total;
+
+    /**
+     * @var Collection<OrderLineItem>
+     * @ORM\OneToMany(targetEntity="App\Entity\OrderLineItem", mappedBy="OrderTotal")
+     */
+    private Collection $orderLineItems;
+
     public function __construct()
     {
         $this->orderLineItems = new ArrayCollection();
@@ -59,42 +59,12 @@ class OrderTotal
 
     public function getUser(): User
     {
-        return $this->User;
+        return $this->user;
     }
 
-    public function setUser(User $User): self
+    public function setUser(User $user): self
     {
-        $this->User = $User;
-
-        return $this;
-    }
-
-    public function getTotal(): ?int
-    {
-        return $this->total;
-    }
-
-    public function setTotal(int $total): self
-    {
-        $this->total = $total;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|OrderLineItem[]
-     */
-    public function getOrderLineItems(): Collection
-    {
-        return $this->orderLineItems;
-    }
-
-    public function addOrderLineItem(OrderLineItem $orderLineItem): self
-    {
-        if (!$this->orderLineItems->contains($orderLineItem)) {
-            $this->orderLineItems[] = $orderLineItem;
-            $orderLineItem->setOrderTotal($this);
-        }
+        $this->user = $user;
 
         return $this;
     }
@@ -121,5 +91,25 @@ class OrderTotal
         $this->status = $status;
 
         return $this;
+    }
+
+    public function getTotal(): int
+    {
+        return $this->total;
+    }
+
+    public function setTotal(int $total): self
+    {
+        $this->total = $total;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|OrderLineItem[]
+     */
+    public function getOrderLineItems(): Collection
+    {
+        return $this->orderLineItems;
     }
 }

@@ -58,7 +58,7 @@ class User implements UserInterface
         return $this->id;
     }
 
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -77,7 +77,7 @@ class User implements UserInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->email;
+        return $this->email;
     }
 
     /**
@@ -141,31 +141,11 @@ class User implements UserInterface
         return $this->orders;
     }
 
-    public function addOrder(OrderTotal $orderTotal): self
-    {
-        if (!$this->orders->contains($orderTotal)) {
-            $this->orders[] = $orderTotal;
-            $orderTotal->setUser($this);
-        }
-
-        return $this;
-    }
-
     /**
      * @return Collection|Address[]
      */
     public function getAddresses(): Collection
     {
         return $this->addresses;
-    }
-
-    public function addAddress(Address $address): self
-    {
-        if (!$this->addresses->contains($address)) {
-            $this->addresses[] = $address;
-            $address->setUser($this);
-        }
-
-        return $this;
     }
 }
