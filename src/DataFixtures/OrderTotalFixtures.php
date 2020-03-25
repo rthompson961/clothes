@@ -13,6 +13,7 @@ class OrderTotalFixtures extends Fixture implements DependentFixtureInterface
     {
         $order = new OrderTotal();
         $order->setUser($this->getReference('user-test'));
+        $order->setAddress($this->getReference('address-test'));
         $order->setTotal(48094);
         $manager->persist($order);
         $this->addReference('order-test', $order);
@@ -22,6 +23,9 @@ class OrderTotalFixtures extends Fixture implements DependentFixtureInterface
 
     public function getDependencies(): array
     {
-        return [UserFixtures::class];
+        return [
+            UserFixtures::class,
+            AddressFixtures::class,
+        ];
     }
 }

@@ -19,6 +19,7 @@ class AddressFixtures extends Fixture implements DependentFixtureInterface
         $address->setCounty('County test');
         $address->setPostcode('AB11 2CD');
         $manager->persist($address);
+        $this->addReference('address-test', $address);
         
         $manager->flush();
     }
