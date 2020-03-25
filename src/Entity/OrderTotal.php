@@ -41,6 +41,12 @@ class OrderTotal
      */
     private Address $address;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\OrderStatus")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private OrderStatus $status;
+
     public function __construct()
     {
         $this->orderLineItems = new ArrayCollection();
@@ -101,6 +107,18 @@ class OrderTotal
     public function setAddress(Address $address): self
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    public function getStatus(): OrderStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(OrderStatus $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }
