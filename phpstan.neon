@@ -6,7 +6,8 @@ parameters:
     doctrine:
         objectManagerLoader: %rootDir%/../../../tests/phpstan/doctrine-orm-bootstrap.php
     excludes_analyse:
-        - %rootDir%/../../../tests/Controller/BasketControllerTest.php # overly strict type checking of Container object
+        - %rootDir%/../../../tests/Controller/BasketControllerTest.php   # overly strict type checking of Container object
+        - %rootDir%/../../../tests/Controller/CheckoutControllerTest.php # overly strict type checking of Container object
         - %rootDir%/../../../src/DataFixtures/*
         - %rootDir%/../../../src/Security/LoginFormAuthenticator.php
     level: 8
