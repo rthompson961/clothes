@@ -8,7 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 class CheckoutControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
-    private array $sandbox;         
+    private array $sandbox;
 
     protected function setUp(): void
     {
