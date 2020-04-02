@@ -109,7 +109,13 @@ class CheckoutController extends AbstractController
                 /** @var User */
                 $user    = $this->getUser();
                 $address = $this->getDoctrine()->getRepository(Address::class)->findOneBy(['id' => 1]);
+                if (!$address) {
+                    throw new \Exception('Could not find address');
+                }
                 $status  = $this->getDoctrine()->getRepository(OrderStatus::class)->findOneBy(['id' => 1]);
+                if (!$status) {
+                    throw new \Exception('Could not find order status');
+                }
 
                 $entityManager = $this->getDoctrine()->getManager();
 
