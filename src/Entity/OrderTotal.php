@@ -43,7 +43,7 @@ class OrderTotal
 
     /**
      * @var Collection<OrderLineItem>
-     * @ORM\OneToMany(targetEntity="App\Entity\OrderLineItem", mappedBy="OrderTotal")
+     * @ORM\OneToMany(targetEntity="App\Entity\OrderLineItem", mappedBy="orderTotal")
      */
     private Collection $orderLineItems;
 

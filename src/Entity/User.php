@@ -37,7 +37,7 @@ class User implements UserInterface
 
     /**
      * @var Collection<OrderTotal>
-     * @ORM\OneToMany(targetEntity="App\Entity\OrderTotal", mappedBy="User")
+     * @ORM\OneToMany(targetEntity="App\Entity\OrderTotal", mappedBy="user")
      */
     private Collection $orders;
 

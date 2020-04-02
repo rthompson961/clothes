@@ -20,13 +20,13 @@ class OrderLineItem
      * @ORM\ManyToOne(targetEntity="App\Entity\OrderTotal", inversedBy="orderLineItems")
      * @ORM\JoinColumn(nullable=false)
      */
-    private OrderTotal $OrderTotal;
+    private OrderTotal $orderTotal;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\ProductStockItem", inversedBy="orderLineItems")
+     * @ORM\ManyToOne(targetEntity="App\Entity\ProductStockItem")
      * @ORM\JoinColumn(nullable=false)
      */
-    private ProductStockItem $ProductStockItem;
+    private ProductStockItem $productStockItem;
 
     /**
      * @ORM\Column(type="integer")
@@ -45,24 +45,24 @@ class OrderLineItem
 
     public function getOrderTotal(): OrderTotal
     {
-        return $this->OrderTotal;
+        return $this->orderTotal;
     }
 
     public function setOrderTotal(OrderTotal $OrderTotal): self
     {
-        $this->OrderTotal = $OrderTotal;
+        $this->orderTotal = $orderTotal;
 
         return $this;
     }
 
     public function getProductStockItem(): ProductStockItem
     {
-        return $this->ProductStockItem;
+        return $this->productStockItem;
     }
 
-    public function setProductStockItem(ProductStockItem $ProductStockItem): self
+    public function setProductStockItem(ProductStockItem $productStockItem): self
     {
-        $this->ProductStockItem = $ProductStockItem;
+        $this->productStockItem = $productStockItem;
 
         return $this;
     }
