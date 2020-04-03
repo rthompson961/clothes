@@ -25,8 +25,6 @@ class BasketControllerTest extends WebTestCase
             $form['form[product]']  = $val['id'];
             $form['form[quantity]'] = $val['quantity'];
             $crawler = $this->client->submit($form);
-
-            $this->assertResponseRedirects('/basket');
         }
     }
 
