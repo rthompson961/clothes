@@ -2,12 +2,12 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\OrderLineitem;
+use App\Entity\OrderItem;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class OrderLineItemFixtures extends Fixture implements DependentFixtureInterface
+class OrderItemFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -35,7 +35,7 @@ class OrderLineItemFixtures extends Fixture implements DependentFixtureInterface
         ];
 
         foreach ($values as $val) {
-            $item = new OrderLineItem();
+            $item = new OrderItem();
             $item->setOrder($this->getReference('order-test'));
             $item->setProductStockItem($val['stock']);
             $item->setPrice($val['price']);

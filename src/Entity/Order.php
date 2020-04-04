@@ -43,14 +43,14 @@ class Order
     private int $total;
 
     /**
-     * @var Collection<OrderLineItem>
-     * @ORM\OneToMany(targetEntity="App\Entity\OrderLineItem", mappedBy="order")
+     * @var Collection<OrderItem>
+     * @ORM\OneToMany(targetEntity="App\Entity\OrderItem", mappedBy="order")
      */
-    private Collection $orderLineItems;
+    private Collection $orderItems;
 
     public function __construct()
     {
-        $this->orderLineItems = new ArrayCollection();
+        $this->orderItems = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -107,10 +107,10 @@ class Order
     }
 
     /**
-     * @return Collection|OrderLineItem[]
+     * @return Collection|OrderItem[]
      */
-    public function getOrderLineItems(): Collection
+    public function getOrderItems(): Collection
     {
-        return $this->orderLineItems;
+        return $this->orderItems;
     }
 }

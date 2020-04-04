@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Address;
-use App\Entity\OrderLineItem;
+use App\Entity\OrderItem;
 use App\Entity\OrderStatus;
 use App\Entity\Order;
 use App\Entity\ProductStockItem;
@@ -134,14 +134,14 @@ class CheckoutController extends AbstractController
                         $inStock = false;
                     }
 
-                    // insert order line items into database
-                    $orderLineItem = new OrderLineItem();
-                    $orderLineItem->setOrder($order);
-                    $orderLineItem->setProductStockItem($item);
-                    $orderLineItem->setPrice($item->getProduct()->getPrice());
-                    $orderLineItem->setQuantity($basket[$item->getId()]);
+                    // insert order items into database
+                    $orderItem = new OrderItem();
+                    $orderItem->setOrder($order);
+                    $orderItem->setProductStockItem($item);
+                    $orderItem->setPrice($item->getProduct()->getPrice());
+                    $orderItem->setQuantity($basket[$item->getId()]);
 
-                    $entityManager->persist($orderLineItem);
+                    $entityManager->persist($orderItem);
                 }
 
                 if ($inStock) {

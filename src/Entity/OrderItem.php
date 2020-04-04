@@ -5,9 +5,9 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\OrderLineItemRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\OrderItemRepository")
  */
-class OrderLineItem
+class OrderItem
 {
     /**
      * @ORM\Id()
@@ -17,7 +17,7 @@ class OrderLineItem
     private ?int $id = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Order", inversedBy="orderLineItems")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Order", inversedBy="orderItems")
      * @ORM\JoinColumn(nullable=false)
      */
     private Order $order;
