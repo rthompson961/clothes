@@ -100,7 +100,7 @@ class LoremIpsumHelper
         return $result;
     }
 
-    private function pickWord(array $wordList, array $recentWords): string
+    public function pickWord(array $wordList, array $recentWords): string
     {
         $word = $wordList[mt_rand(0, count($wordList) - 1)];
 
