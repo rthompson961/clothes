@@ -2,12 +2,12 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\ProductStockItem;
+use App\Entity\ProductUnit;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class ProductStockItemFixtures extends Fixture implements DependentFixtureInterface
+class ProductUnitFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -27,24 +27,24 @@ class ProductStockItemFixtures extends Fixture implements DependentFixtureInterf
                 } else {
                     $stock = mt_rand(1, $maxStock);
                 }
-                $item = new ProductStockItem();
-                $item->setProduct($this->getReference('product-' . $i));
-                $item->setSize($this->getReference('size-' . $size));
-                $item->setStock($stock);
-                $manager->persist($item);
+                $unit = new ProductUnit();
+                $unit->setProduct($this->getReference('product-' . $i));
+                $unit->setSize($this->getReference('size-' . $size));
+                $unit->setStock($stock);
+                $manager->persist($unit);
 
                 // used for order line item fixtures
                 if ($i === 10 && $size == 'large') {
-                    $this->addReference('orderitem-one', $item);
+                    $this->addReference('orderitem-one', $unit);
                 }
                 if ($i === 34 && $size == 'medium') {
-                    $this->addReference('orderitem-two', $item);
+                    $this->addReference('orderitem-two', $unit);
                 }
                 if ($i === 43 && $size == 'medium') {
-                    $this->addReference('orderitem-three', $item);
+                    $this->addReference('orderitem-three', $unit);
                 }
                 if ($i === 60 && $size == 'small') {
-                    $this->addReference('orderitem-four', $item);
+                    $this->addReference('orderitem-four', $unit);
                 }
             }
         }

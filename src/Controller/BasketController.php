@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\ProductStockItem;
+use App\Entity\ProductUnit;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -20,7 +20,7 @@ class BasketController extends AbstractController
         if ($this->get('session')->has('basket')) {
             $basket = $this->get('session')->get('basket');
             $products = $this->getDoctrine()
-                ->getRepository(ProductStockItem::class)
+                ->getRepository(ProductUnit::class)
                 ->findBy(['id' => array_keys($basket)]);
 
             foreach ($products as $product) {

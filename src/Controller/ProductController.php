@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Product;
-use App\Entity\ProductStockItem;
+use App\Entity\ProductUnit;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -21,11 +21,11 @@ class ProductController extends AbstractController
         // Get each size for the current product
         $sizes = [];
         $attr  = [];
-        foreach ($product->getProductStockItems() as $item) {
-            $size = $item->getSize()->getName();
-            $sizes[$size] = $item->getId();
+        foreach ($product->getProductUnits() as $unit) {
+            $size = $unit->getSize()->getName();
+            $sizes[$size] = $unit->getId();
             // disable items without stock
-            if (!$item->getStock()) {
+            if (!$unit->getStock()) {
                 $attr[$size] = ['disabled' => true];
             }
         }
@@ -55,7 +55,7 @@ class ProductController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $item = $this->getDoctrine()->getRepository(ProductStockItem::class)->find($data['product']);
+            $unit = $this->getDoctrine()->getRepository(ProductUnit::class)->find($data['product']);
 
             // get the current basket if there is one
             if ($this->get('session')->has('basket')) {

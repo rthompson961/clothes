@@ -13,22 +13,22 @@ class OrderItemFixtures extends Fixture implements DependentFixtureInterface
     {
         $values = [
             [
-                'stock' => $this->getReference('orderitem-one'),
+                'unit' => $this->getReference('orderitem-one'),
                 'price' => 10499,
                 'quantity' => 1
             ],
             [
-                'stock' => $this->getReference('orderitem-two'),
+                'unit' => $this->getReference('orderitem-two'),
                 'price' => 10999,
                 'quantity' => 1
             ],
             [
-                'stock' => $this->getReference('orderitem-three'),
+                'unit' => $this->getReference('orderitem-three'),
                 'price' => 2299,
                 'quantity' => 2
             ],
             [
-                'stock' => $this->getReference('orderitem-four'),
+                'unit' => $this->getReference('orderitem-four'),
                 'price' => 10999,
                 'quantity' => 2
             ]
@@ -37,7 +37,7 @@ class OrderItemFixtures extends Fixture implements DependentFixtureInterface
         foreach ($values as $val) {
             $item = new OrderItem();
             $item->setOrder($this->getReference('order-test'));
-            $item->setProductStockItem($val['stock']);
+            $item->setProductUnit($val['unit']);
             $item->setPrice($val['price']);
             $item->setQuantity($val['quantity']);
             $manager->persist($item);
@@ -49,7 +49,7 @@ class OrderItemFixtures extends Fixture implements DependentFixtureInterface
     {
         return [
             OrderFixtures::class,
-            ProductStockItemFixtures::class
+            ProductUnitFixtures::class
         ];
     }
 }

@@ -7,9 +7,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\ProductStockItemRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\ProductUnitRepository")
  */
-class ProductStockItem
+class ProductUnit
 {
     /**
      * @ORM\Id()
@@ -19,7 +19,7 @@ class ProductStockItem
     private ?int $id = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Product", inversedBy="productStockItems")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Product", inversedBy="productUnits")
      * @ORM\JoinColumn(nullable=false)
      */
     private Product $product;

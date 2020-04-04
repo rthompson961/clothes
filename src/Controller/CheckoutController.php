@@ -6,7 +6,7 @@ use App\Entity\Address;
 use App\Entity\OrderItem;
 use App\Entity\OrderStatus;
 use App\Entity\Order;
-use App\Entity\ProductStockItem;
+use App\Entity\ProductUnit;
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -55,7 +55,7 @@ class CheckoutController extends AbstractController
             // find total order cost
             $basket = $this->get('session')->get('basket');
             $basketItems = $this->getDoctrine()
-                ->getRepository(ProductStockItem::class)
+                ->getRepository(ProductUnit::class)
                 ->findBy(['id' => array_keys($basket)]);
             $total = 0;
             foreach ($basketItems as $item) {
@@ -137,7 +137,7 @@ class CheckoutController extends AbstractController
                     // insert order items into database
                     $orderItem = new OrderItem();
                     $orderItem->setOrder($order);
-                    $orderItem->setProductStockItem($item);
+                    $orderItem->setProductUnit($item);
                     $orderItem->setPrice($item->getProduct()->getPrice());
                     $orderItem->setQuantity($basket[$item->getId()]);
 

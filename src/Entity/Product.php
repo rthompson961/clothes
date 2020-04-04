@@ -53,14 +53,14 @@ class Product
     private ?ProductGroup $productGroup = null;
 
     /**
-     * @var Collection<ProductStockItem>
-     * @ORM\OneToMany(targetEntity="App\Entity\ProductStockItem", mappedBy="product")
+     * @var Collection<ProductUnit>
+     * @ORM\OneToMany(targetEntity="App\Entity\ProductUnit", mappedBy="product")
      */
-    private Collection $productStockItems;
+    private Collection $productUnits;
 
     public function __construct()
     {
-        $this->productStockItems = new ArrayCollection();
+        $this->productUnits = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -141,10 +141,10 @@ class Product
     }
 
     /**
-     * @return Collection|ProductStockItem[]
+     * @return Collection|ProductUnit[]
      */
-    public function getProductStockItems(): Collection
+    public function getProductUnits(): Collection
     {
-        return $this->productStockItems;
+        return $this->productUnits;
     }
 }

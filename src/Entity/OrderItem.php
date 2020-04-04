@@ -23,10 +23,10 @@ class OrderItem
     private Order $order;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\ProductStockItem")
+     * @ORM\ManyToOne(targetEntity="App\Entity\ProductUnit")
      * @ORM\JoinColumn(nullable=false)
      */
-    private ProductStockItem $productStockItem;
+    private ProductUnit $productUnit;
 
     /**
      * @ORM\Column(type="integer")
@@ -55,14 +55,14 @@ class OrderItem
         return $this;
     }
 
-    public function getProductStockItem(): ProductStockItem
+    public function getProductUnit(): ProductUnit
     {
-        return $this->productStockItem;
+        return $this->productUnit;
     }
 
-    public function setProductStockItem(ProductStockItem $productStockItem): self
+    public function setProductUnit(ProductUnit $productUnit): self
     {
-        $this->productStockItem = $productStockItem;
+        $this->productUnit = $productUnit;
 
         return $this;
     }
