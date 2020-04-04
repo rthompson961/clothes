@@ -36,7 +36,7 @@ class OrderLineItemFixtures extends Fixture implements DependentFixtureInterface
 
         foreach ($values as $val) {
             $item = new OrderLineItem();
-            $item->setOrderTotal($this->getReference('order-test'));
+            $item->setOrder($this->getReference('order-test'));
             $item->setProductStockItem($val['stock']);
             $item->setPrice($val['price']);
             $item->setQuantity($val['quantity']);
@@ -48,7 +48,7 @@ class OrderLineItemFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies(): array
     {
         return [
-            OrderTotalFixtures::class,
+            OrderFixtures::class,
             ProductStockItemFixtures::class
         ];
     }

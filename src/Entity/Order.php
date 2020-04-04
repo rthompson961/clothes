@@ -7,9 +7,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\OrderTotalRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\OrderRepository")
+ * @ORM\Table(name="`order`")
  */
-class OrderTotal
+class Order
 {
     /**
      * @ORM\Id()
@@ -43,7 +44,7 @@ class OrderTotal
 
     /**
      * @var Collection<OrderLineItem>
-     * @ORM\OneToMany(targetEntity="App\Entity\OrderLineItem", mappedBy="orderTotal")
+     * @ORM\OneToMany(targetEntity="App\Entity\OrderLineItem", mappedBy="order")
      */
     private Collection $orderLineItems;
 

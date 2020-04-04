@@ -36,8 +36,8 @@ class User implements UserInterface
     private string $password;
 
     /**
-     * @var Collection<OrderTotal>
-     * @ORM\OneToMany(targetEntity="App\Entity\OrderTotal", mappedBy="user")
+     * @var Collection<Order>
+     * @ORM\OneToMany(targetEntity="App\Entity\Order", mappedBy="user")
      */
     private Collection $orders;
 
@@ -134,7 +134,7 @@ class User implements UserInterface
     }
 
     /**
-     * @return Collection|OrderTotal[]
+     * @return Collection|Order[]
      */
     public function getOrders(): Collection
     {

@@ -2,16 +2,16 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\OrderTotal;
+use App\Entity\Order;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class OrderTotalFixtures extends Fixture implements DependentFixtureInterface
+class OrderFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        $order = new OrderTotal();
+        $order = new Order();
         $order->setUser($this->getReference('user-test'));
         $order->setAddress($this->getReference('address-test'));
         $order->setStatus($this->getReference('status-received'));

@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Address;
 use App\Entity\OrderLineItem;
 use App\Entity\OrderStatus;
-use App\Entity\OrderTotal;
+use App\Entity\Order;
 use App\Entity\ProductStockItem;
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -120,13 +120,13 @@ class CheckoutController extends AbstractController
                 $entityManager = $this->getDoctrine()->getManager();
 
                 // insert order into database
-                $orderTotal = new OrderTotal();
-                $orderTotal->setUser($user);
-                $orderTotal->setAddress($address);
-                $orderTotal->setStatus($status);
-                $orderTotal->setTotal($total);
+                $order = new Order();
+                $order->setUser($user);
+                $order->setAddress($address);
+                $order->setStatus($status);
+                $order->setTotal($total);
 
-                $entityManager->persist($orderTotal);
+                $entityManager->persist($order);
 
                 $inStock = true;
                 foreach ($basketItems as $item) {
@@ -136,7 +136,7 @@ class CheckoutController extends AbstractController
 
                     // insert order line items into database
                     $orderLineItem = new OrderLineItem();
-                    $orderLineItem->setOrderTotal($orderTotal);
+                    $orderLineItem->setOrder($order);
                     $orderLineItem->setProductStockItem($item);
                     $orderLineItem->setPrice($item->getProduct()->getPrice());
                     $orderLineItem->setQuantity($basket[$item->getId()]);
