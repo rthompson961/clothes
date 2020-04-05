@@ -27,10 +27,10 @@ class LoremIpsumHelperTest extends TestCase
         $recentWords = ['apple', 'strawberry'];
 
         $ipsum  = new LoremIpsumHelper();
-
-        $words = [];
+        $words  = [];
         for ($i = 1; $i <= 2; $i++) {
             $words[] = $ipsum->pickWord($wordList, $recentWords);
+            $recentWords[] = end($words);
         }
 
         $this->assertCount(2, $words);
