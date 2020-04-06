@@ -57,7 +57,6 @@ class MarketController extends AbstractController
         }
     
         return $this->render('market/index.html.twig', [
-            'title' => 'Marketplace',
             'search' => $search,
             'response' => $response
         ]);
