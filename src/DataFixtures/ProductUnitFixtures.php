@@ -30,7 +30,7 @@ class ProductUnitFixtures extends Fixture implements DependentFixtureInterface
                 // out of stock item needed for testing
                 if ($unit == 3) {
                     $stock = 0;
-                } 
+                }
 
                 $productUnit = new ProductUnit();
                 $productUnit->setProduct($this->getReference('product-' . $product));
