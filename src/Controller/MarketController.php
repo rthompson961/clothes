@@ -46,7 +46,7 @@ class MarketController extends AbstractController
         $response = curl_exec($curl);
         curl_close($curl);
         // curl_exec can return both true and false when RETURNTRANSFER is false
-        if (is_bool($response)) {
+        if (!is_string($response)) {
             throw new \Exception('Could not execute ebay curl session');
         }
 
