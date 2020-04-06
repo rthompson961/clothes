@@ -15,14 +15,6 @@ class MarketController extends AbstractController
     {
         $endpoint = 'https://svcs.ebay.com/services/search/FindingService/v1';
 
-        $search   = 'mens jacket';
-        $count    = 8;
-        $request  = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-        $request .= "<findItemsByKeywordsRequest xmlns=\"http://www.ebay.com/marketplace/search/v1/services\">\n";
-        $request .= "<keywords>$search</keywords>\n";
-        $request .= "<paginationInput>\n <entriesPerPage>$count</entriesPerPage>\n</paginationInput>\n";
-        $request .= "</findItemsByKeywordsRequest>";
-
         $headers = [
             'X-EBAY-SOA-OPERATION-NAME: findItemsByKeywords',
             'X-EBAY-SOA-SERVICE-VERSION: 1.3.0',
@@ -32,6 +24,14 @@ class MarketController extends AbstractController
             'Content-Type: text/xml;charset=utf-8',
         ];
 
+        $search   = 'mens jacket';
+        $count    = 8;
+        $body  = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+        $body .= "<findItemsByKeywordsRequest xmlns=\"http://www.ebay.com/marketplace/search/v1/services\">\n";
+        $body .= "<keywords>$search</keywords>\n";
+        $body .= "<paginationInput>\n <entriesPerPage>$count</entriesPerPage>\n</paginationInput>\n";
+        $body .= "</findItemsByKeywordsRequest>";
+
         $curl = curl_init($endpoint);
         if ($curl === false) {
             throw new \Exception('Could not initiate ebay curl session');
@@ -39,7 +39,7 @@ class MarketController extends AbstractController
 
         curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $request);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
         // Return value rather than outputting
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
