@@ -18,18 +18,14 @@ class ShopController extends AbstractController
      */
     public function index(Request $request): Response
     {
-        // Store requested page number as a positive int
+        // store requested page number as positive int
         $page = abs((int) $request->query->get('page', 1));
-
-        // Store requested sort order if valid
-        $validSort = ['first', 'name', 'low', 'high'];
-        if (in_array($request->query->get('sort'), $validSort)) {
-            $sort = $request->query->get('sort');
-        } else {
+        // store requested sort order
+        $sort = $request->query->get('sort');
+        if (!in_array($sort, ['first', 'name', 'low', 'high'])) {
             $sort = 'first';
         }
-
-        // Store requested filter id values as positive ints
+        // store requested filter id values as positive ints
         $filters = ['category' => [], 'brand' => [], 'colour' => []];
         foreach (['category', 'brand', 'colour'] as $key) {
             if (is_array($request->query->get($key))) {
@@ -39,47 +35,54 @@ class ShopController extends AbstractController
             }
         }
 
-        // Add clickable links to either add or remove product filters
-        $filterOptions['category'] = $this->getDoctrine()->getRepository(Category::class)->findAllAsArray();
-        $filterOptions['brand'] = $this->getDoctrine()->getRepository(Brand::class)->findAllAsArray();
-        $filterOptions['colour'] = $this->getDoctrine()->getRepository(Colour::class)->findAllAsArray();
-        foreach ($filterOptions as $optionType => &$options) {
-            foreach ($options as &$opt) {
-                if (in_array($opt['id'], $filters[$optionType])) {
-                    $opt['active'] = true;
-                    $opt['url'] = $this->buildUrl($page, $sort, $this->removeFilter($filters, $optionType, $opt['id']));
+        // add clickable links to either add or remove product filters
+        $options['filters']['category'] = $this->getDoctrine()->getRepository(Category::class)->findAllAsArray();
+        $options['filters']['brand']    = $this->getDoctrine()->getRepository(Brand::class)->findAllAsArray();
+        $options['filters']['colour']   = $this->getDoctrine()->getRepository(Colour::class)->findAllAsArray();
+        foreach ($options['filters'] as $type => &$values) {
+            foreach ($values as &$val) {
+                if (in_array($val['id'], $filters[$type])) {
+                    $val['active'] = true;
+                    $newFilters = $this->removeFilter($filters, $type, $val['id']);
+                    $val['url'] = $this->buildUrl($page, $sort, $newFilters);
                 } else {
-                    $opt['active'] = false;
-                    $opt['url'] = $this->buildUrl($page, $sort, $this->addFilter($filters, $optionType, $opt['id']));
+                    $val['active'] = false;
+                    $newFilters = $this->addFilter($filters, $type, $val['id']);
+                    $val['url'] = $this->buildUrl($page, $sort, $newFilters);
                 }
             }
         }
 
         $count = $this->getDoctrine()->getRepository(Product::class)->findProductCount($filters);
-        $productsPerPage = 6;
+        $limit = 6;
 
-        // Add clickable links to change sort order (current sort order not required)
-        foreach ($validSort as $val) {
-            $sortOptions[$val] = $val == $sort ? null : $this->buildUrl($page, $val, $filters);
+        // create list of urls to follow to change sort order (current value not required)
+        foreach (['first', 'name', 'low', 'high'] as $value) {
+            $options['sort'][$value] = $this->buildUrl($page, $value, $filters);
+            if ($value == $sort) {
+                $options['sort'][$value] = null;
+            }
+        }
+        // create list of urls to follow to change page (current value not required)
+        $options['page'] = [];
+        for ($i = 1; $i <= (int) ceil($count / $limit); $i++) {
+            $options['page'][$i] = $this->buildUrl($i, $sort, $filters);
+            if ($i == $page) {
+                $options['page'][$i] = null;
+            }
         }
 
-        // Add clickable links to change page (current page not required)
-        $pageOptions = [];
-        for ($i = 1; $i <= (int) ceil($count / $productsPerPage); $i++) {
-            $pageOptions[$i] = $i == $page ? null : $this->buildUrl($i, $sort, $filters);
-        }
-
-        $offset = $page * $productsPerPage - $productsPerPage;
+        $offset = $page * $limit - $limit;
         $products = $this->getDoctrine()
             ->getRepository(Product::class)
-            ->findProducts($filters, $sort, $offset, $productsPerPage);
+            ->findProducts($filters, $sort, $offset, $limit);
 
         return $this->render('shop/index.html.twig', [
-            'filters'   => $filterOptions,
-            'count'     => $count,
-            'sortOptions' => $sortOptions,
-            'pageOptions' => $pageOptions,
-            'products'  => $products
+            'filters'     => $options['filters'],
+            'count'       => $count,
+            'sort'        => $options['sort'],
+            'page'        => $options['page'],
+            'products'    => $products
         ]);
     }
 
