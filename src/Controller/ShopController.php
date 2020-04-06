@@ -19,14 +19,15 @@ class ShopController extends AbstractController
      */
     public function index(Request $request, ShopUrlBuilder $shopUrlBuilder): Response
     {
-        // store requested page number as positive int
-        $page = abs((int) $request->query->get('page', 1));
+        // store requested page number as a positive integer
+        $page = $request->query->get('page', 1);
+        $page = abs((int) $page);
         // store requested sort order
         $sort = $request->query->get('sort');
         if (!in_array($sort, ['first', 'name', 'low', 'high'])) {
             $sort = 'first';
         }
-        // store requested filter id values as positive ints
+        // store requested filter id values as positive integers
         $filters = ['category' => [], 'brand' => [], 'colour' => []];
         foreach (['category', 'brand', 'colour'] as $key) {
             if (is_array($request->query->get($key))) {
@@ -36,7 +37,7 @@ class ShopController extends AbstractController
             }
         }
 
-        // add clickable links to either add or remove product filters
+        // create list of urls to follow to add or remove product filters
         $options['filters']['category'] = $this->getDoctrine()->getRepository(Category::class)->findAllAsArray();
         $options['filters']['brand']    = $this->getDoctrine()->getRepository(Brand::class)->findAllAsArray();
         $options['filters']['colour']   = $this->getDoctrine()->getRepository(Colour::class)->findAllAsArray();
