@@ -6,6 +6,7 @@ use App\Entity\Brand;
 use App\Entity\Category;
 use App\Entity\Colour;
 use App\Entity\Product;
+use App\Service\ShopUrlBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,7 +17,7 @@ class ShopController extends AbstractController
     /**
      * @Route("/shop", name="shop")
      */
-    public function index(Request $request): Response
+    public function index(Request $request, ShopUrlBuilder $shopUrlBuilder): Response
     {
         // store requested page number as positive int
         $page = abs((int) $request->query->get('page', 1));
@@ -43,12 +44,12 @@ class ShopController extends AbstractController
             foreach ($values as &$val) {
                 if (in_array($val['id'], $filters[$type])) {
                     $val['active'] = true;
-                    $newFilters = $this->removeFilter($filters, $type, $val['id']);
-                    $val['url'] = $this->buildUrl($page, $sort, $newFilters);
+                    $newFilters = $shopUrlBuilder->removeFilter($filters, $type, $val['id']);
+                    $val['url'] = $shopUrlBuilder->buildUrl($page, $sort, $newFilters);
                 } else {
                     $val['active'] = false;
-                    $newFilters = $this->addFilter($filters, $type, $val['id']);
-                    $val['url'] = $this->buildUrl($page, $sort, $newFilters);
+                    $newFilters = $shopUrlBuilder->addFilter($filters, $type, $val['id']);
+                    $val['url'] = $shopUrlBuilder->buildUrl($page, $sort, $newFilters);
                 }
             }
         }
@@ -58,7 +59,7 @@ class ShopController extends AbstractController
 
         // create list of urls to follow to change sort order (current value not required)
         foreach (['first', 'name', 'low', 'high'] as $value) {
-            $options['sort'][$value] = $this->buildUrl($page, $value, $filters);
+            $options['sort'][$value] = $shopUrlBuilder->buildUrl($page, $value, $filters);
             if ($value == $sort) {
                 $options['sort'][$value] = null;
             }
@@ -66,7 +67,7 @@ class ShopController extends AbstractController
         // create list of urls to follow to change page (current value not required)
         $options['page'] = [];
         for ($i = 1; $i <= (int) ceil($count / $limit); $i++) {
-            $options['page'][$i] = $this->buildUrl($i, $sort, $filters);
+            $options['page'][$i] = $shopUrlBuilder->buildUrl($i, $sort, $filters);
             if ($i == $page) {
                 $options['page'][$i] = null;
             }
@@ -84,32 +85,5 @@ class ShopController extends AbstractController
             'page'        => $options['page'],
             'products'    => $products
         ]);
-    }
-
-    private function addFilter(array $filters, string $key, int $item): array
-    {
-        $filters[$key][] = $item;
-
-        return $filters;
-    }
-
-    private function removeFilter(array $filters, string $key, int $item): array
-    {
-        $filters[$key] = array_diff($filters[$key], [$item]);
-
-        return $filters;
-    }
-
-    private function buildUrl(int $page, string $sort, array $filters): string
-    {
-        $url  = '?page=' . $page;
-        $url .= '&sort=' . $sort;
-        foreach ($filters as $filterType => $filterTypeVals) {
-            foreach ($filterTypeVals as $val) {
-                $url .= '&' . $filterType . '[]=' . $val;
-            }
-        }
-
-        return $url;
     }
 }
