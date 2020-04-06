@@ -13,22 +13,22 @@ class OrderItemFixtures extends Fixture implements DependentFixtureInterface
     {
         $values = [
             [
-                'unit' => $this->getReference('orderitem-one'),
+                'unit' => $this->getReference('unit-30'),
                 'price' => 10499,
                 'quantity' => 1
             ],
             [
-                'unit' => $this->getReference('orderitem-two'),
+                'unit' => $this->getReference('unit-101'),
                 'price' => 10999,
                 'quantity' => 1
             ],
             [
-                'unit' => $this->getReference('orderitem-three'),
+                'unit' => $this->getReference('unit-128'),
                 'price' => 2299,
                 'quantity' => 2
             ],
             [
-                'unit' => $this->getReference('orderitem-four'),
+                'unit' => $this->getReference('unit-178'),
                 'price' => 10999,
                 'quantity' => 2
             ]
