@@ -45,6 +45,39 @@ class BasketController extends AbstractController
     }
 
     /**
+     * @Route("/add/{id}/{quantity}", name="add", requirements={"id"="\d+","quantity"="\d+"})
+     */
+    public function add(int $id, int $quantity): RedirectResponse
+    {
+        // get the current basket if there is one
+        if ($this->get('session')->has('basket')) {
+            $basket = $this->get('session')->get('basket');
+        } else {
+            $basket = [];
+        }
+
+        // add the current item to the basket
+        if (array_key_exists($id, $basket)) {
+            $basket[$id] += $quantity;
+        } else {
+            $basket[$id] = $quantity;
+        }
+
+        // update session variable to match the new basket
+        $this->get('session')->set('basket', $basket);
+
+        // update the total number of items in the basket
+        if ($this->get('session')->has('basket_count')) {
+            $count = $this->get('session')->get('basket_count');
+            $this->get('session')->set('basket_count', $count + $quantity);
+        } else {
+            $this->get('session')->set('basket_count', $quantity);
+        }
+
+        return $this->redirectToRoute('basket');
+    }
+
+    /**
      * @Route("/remove/{id}", name="remove", requirements={"id"="\d+"})
      */
     public function remove(int $id): RedirectResponse

@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ProductControllerTest extends WebTestCase
 {
-    public function testProduct(): void
+    public function testForm(): void
     {
         $client = static::createClient();
 
@@ -14,6 +14,6 @@ class ProductControllerTest extends WebTestCase
         $form = $crawler->selectButton('form[submit]')->form();
         $form['form[product]'] = '1';
         $crawler = $client->submit($form);
-        $this->assertResponseRedirects('/basket');
+        $this->assertResponseRedirects('/add/1/1');
     }
 }

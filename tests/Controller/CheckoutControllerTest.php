@@ -45,10 +45,7 @@ class CheckoutControllerTest extends WebTestCase
     public function testCardFailure(): void
     {
         // add product
-        $crawler = $this->client->request('GET', '/product/1');
-        $form = $crawler->selectButton('form[submit]')->form();
-        $form['form[product]'] = '1';
-        $crawler = $this->client->submit($form);
+        $this->client->request('GET', '/add/1/1');
 
         $crawler = $this->client->request('GET', '/checkout');
         $form = $crawler->selectButton('form[submit]')->form();
@@ -63,10 +60,7 @@ class CheckoutControllerTest extends WebTestCase
     public function testCardSuccess(): void
     {
         // add product
-        $crawler = $this->client->request('GET', '/product/1');
-        $form = $crawler->selectButton('form[submit]')->form();
-        $form['form[product]'] = '1';
-        $crawler = $this->client->submit($form);
+        $this->client->request('GET', '/add/1/1');
 
         $crawler = $this->client->request('GET', '/checkout');
         $form = $crawler->selectButton('form[submit]')->form();

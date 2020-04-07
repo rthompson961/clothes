@@ -55,40 +55,11 @@ class ProductController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $unit = $this->getDoctrine()->getRepository(ProductUnit::class)->find($data['product']);
 
-            // get the current basket if there is one
-            if ($this->get('session')->has('basket')) {
-                $basket = $this->get('session')->get('basket');
-            } else {
-                $basket = [];
-            }
-
-            // validate quantity as positive int between 1 and 10
-            $data['quantity'] = abs((int) $data['quantity']);
-            if ($data['quantity'] < 1 || $data['quantity'] > 10) {
-                $data['quantity'] = 1;
-            }
-
-            // add the current item to the basket
-            if (array_key_exists($data['product'], $basket)) {
-                $basket[$data['product']] += $data['quantity'];
-            } else {
-                $basket[$data['product']] = $data['quantity'];
-            }
-
-            // update session variable to match the new basket
-            $this->get('session')->set('basket', $basket);
-
-            // update the total number of items in the basket
-            if ($this->get('session')->has('basket_count')) {
-                $count = $this->get('session')->get('basket_count');
-                $this->get('session')->set('basket_count', $count + $data['quantity']);
-            } else {
-                $this->get('session')->set('basket_count', $data['quantity']);
-            }
-
-            return $this->redirectToRoute('basket');
+            return $this->redirectToRoute('add', [
+                'id' => $data['product'],
+                'quantity' => $data['quantity']
+            ]);
         }
 
         return $this->render('product/index.html.twig', [
