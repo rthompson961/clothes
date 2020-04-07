@@ -15,31 +15,24 @@ class BasketController extends AbstractController
      */
     public function index(): Response
     {
-        $items = [];
+        $units = [];
         $total = 0;
         if ($this->get('session')->has('basket')) {
             $basket = $this->get('session')->get('basket');
-            $products = $this->getDoctrine()
+            $units = $this->getDoctrine()
                 ->getRepository(ProductUnit::class)
-                ->findBy(['id' => array_keys($basket)]);
+                ->findBasketUnits(array_keys($basket));
 
-            foreach ($products as $product) {
-                $item['id']         = $product->getId();
-                $item['product_id'] = $product->getProduct()->getId();
-                $item['name']       = $product->getProduct()->getName();
-                $item['size']       = $product->getSize()->getName();
-                $item['stock']      = $product->getStock();
-                $item['price']      = $product->getProduct()->getPrice();
-                $item['quantity']   = $basket[$item['id']];
-                $item['subtotal']   = $item['price'] * $item['quantity'];
+            foreach ($units as &$unit) {
+                $unit['quantity']   = $basket[$unit['id']];
+                $unit['subtotal']   = $unit['price'] * $unit['quantity'];
 
-                $items[] = $item;
-                $total += $item['subtotal'];
+                $total += $unit['subtotal'];
             }
         }
                                 
         return $this->render('basket/index.html.twig', [
-            'items' => $items,
+            'units' => $units,
             'total' => $total
         ]);
     }
@@ -60,7 +53,7 @@ class BasketController extends AbstractController
         if (array_key_exists($id, $basket)) {
             $basket[$id] += $quantity;
         } else {
-            $basket[$id] = $quantity;
+            $basket[$id]  = $quantity;
         }
 
         // update session variable to match the new basket
@@ -84,6 +77,7 @@ class BasketController extends AbstractController
     {
         if ($this->get('session')->has('basket') && array_key_exists($id, $this->get('session')->get('basket'))) {
             $basket = $this->get('session')->get('basket');
+
             // remove quantity from basket item  count
             $count = $this->get('session')->get('basket_count');
             $this->get('session')->set('basket_count', $count - $basket[$id]);

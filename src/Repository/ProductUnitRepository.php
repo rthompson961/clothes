@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\Product;
 use App\Entity\ProductUnit;
+use App\Entity\Size;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -19,32 +21,19 @@ class ProductUnitRepository extends ServiceEntityRepository
         parent::__construct($registry, ProductUnit::class);
     }
 
-    // /**
-    //  * @return ProductUnit[] Returns an array of ProductUnit objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findBasketUnits(array $basket): array
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $qb = $this->createQueryBuilder('u')
+            ->select('u.id')
+            ->addSelect('p.id as product_id')
+            ->addSelect('p.name')
+            ->addSelect('s.name as size')
+            ->addSelect('p.price')
+            ->innerJoin('u.product', 'p')
+            ->innerJoin('u.size', 's');
+        $qb->where($qb->expr()->in('u.id', $basket));
+        $result = $qb->getQuery()->getArrayResult();
 
-    /*
-    public function findOneBySomeField($value): ?ProductUnit
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $result ?? [];
     }
-    */
 }

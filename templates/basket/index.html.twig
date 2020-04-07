@@ -6,7 +6,7 @@
 <div id="basket">
     <h2>Basket</h2>
 
-    {% if items %}
+    {% if units %}
         {% for flash_message in app.session.flashBag.get('basket') %}
             <p class="flash">{{ flash_message }}</p>
         {% endfor %}
@@ -19,32 +19,30 @@
             <tr>
                 <th colspan="2">Item</th>
                 <th>Size</th>
-                <th>Stock</th>
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>Sub Total</th>
                 <th>Remove</th>
             </tr>
-            {% for item in items %}
+            {% for unit in units %}
             <tr>
                 <td>
-                    <a href="{{ path('product', {'id' : item.product_id}) }}">
-                        <img src="{{ asset('img/product/' ~ "%03d"|format(item.product_id) ~ '.jpg') }}" 
-                            alt="{{ item.name }}" 
+                    <a href="{{ path('product', {'id' : unit.product_id}) }}">
+                        <img src="{{ asset('img/product/' ~ "%03d"|format(unit.product_id) ~ '.jpg') }}" 
+                            alt="{{ unit.name }}" 
                         />
                     </a>
                 </td>
-                <td class="name">{{ item.name }}</td>
-                <td>{{ item.size }}</td>
-                <td>{{ item.stock }}</td>
-                <td>&pound;{{ (item.price / 100)|number_format(2, '.', ',') }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>&pound;{{ (item.subtotal / 100)|number_format(2, '.', ',') }}</td>
-                <td><a class="remove" href="{{ path('remove', {'id' : item.id }) }}">❌</a></td>
+                <td class="name">{{ unit.name }}</td>
+                <td>{{ unit.size }}</td>
+                <td>&pound;{{ (unit.price / 100)|number_format(2, '.', ',') }}</td>
+                <td>{{ unit.quantity }}</td>
+                <td>&pound;{{ (unit.subtotal / 100)|number_format(2, '.', ',') }}</td>
+                <td><a class="remove" href="{{ path('remove', {'id' : unit.id }) }}">❌</a></td>
             </tr>
             {% endfor %}
             <tr>
-                <th colspan="6"><a class="empty" href="{{ path('empty') }}"><button>Empty Basket</button></a></th>
+                <th colspan="5"><a class="empty" href="{{ path('empty') }}"><button>Empty Basket</button></a></th>
                 <th class="total">&pound;{{ (total / 100)|number_format(2, '.', ',') }}</th>
             </tr>
         </table>
