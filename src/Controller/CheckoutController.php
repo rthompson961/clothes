@@ -8,9 +8,8 @@ use App\Entity\OrderStatus;
 use App\Entity\Order;
 use App\Entity\ProductUnit;
 use App\Entity\User;
+use App\Form\Type\CheckoutType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,26 +26,7 @@ class CheckoutController extends AbstractController
             return $this->redirectToRoute('basket');
         }
 
-        $sandbox['card']   = '5424000000000015';
-        $sandbox['expiry'] = '1220';
-        $sandbox['cvs']    = '999';
-
-        $formBuilder = $this->createFormBuilder();
-        $formBuilder->add('card', NumberType::class, [
-            'label' => 'Card Number',
-            'attr' => ['value' => $sandbox['card']]
-        ]);
-        $formBuilder->add('expiry', NumberType::class, [
-            'label' => 'Expiry Date',
-            'attr' => ['value' => $sandbox['expiry'] , 'class' => 'small']
-        ]);
-        $formBuilder->add('cvs', NumberType::class, [
-            'label' => 'CVS',
-            'attr' => ['value' => $sandbox['cvs'] , 'class' => 'small']
-        ]);
-        $formBuilder->add('submit', SubmitType::class);
-        $form = $formBuilder->getForm();
-
+        $form = $this->createForm(CheckoutType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

@@ -48,10 +48,10 @@ class CheckoutControllerTest extends WebTestCase
         $this->client->request('GET', '/add/1/1');
 
         $crawler = $this->client->request('GET', '/checkout');
-        $form = $crawler->selectButton('form[submit]')->form();
-        $form['form[card]']    = $this->sandbox['card_failure'];
-        $form['form[expiry]']  = $this->sandbox['expiry'];
-        $form['form[cvs]']     = $this->sandbox['cvs'];
+        $form = $crawler->selectButton('checkout[submit]')->form();
+        $form['checkout[card]']    = $this->sandbox['card_failure'];
+        $form['checkout[expiry]']  = $this->sandbox['expiry'];
+        $form['checkout[cvs]']     = $this->sandbox['cvs'];
         $crawler = $this->client->submit($form);
 
         $this->assertRouteSame('checkout');
@@ -63,10 +63,10 @@ class CheckoutControllerTest extends WebTestCase
         $this->client->request('GET', '/add/1/1');
 
         $crawler = $this->client->request('GET', '/checkout');
-        $form = $crawler->selectButton('form[submit]')->form();
-        $form['form[card]']    = $this->sandbox['card_success'];
-        $form['form[expiry]']  = $this->sandbox['expiry'];
-        $form['form[cvs]']     = $this->sandbox['cvs'];
+        $form = $crawler->selectButton('checkout[submit]')->form();
+        $form['checkout[card]']    = $this->sandbox['card_success'];
+        $form['checkout[expiry]']  = $this->sandbox['expiry'];
+        $form['checkout[cvs]']     = $this->sandbox['cvs'];
         $crawler = $this->client->submit($form);
 
         $this->assertResponseRedirects('/shop');
