@@ -2,9 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Brand;
-use App\Entity\Category;
-use App\Entity\Colour;
 use App\Entity\Product;
 use App\Service\ShopUrlBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,8 +20,9 @@ class ShopController extends AbstractController
         $page = $request->query->get('page', 1);
         $page = abs((int) $page);
         // store requested sort order
+        $validSort = ['first', 'name', 'low', 'high'];
         $sort = $request->query->get('sort');
-        if (!in_array($sort, ['first', 'name', 'low', 'high'])) {
+        if (!in_array($sort, $validSort)) {
             $sort = 'first';
         }
         // store requested filter id values as positive integers
@@ -37,35 +35,23 @@ class ShopController extends AbstractController
             }
         }
 
-        // create list of urls to follow to add or remove product filters
-        $options['filters']['category'] = $this->getDoctrine()->getRepository(Category::class)->findAllAsArray();
-        $options['filters']['brand']    = $this->getDoctrine()->getRepository(Brand::class)->findAllAsArray();
-        $options['filters']['colour']   = $this->getDoctrine()->getRepository(Colour::class)->findAllAsArray();
-        foreach ($options['filters'] as $type => &$values) {
-            foreach ($values as &$val) {
-                if (in_array($val['id'], $filters[$type])) {
-                    $val['active'] = true;
-                    $newFilters = $shopUrlBuilder->removeFilter($filters, $type, $val['id']);
-                    $val['url'] = $shopUrlBuilder->buildUrl($page, $sort, $newFilters);
-                } else {
-                    $val['active'] = false;
-                    $newFilters = $shopUrlBuilder->addFilter($filters, $type, $val['id']);
-                    $val['url'] = $shopUrlBuilder->buildUrl($page, $sort, $newFilters);
-                }
-            }
-        }
+        $options['filters'] = $shopUrlBuilder->getFilters($page, $sort, $filters);
 
         $count = $this->getDoctrine()->getRepository(Product::class)->findProductCount($filters);
         $limit = 6;
+        $offset = $page * $limit - $limit;
+        $products = $this->getDoctrine()
+            ->getRepository(Product::class)
+            ->findProducts($filters, $sort, $offset, $limit);
 
-        // create list of urls to follow to change sort order (current value not required)
-        foreach (['first', 'name', 'low', 'high'] as $value) {
-            $options['sort'][$value] = $shopUrlBuilder->buildUrl($page, $value, $filters);
-            if ($value == $sort) {
-                $options['sort'][$value] = null;
+        // create list of urls to follow to change sort order
+        foreach ($validSort as $val) {
+            $options['sort'][$val] = $shopUrlBuilder->buildUrl($page, $val, $filters);
+            if ($val == $sort) {
+                $options['sort'][$val] = null;
             }
         }
-        // create list of urls to follow to change page (current value not required)
+        // create list of urls to follow to change page
         $options['page'] = [];
         for ($i = 1; $i <= (int) ceil($count / $limit); $i++) {
             $options['page'][$i] = $shopUrlBuilder->buildUrl($i, $sort, $filters);
@@ -74,16 +60,11 @@ class ShopController extends AbstractController
             }
         }
 
-        $offset = $page * $limit - $limit;
-        $products = $this->getDoctrine()
-            ->getRepository(Product::class)
-            ->findProducts($filters, $sort, $offset, $limit);
-
         return $this->render('shop/index.html.twig', [
             'filters'     => $options['filters'],
-            'count'       => $count,
             'sort'        => $options['sort'],
             'page'        => $options['page'],
+            'count'       => $count,
             'products'    => $products
         ]);
     }
