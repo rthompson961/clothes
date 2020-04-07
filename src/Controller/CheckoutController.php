@@ -9,6 +9,7 @@ use App\Entity\Order;
 use App\Entity\ProductUnit;
 use App\Entity\User;
 use App\Form\Type\CheckoutType;
+use App\Service\PaymentProcessor;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +20,7 @@ class CheckoutController extends AbstractController
     /**
      * @Route("/checkout", name="checkout")
      */
-    public function index(Request $request): Response
+    public function index(Request $request, PaymentProcessor $payment): Response
     {
         // do not allow checkout without items in basket
         if (!$this->get('session')->has('basket')) {
@@ -30,8 +31,6 @@ class CheckoutController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-
             // find total order cost
             $basket = $this->get('session')->get('basket');
             $units = $this->getDoctrine()
@@ -42,48 +41,7 @@ class CheckoutController extends AbstractController
                 $total += $unit['price'];
             }
 
-            $endpoint = 'https://apitest.authorize.net/xml/v1/request.api';
-            $post  = [
-                'createTransactionRequest' => [
-                    'merchantAuthentication' => [
-                        'name'           => $_SERVER['AUTHDOTNET_LOGIN_ID'],
-                        'transactionKey' => $_SERVER['AUTHDOTNET_TRANS_ID']
-                    ],
-                    'transactionRequest' => [
-                        'transactionType' => 'authCaptureTransaction',
-                        'amount'          => $total / 100,
-                        'payment'         => [
-                            'creditCard' => [
-                               'cardNumber'     => $data['card'],
-                               'expirationDate' => $data['expiry'],
-                               'cardCode'       => $data['cvs']
-                            ]
-                        ]
-                    ]
-                ]
-            ];
-            $post = json_encode($post, JSON_FORCE_OBJECT);
-
-            $curl = curl_init();
-            curl_setopt_array($curl, [
-                CURLOPT_URL            => $endpoint,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_CUSTOMREQUEST  => 'POST',
-                CURLOPT_POSTFIELDS     => $post
-            ]);
-            $response = curl_exec($curl);
-            curl_close($curl);
-            if (!is_string($response)) {
-                throw new \Exception('Checkout response did not return a string');
-            }
-
-            // remove byte order mark from json string response to allow parsing
-            $response = preg_replace('/\xEF\xBB\xBF/', '', $response);
-            if (!$response) {
-                throw new \Exception('An error occurred when removing byte order mark from json string');
-            }
-
-            $response = json_decode($response, true);
+            $response = $payment->sendRequest($form->getData(), $total);
 
             if ($response['transactionResponse']['responseCode'] === "1") {
                 /** @var User */
