@@ -274,11 +274,11 @@ p.flash {
     margin-bottom: 20px;
 }
 
-#sidebar #sidebarActive a {
+#sidebar #sidebar-active a {
     background-color: #f1f1fd;
 }
 
-#sidebar #sidebarActive a:hover {
+#sidebar #sidebar-active a:hover {
     text-decoration: line-through;
 }
 
