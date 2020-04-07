@@ -19,14 +19,17 @@ class ProductController extends AbstractController
     public function index(Product $product, Request $request): Response
     {
         // Get each size for the current product
+        $units = $this->getDoctrine()
+            ->getRepository(ProductUnit::class)
+            ->findProductUnits((int) $product->getId());
         $sizes = [];
         $attr  = [];
-        foreach ($product->getProductUnits() as $unit) {
-            $size = $unit->getSize()->getName();
-            $sizes[$size] = $unit->getId();
-            // disable items without stock
-            if (!$unit->getStock()) {
-                $attr[$size] = ['disabled' => true];
+
+        foreach ($units as $unit) {
+            $sizes[$unit['size']] = $unit['id'];
+
+            if (!$unit['stock']) {
+                $attr[$unit['size']] = ['disabled' => true];
             }
         }
 
