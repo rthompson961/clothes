@@ -54,12 +54,12 @@ class CheckoutController extends AbstractController
 
             // find total order cost
             $basket = $this->get('session')->get('basket');
-            $basketItems = $this->getDoctrine()
+            $units = $this->getDoctrine()
                 ->getRepository(ProductUnit::class)
-                ->findBy(['id' => array_keys($basket)]);
+                ->findBasketUnits(array_keys($basket));
             $total = 0;
-            foreach ($basketItems as $item) {
-                $total += $item->getProduct()->getPrice();
+            foreach ($units as $unit) {
+                $total += $unit['price'];
             }
 
             $endpoint = 'https://apitest.authorize.net/xml/v1/request.api';
@@ -112,7 +112,7 @@ class CheckoutController extends AbstractController
                 if (!$address) {
                     throw new \Exception('Could not find address');
                 }
-                $status  = $this->getDoctrine()->getRepository(OrderStatus::class)->findOneBy(['id' => 1]);
+                $status = $this->getDoctrine()->getRepository(OrderStatus::class)->findOneBy(['id' => 1]);
                 if (!$status) {
                     throw new \Exception('Could not find order status');
                 }
@@ -129,19 +129,25 @@ class CheckoutController extends AbstractController
                 $entityManager->persist($order);
 
                 $inStock = true;
-                foreach ($basketItems as $item) {
-                    if ($item->getStock() === 0) {
+                foreach ($units as $unit) {
+                    if (!$basket[$unit['id']]) {
                         $inStock = false;
                     }
 
+                    $object = $this->getDoctrine()
+                        ->getRepository(ProductUnit::class)
+                        ->findOneBy(['id' => $unit['id']]);
+                    if (!$object) {
+                        throw new \Exception('Could not find product unit');
+                    }
                     // insert order items into database
-                    $orderItem = new OrderItem();
-                    $orderItem->setOrder($order);
-                    $orderItem->setProductUnit($item);
-                    $orderItem->setPrice($item->getProduct()->getPrice());
-                    $orderItem->setQuantity($basket[$item->getId()]);
+                    $item = new OrderItem();
+                    $item->setOrder($order);
+                    $item->setProductUnit($object);
+                    $item->setPrice($unit['price']);
+                    $item->setQuantity($basket[$unit['id']]);
 
-                    $entityManager->persist($orderItem);
+                    $entityManager->persist($item);
                 }
 
                 if ($inStock) {
