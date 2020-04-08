@@ -13,7 +13,6 @@ class AddressFixtures extends Fixture implements DependentFixtureInterface
     {
         $address = new Address();
         $address->setUser($this->getReference('user-test'));
-        $address->setCountry($this->getReference('country-uk'));
         $address->setAddress1('Street test');
         $address->setAddress2('Town test');
         $address->setCounty('County test');
@@ -26,9 +25,6 @@ class AddressFixtures extends Fixture implements DependentFixtureInterface
 
     public function getDependencies(): array
     {
-        return [
-            UserFixtures::class,
-            CountryFixtures::class
-        ];
+        return [UserFixtures::class];
     }
 }

@@ -23,12 +23,6 @@ class Address
     private User $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Country")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private Country $country;
-
-    /**
      * @ORM\Column(type="string", length=50)
      */
     private string $address1;
@@ -66,18 +60,6 @@ class Address
     public function setUser(User $user): self
     {
         $this->user = $user;
-
-        return $this;
-    }
-
-    public function getCountry(): Country
-    {
-        return $this->country;
-    }
-
-    public function setCountry(Country $country): self
-    {
-        $this->country = $country;
 
         return $this;
     }
