@@ -41,6 +41,6 @@ class SecurityControllerTest extends WebTestCase
         $form['password'] = 'wrong';
         $crawler = $this->client->submit($form);
 
-        $this->assertRouteSame('app_login');
+        $this->assertRouteSame('login');
     }
 }

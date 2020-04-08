@@ -18,11 +18,11 @@
     <div id="header-right">
         {% if is_granted('ROLE_USER') %}
             <p><b>Hello,</b> {{ app.user.email }}</p>
-            <p><a href="{{ path('app_logout') }}">Logout</a></p> 
+            <p><a href="{{ path('logout') }}">Logout</a></p> 
         {% else %}
             <p><b>Hello,</b> Guest</p>
             <p>
-                <a href="{{ path('app_login') }}">Login</a> | 
+                <a href="{{ path('login') }}">Login</a> | 
                 <a href="{{ path('register') }}">Register</a>
             </p>          
         {% endif %}
