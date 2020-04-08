@@ -29,6 +29,7 @@ class ProductUnitRepository extends ServiceEntityRepository
             ->addSelect('p.name')
             ->addSelect('s.name as size')
             ->addSelect('p.price')
+            ->addSelect('u.stock')
             ->innerJoin('u.product', 'p')
             ->innerJoin('u.size', 's');
         $qb->where($qb->expr()->in('u.id', $basket));

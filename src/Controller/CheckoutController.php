@@ -31,7 +31,6 @@ class CheckoutController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // find total order cost
             $basket = $this->get('session')->get('basket');
             $units = $this->getDoctrine()
                 ->getRepository(ProductUnit::class)
@@ -68,20 +67,20 @@ class CheckoutController extends AbstractController
 
                 $inStock = true;
                 foreach ($units as $unit) {
-                    if (!$basket[$unit['id']]) {
+                    if (!$unit['stock']) {
                         $inStock = false;
                     }
 
-                    $object = $this->getDoctrine()
+                    $productUnit = $this->getDoctrine()
                         ->getRepository(ProductUnit::class)
                         ->findOneBy(['id' => $unit['id']]);
-                    if (!$object) {
+                    if (!$productUnit) {
                         throw new \Exception('Could not find product unit');
                     }
                     // insert order items into database
                     $item = new OrderItem();
                     $item->setOrder($order);
-                    $item->setProductUnit($object);
+                    $item->setProductUnit($productUnit);
                     $item->setPrice($unit['price']);
                     $item->setQuantity($basket[$unit['id']]);
 
@@ -89,13 +88,13 @@ class CheckoutController extends AbstractController
                 }
 
                 if ($inStock) {
+                    // complete database transaction
                     $entityManager->flush();
 
                     // empty basket
                     $this->get('session')->remove('basket');
                     $this->get('session')->remove('basket_count');
 
-                    // redirect
                     $this->addFlash('order', 'Thank you for your order!');
                     return $this->redirectToRoute('shop');
                 } else {
