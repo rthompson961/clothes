@@ -21,7 +21,10 @@
             <p><a href="{{ path('app_logout') }}">Logout</a></p> 
         {% else %}
             <p><b>Hello,</b> Guest</p>
-            <p><a href="{{ path('app_login') }}">Login</a></p>          
+            <p>
+                <a href="{{ path('app_login') }}">Login</a> | 
+                <a href="{{ path('register') }}">Register</a>
+            </p>          
         {% endif %}
         <p>
             <a class="basket" href="{{ path('basket') }}">
