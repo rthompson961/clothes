@@ -15,7 +15,6 @@ class CheckoutType extends AbstractType
         $sandbox['expiry'] = '1220';
         $sandbox['cvs']    = '999';
 
-        //$formBuilder = $this->createFormBuilder();
         $builder->add('card', NumberType::class, [
             'label' => 'Card Number',
             'attr' => ['value' => $sandbox['card']]
