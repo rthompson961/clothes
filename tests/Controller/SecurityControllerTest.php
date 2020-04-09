@@ -53,8 +53,8 @@ class SecurityControllerTest extends WebTestCase
     public function assertionProvider(): array
     {
         $domain = '@gmail.com';
-        $maxEmail = 180;
-        $maxPass = 50;
+        $max['email'] = 180;
+        $max['pass'] = 50;
 
         return [
             [
@@ -70,14 +70,14 @@ class SecurityControllerTest extends WebTestCase
                  1
             ],
             [
-                str_repeat("a", $maxEmail + 1 - strlen($domain)) . $domain,
+                str_repeat("a", $max['email'] + 1 - strlen($domain)) . $domain,
                 'password',
                 'This value is too long. It should have 180 characters or less.',
                  1
             ],
             [
                 'user@gmail.com',
-                str_repeat("a", $maxPass + 1),
+                str_repeat("a", $max['pass'] + 1),
                 'This value is too long. It should have 50 characters or less.',
                  1
             ],
