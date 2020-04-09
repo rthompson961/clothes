@@ -69,7 +69,8 @@ class CheckoutControllerTest extends WebTestCase
 
     public function assertionProvider(): array
     {
-        $max = str_repeat("a", 51);
+        $overflow = str_repeat("a", 51);
+        $maxPostcode = 15;
 
         return [
             [
@@ -84,9 +85,9 @@ class CheckoutControllerTest extends WebTestCase
             ],
             [
                 [
-                    'address1' => $max,
-                    'address2' => $max,
-                    'county'   => $max,
+                    'address1' => $overflow,
+                    'address2' => $overflow,
+                    'county'   => $overflow,
                     'postcode' => 'ab123cd'
                 ],
                 'This value is too long. It should have 50 characters or less.',
@@ -97,7 +98,7 @@ class CheckoutControllerTest extends WebTestCase
                     'address1' => 'house',
                     'address2' => 'street',
                     'county'   => 'county',
-                    'postcode' => str_repeat("a", 16)
+                    'postcode' => str_repeat("a", $maxPostcode + 1)
                 ],
                 'This value is too long. It should have 15 characters or less.',
                 1
