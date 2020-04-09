@@ -4,6 +4,7 @@ namespace App\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 
 class CheckoutControllerTest extends WebTestCase
 {
@@ -123,6 +124,39 @@ class CheckoutControllerTest extends WebTestCase
 
         $this->assertSelectorTextSame('#address_new li', $error);
         $this->assertEquals($count, $crawler->filter('#address_new  li')->count());
+    }
+
+    public function testAddressSelectSuccess(): void
+    {
+        // add product to basket
+        $this->client->request('GET', '/add/1/1');
+
+        $crawler = $this->client->request('GET', '/address_select');
+
+        $form = $crawler->selectButton('address_select[submit]')->form();
+        $form['address_select[address]'] = '1';
+        $crawler = $this->client->submit($form);
+
+        $this->assertResponseRedirects('/payment');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testAddressSelectFailure(): void
+    {
+        $missingId = '3'; // 1 = data fixture, 2 = added in earlier test
+
+        // add product to basket
+        $this->client->request('GET', '/add/1/1');
+
+        $crawler = $this->client->request('GET', '/address_select');
+
+        $form = $crawler->selectButton('address_select[submit]')->form();
+        $form['address_select[address]'] = $missingId;
+        $crawler = $this->client->submit($form);
+
+        $this->expectException(InvalidArgumentException::class);
     }
 
     public function testCardFailure(): void
