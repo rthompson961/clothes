@@ -159,37 +159,45 @@ class CheckoutControllerTest extends WebTestCase
         $this->expectException(InvalidArgumentException::class);
     }
 
-    public function testCardFailure(): void
+    public function testPaymentSuccess(): void
     {
-        $this->markTestIncomplete('This test needs to be updated');
-
         // add product
         $this->client->request('GET', '/add/1/1');
 
-        $crawler = $this->client->request('GET', '/checkout');
-        $form = $crawler->selectButton('checkout[submit]')->form();
-        $form['checkout[card]']    = $this->sandbox['card_failure'];
-        $form['checkout[expiry]']  = $this->sandbox['expiry'];
-        $form['checkout[cvs]']     = $this->sandbox['cvs'];
+        // select address
+        $crawler = $this->client->request('GET', '/address_select');
+        $form = $crawler->selectButton('address_select[submit]')->form();
+        $form['address_select[address]'] = '1';
         $crawler = $this->client->submit($form);
 
-        $this->assertRouteSame('checkout');
-    }
-
-    public function testCardSuccess(): void
-    {
-        $this->markTestIncomplete('This test needs to be updated');
-
-        // add product
-        $this->client->request('GET', '/add/1/1');
-
-        $crawler = $this->client->request('GET', '/checkout');
-        $form = $crawler->selectButton('checkout[submit]')->form();
-        $form['checkout[card]']    = $this->sandbox['card_success'];
-        $form['checkout[expiry]']  = $this->sandbox['expiry'];
-        $form['checkout[cvs]']     = $this->sandbox['cvs'];
+        $crawler = $this->client->request('GET', '/payment');
+        $form = $crawler->selectButton('payment[submit]')->form();
+        $form['payment[card]']    = $this->sandbox['card_success'];
+        $form['payment[expiry]']  = $this->sandbox['expiry'];
+        $form['payment[cvs]']     = $this->sandbox['cvs'];
         $crawler = $this->client->submit($form);
 
         $this->assertResponseRedirects('/shop');
+    }
+
+    public function testPaymentFailure(): void
+    {
+        // add product
+        $this->client->request('GET', '/add/1/1');
+
+        // select address
+        $crawler = $this->client->request('GET', '/address_select');
+        $form = $crawler->selectButton('address_select[submit]')->form();
+        $form['address_select[address]'] = '1';
+        $crawler = $this->client->submit($form);
+
+        $crawler = $this->client->request('GET', '/payment');
+        $form = $crawler->selectButton('payment[submit]')->form();
+        $form['payment[card]']    = $this->sandbox['card_failure'];
+        $form['payment[expiry]']  = $this->sandbox['expiry'];
+        $form['payment[cvs]']     = $this->sandbox['cvs'];
+        $crawler = $this->client->submit($form);
+
+        $this->assertRouteSame('payment');
     }
 }
