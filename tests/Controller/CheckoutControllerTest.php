@@ -39,7 +39,6 @@ class CheckoutControllerTest extends WebTestCase
     {
         // destroy session
         $this->client->restart();
-
         $this->client->request('GET', '/' . $page);
         $this->assertResponseRedirects('/login');
     }
@@ -51,6 +50,77 @@ class CheckoutControllerTest extends WebTestCase
     {
         $this->client->request('GET', '/' . $page);
         $this->assertResponseRedirects('/basket');
+    }
+
+    public function testAddressNewSuccess(): void
+    {
+        $crawler = $this->client->request('GET', '/address_new');
+
+        $form = $crawler->selectButton('address_new[submit]')->form();
+        $form['address_new[address1]'] = '1 street';
+        $form['address_new[address2]'] = 'neighbourhood';
+        $form['address_new[address3]'] = 'town';
+        $form['address_new[county]']   = 'county';
+        $form['address_new[postcode]'] = 'ab123cd';
+        $crawler = $this->client->submit($form);
+
+        $this->assertResponseRedirects('/address_select');
+    }
+
+    public function assertionProvider(): array
+    {
+        $max = str_repeat("a", 51);
+
+        return [
+            [
+                [
+                    'address1' => '',
+                    'address2' => '',
+                    'county'   => '',
+                    'postcode' => ''
+                ],
+                'This value should not be blank.',
+                4
+            ],
+            [
+                [
+                    'address1' => $max,
+                    'address2' => $max,
+                    'county'   => $max,
+                    'postcode' => 'ab123cd'
+                ],
+                'This value is too long. It should have 50 characters or less.',
+                3
+            ],
+            [
+                [
+                    'address1' => 'house',
+                    'address2' => 'street',
+                    'county'   => 'county',
+                    'postcode' => str_repeat("a", 16)
+                ],
+                'This value is too long. It should have 15 characters or less.',
+                1
+            ],
+        ];
+    }
+
+   /**
+     * @dataProvider assertionProvider
+     */
+    public function testAddressNewAssertions(array $vals, string $error, int $count): void
+    {
+        $crawler = $this->client->request('GET', '/address_new');
+
+        $form = $crawler->selectButton('address_new[submit]')->form();
+        $form['address_new[address1]'] = $vals['address1'];
+        $form['address_new[address2]'] = $vals['address2'];
+        $form['address_new[county]']   = $vals['county'];
+        $form['address_new[postcode]'] = $vals['postcode'];
+        $crawler = $this->client->submit($form);
+
+        $this->assertSelectorTextSame('#address_new li', $error);
+        $this->assertEquals($count, $crawler->filter('#address_new  li')->count());
     }
 
     public function testCardFailure(): void
@@ -73,7 +143,7 @@ class CheckoutControllerTest extends WebTestCase
     public function testCardSuccess(): void
     {
         $this->markTestIncomplete('This test needs to be updated');
-        
+
         // add product
         $this->client->request('GET', '/add/1/1');
 
