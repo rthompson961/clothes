@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Select Address{% endblock %}
+
+{% block body %}
+    <h2>Select Address</h2>
+
+    <p><a href="{{ path('address_new') }}">Add new address</a></p>
+
+    {{ form(form, {'attr': {'novalidate': 'novalidate'}}) }}
+{% endblock %}

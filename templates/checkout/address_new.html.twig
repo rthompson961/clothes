@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Address{% endblock %}
+
+{% block body %}
+    <h2>New Address</h2>
+
+    {{ form(form, {'attr': {'novalidate': 'novalidate'}}) }}
+{% endblock %}

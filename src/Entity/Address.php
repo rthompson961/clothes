@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AddressRepository")
@@ -23,14 +24,18 @@ class Address
     private User $user;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=50, nullable=true)
+     * @Assert\NotBlank
+     * @Assert\Length(max = 50)
      */
-    private string $address1;
+    private ?string $address1 = null;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=50, nullable=true)
+     * @Assert\NotBlank
+     * @Assert\Length(max = 50)
      */
-    private string $address2;
+    private ?string $address2 = null;
 
     /**
      * @ORM\Column(type="string", length=50, nullable=true)
@@ -38,14 +43,18 @@ class Address
     private ?string $address3 = null;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=50, nullable=true)
+     * @Assert\NotBlank
+     * @Assert\Length(max = 50)
      */
-    private string $county;
+    private ?string $county = null;
 
     /**
-     * @ORM\Column(type="string", length=15)
+     * @ORM\Column(type="string", length=15, nullable=true)
+     * @Assert\NotBlank
+     * @Assert\Length(max = 15)
      */
-    private string $postcode;
+    private ?string $postcode = null;
 
     public function getId(): ?int
     {
@@ -64,7 +73,7 @@ class Address
         return $this;
     }
 
-    public function getAddress1(): string
+    public function getAddress1(): ?string
     {
         return $this->address1;
     }
@@ -76,7 +85,7 @@ class Address
         return $this;
     }
 
-    public function getAddress2(): string
+    public function getAddress2(): ?string
     {
         return $this->address2;
     }
@@ -100,7 +109,7 @@ class Address
         return $this;
     }
 
-    public function getCounty(): string
+    public function getCounty(): ?string
     {
         return $this->county;
     }
@@ -112,7 +121,7 @@ class Address
         return $this;
     }
 
-    public function getPostcode(): string
+    public function getPostcode(): ?string
     {
         return $this->postcode;
     }
