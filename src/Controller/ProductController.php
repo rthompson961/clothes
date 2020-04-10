@@ -4,9 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Entity\ProductUnit;
+use App\Form\Type\ProductType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,42 +17,10 @@ class ProductController extends AbstractController
      */
     public function index(Product $product, Request $request): Response
     {
-        // Get each size for the current product
-        $units = $this->getDoctrine()
-            ->getRepository(ProductUnit::class)
-            ->findProductUnits((int) $product->getId());
-        $sizes = [];
-        $attr  = [];
-
-        foreach ($units as $unit) {
-            $sizes[$unit['size']] = $unit['id'];
-
-            if (!$unit['stock']) {
-                $attr[$unit['size']] = ['disabled' => true];
-            }
-        }
-
-        // list of 1 to 10 for quantity selection
-        $quantities = [];
-        for ($i = 1; $i <= 10; $i++) {
-            $quantities[$i] = $i;
-        }
-
         // Build the form
-        $formBuilder = $this->createFormBuilder(null, ['method' => 'post']);
-        $formBuilder->add('product', ChoiceType::class, [
-            'choices'  => $sizes,
-            'choice_attr' => $attr,
-            'placeholder' => 'Choose Size',
-            'label' => false
+        $form = $this->createForm(ProductType::class, null, [
+            'product' => $product->getId()
         ]);
-        $formBuilder->add('quantity', ChoiceType::class, [
-            'choices'  => $quantities,
-            'label' => false
-        ]);
-        $formBuilder->add('submit', SubmitType::class, ['label' => 'Add to Basket']);
-        $form = $formBuilder->getForm();
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -66,9 +33,9 @@ class ProductController extends AbstractController
         }
 
         return $this->render('product/index.html.twig', [
-            'title' => $product->getName(),
+            'title'   => $product->getName(),
             'product' => $product,
-            'form' => $form->createView()
+            'form'    => $form->createView()
         ]);
     }
 }

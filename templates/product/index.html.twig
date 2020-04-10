@@ -13,9 +13,7 @@
     <p><b>Colour:</b> {{ product.colour.name }}</p>
     <p><b>Brand:</b> {{ product.brand.name }}</p>
     
-    {{ form_start(form) }}
-        {{ form_widget(form) }}
-    {{ form_end(form) }}
+    {{ form(form) }}
     
     {% if product.productGroup.products is defined %}
         <p>Other colours:</p>
