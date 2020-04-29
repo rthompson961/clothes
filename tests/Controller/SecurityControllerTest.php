@@ -63,9 +63,9 @@ class SecurityControllerTest extends WebTestCase
 
     public function validationProvider(): array
     {
-        $domain = '@gmail.com';
         $max['email'] = 180;
-        $max['pass'] = 50;
+        $max['pass']  = 50;
+        $domain = '@gmail.com';
 
         return [
             [
@@ -79,13 +79,13 @@ class SecurityControllerTest extends WebTestCase
                 'This value is not a valid email address.'
             ],
             [
-                str_repeat("a", $max['email'] + 1 - strlen($domain)) . $domain,
+                str_repeat('a', $max['email'] + 1 - strlen($domain)) . $domain,
                 'password',
                 'This value is too long. It should have 180 characters or less.'
             ],
             [
                 'user@gmail.com',
-                str_repeat("a", $max['pass'] + 1),
+                str_repeat('a', $max['pass'] + 1),
                 'This value is too long. It should have 50 characters or less.'
             ],
             [
