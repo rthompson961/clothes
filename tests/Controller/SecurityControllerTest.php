@@ -17,11 +17,10 @@ class SecurityControllerTest extends WebTestCase
     public function testLoginSuccess(): void
     {
         $crawler = $this->client->request('GET', '/login');
-
-        $form = $crawler->selectButton('submit')->form();
-        $form['email'] = 'user@user.com';
-        $form['password'] = 'pass';
-        $crawler = $this->client->submit($form);
+        $crawler = $this->client->submitForm('submit', [
+            'email'    => 'user@user.com',
+            'password' => 'pass'
+        ]);
 
         $this->assertResponseRedirects('/');
     }
@@ -29,11 +28,10 @@ class SecurityControllerTest extends WebTestCase
     public function testLoginFailue(): void
     {
         $crawler = $this->client->request('GET', '/login');
-
-        $form = $crawler->selectButton('submit')->form();
-        $form['email'] = 'incorrect@user.com';
-        $form['password'] = 'wrong';
-        $crawler = $this->client->submit($form);
+        $crawler = $this->client->submitForm('submit', [
+            'email'    => 'incorrect@user.com',
+            'password' => 'wrong'
+        ]);
 
         $this->assertRouteSame('login');
     }
@@ -41,13 +39,31 @@ class SecurityControllerTest extends WebTestCase
     public function testRegisterSuccess(): void
     {
         $crawler = $this->client->request('GET', '/register');
-
-        $form = $crawler->selectButton('register[submit]')->form();
-        $form['register[email]'] = 'user@gmail.com';
-        $form['register[password]'] = 'password';
-        $crawler = $this->client->submit($form);
+        $crawler = $this->client->submitForm('register[submit]', [
+            'register[email]'    => 'user@gmail.com',
+            'register[password]' => 'password'
+        ]);
 
         $this->assertResponseRedirects('/');
+    }
+
+   /**
+     * @dataProvider assertionProvider
+     */
+    public function testRegisterAssertions(
+        string $email,
+        string $pass,
+        string $error,
+        int    $count
+    ): void {
+        $crawler = $this->client->request('GET', '/register');
+        $crawler = $this->client->submitForm('register[submit]', [
+            'register[email]'    => $email,
+            'register[password]' => $pass
+        ]);
+
+        $this->assertSelectorTextSame('#register li', $error);
+        $this->assertEquals($count, $crawler->filter('#register li')->count());
     }
 
     public function assertionProvider(): array
@@ -88,25 +104,5 @@ class SecurityControllerTest extends WebTestCase
                  1
             ],
         ];
-    }
-
-   /**
-     * @dataProvider assertionProvider
-     */
-    public function testRegisterAssertions(
-        string $email,
-        string $pass,
-        string $error,
-        int    $count
-    ): void {
-        $crawler = $this->client->request('GET', '/register');
-
-        $form = $crawler->selectButton('register[submit]')->form();
-        $form['register[email]'] = $email;
-        $form['register[password]'] = $pass;
-        $crawler = $this->client->submit($form);
-
-        $this->assertSelectorTextSame('#register li', $error);
-        $this->assertEquals($count, $crawler->filter('#register li')->count());
     }
 }
