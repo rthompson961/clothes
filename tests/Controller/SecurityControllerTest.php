@@ -48,13 +48,10 @@ class SecurityControllerTest extends WebTestCase
     }
 
    /**
-     * @dataProvider assertionProvider
+     * @dataProvider validationProvider
      */
-    public function testRegisterAssertions(
-        string $email,
-        string $pass,
-        string $error
-    ): void {
+    public function testRegisterValidation(string $email, string $pass, string $error): void
+    {
         $crawler = $this->client->request('GET', '/register');
         $crawler = $this->client->submitForm('register[submit]', [
             'register[email]'    => $email,
@@ -64,7 +61,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertSelectorTextSame('#register li', $error);
     }
 
-    public function assertionProvider(): array
+    public function validationProvider(): array
     {
         $domain = '@gmail.com';
         $max['email'] = 180;
