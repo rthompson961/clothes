@@ -74,7 +74,7 @@ class ShopControllerTest extends WebTestCase
         $this->assertEquals('?page=11&sort=low', $links->last()->attr('href'));
     }
 
-    public function testShopWithFilters(): void
+    public function testWithFilters(): void
     {
         $crawler = $this->client->request('GET', '/shop?page=5&sort=name&category[]=6&category[]=7');
 
