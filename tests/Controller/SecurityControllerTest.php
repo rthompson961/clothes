@@ -25,7 +25,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertResponseRedirects('/');
     }
 
-    public function testLoginFailue(): void
+    public function testLoginFailure(): void
     {
         $crawler = $this->client->request('GET', '/login');
         $crawler = $this->client->submitForm('submit', [
