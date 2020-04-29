@@ -36,6 +36,7 @@ class CheckoutControllerTest extends WebTestCase
         // destroy session
         $this->client->restart();
         $this->client->request('GET', '/' . $page);
+
         $this->assertResponseRedirects('/login');
     }
 
@@ -45,6 +46,7 @@ class CheckoutControllerTest extends WebTestCase
     public function testNoBasketRedirect(string $page): void
     {
         $this->client->request('GET', '/' . $page);
+        
         $this->assertResponseRedirects('/basket');
     }
 
