@@ -53,8 +53,7 @@ class SecurityControllerTest extends WebTestCase
     public function testRegisterAssertions(
         string $email,
         string $pass,
-        string $error,
-        int    $count
+        string $error
     ): void {
         $crawler = $this->client->request('GET', '/register');
         $crawler = $this->client->submitForm('register[submit]', [
@@ -63,7 +62,6 @@ class SecurityControllerTest extends WebTestCase
         ]);
 
         $this->assertSelectorTextSame('#register li', $error);
-        $this->assertEquals($count, $crawler->filter('#register li')->count());
     }
 
     public function assertionProvider(): array
@@ -76,32 +74,27 @@ class SecurityControllerTest extends WebTestCase
             [
                 '',
                 '',
-                'This value should not be blank.',
-                2
+                'This value should not be blank.'
             ],
             [
                 'user.gmail.com',
                 'password',
-                'This value is not a valid email address.',
-                 1
+                'This value is not a valid email address.'
             ],
             [
                 str_repeat("a", $max['email'] + 1 - strlen($domain)) . $domain,
                 'password',
-                'This value is too long. It should have 180 characters or less.',
-                 1
+                'This value is too long. It should have 180 characters or less.'
             ],
             [
                 'user@gmail.com',
                 str_repeat("a", $max['pass'] + 1),
-                'This value is too long. It should have 50 characters or less.',
-                 1
+                'This value is too long. It should have 50 characters or less.'
             ],
             [
                 'user@gmail.com',
                 'passwor',
-                'This value is too short. It should have 8 characters or more.',
-                 1
+                'This value is too short. It should have 8 characters or more.'
             ],
         ];
     }
