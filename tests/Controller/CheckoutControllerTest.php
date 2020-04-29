@@ -15,17 +15,17 @@ class CheckoutControllerTest extends WebTestCase
     {
         $this->client = static::createClient();
 
-        $this->sandbox['card_success'] = '5424000000000015';
-        $this->sandbox['card_failure'] = '5424000000000010';
+        $this->sandbox['card_valid']   = '5424000000000015';
+        $this->sandbox['card_invalid'] = '5424000000000010';
         $this->sandbox['expiry']       = '1220';
         $this->sandbox['cvs']          = '999';
 
         // login
         $crawler = $this->client->request('GET', '/login');
-        $form = $crawler->selectButton('submit')->form();
-        $form['email']    = 'user@user.com';
-        $form['password'] = 'pass';
-        $crawler = $this->client->submit($form);
+        $crawler = $this->client->submitForm('submit', [
+            'email'    => 'user@user.com',
+            'password' => 'pass'
+        ]);
     }
 
     public function pageProvider(): array
@@ -56,14 +56,13 @@ class CheckoutControllerTest extends WebTestCase
     public function testAddressNewSuccess(): void
     {
         $crawler = $this->client->request('GET', '/address_new');
-
-        $form = $crawler->selectButton('address_new[submit]')->form();
-        $form['address_new[address1]'] = '1 street';
-        $form['address_new[address2]'] = 'neighbourhood';
-        $form['address_new[address3]'] = 'town';
-        $form['address_new[county]']   = 'county';
-        $form['address_new[postcode]'] = 'ab123cd';
-        $crawler = $this->client->submit($form);
+        $crawler = $this->client->submitForm('address_new[submit]', [
+            'address_new[address1]' => '1 street',
+            'address_new[address2]' => 'neighbourhood',
+            'address_new[address3]' => 'town',
+            'address_new[county]'   => 'county',
+            'address_new[postcode]' => 'ab123cd',
+        ]);
 
         $this->assertResponseRedirects('/address_select');
     }
@@ -114,13 +113,12 @@ class CheckoutControllerTest extends WebTestCase
     public function testAddressNewAssertions(array $vals, string $error, int $count): void
     {
         $crawler = $this->client->request('GET', '/address_new');
-
-        $form = $crawler->selectButton('address_new[submit]')->form();
-        $form['address_new[address1]'] = $vals['address1'];
-        $form['address_new[address2]'] = $vals['address2'];
-        $form['address_new[county]']   = $vals['county'];
-        $form['address_new[postcode]'] = $vals['postcode'];
-        $crawler = $this->client->submit($form);
+        $crawler = $this->client->submitForm('address_new[submit]', [
+            'address_new[address1]' => $vals['address1'],
+            'address_new[address2]' => $vals['address2'],
+            'address_new[county]'   => $vals['county'],
+            'address_new[postcode]' => $vals['postcode'],
+        ]);
 
         $this->assertSelectorTextSame('#address_new li', $error);
         $this->assertEquals($count, $crawler->filter('#address_new  li')->count());
@@ -130,12 +128,10 @@ class CheckoutControllerTest extends WebTestCase
     {
         // add product to basket
         $this->client->request('GET', '/add/1/1');
-
         $crawler = $this->client->request('GET', '/address_select');
-
-        $form = $crawler->selectButton('address_select[submit]')->form();
-        $form['address_select[address]'] = '1';
-        $crawler = $this->client->submit($form);
+        $crawler = $this->client->submitForm('address_select[submit]', [
+            'address_select[address]' => '1'
+        ]);
 
         $this->assertResponseRedirects('/payment');
     }
@@ -149,12 +145,10 @@ class CheckoutControllerTest extends WebTestCase
 
         // add product to basket
         $this->client->request('GET', '/add/1/1');
-
         $crawler = $this->client->request('GET', '/address_select');
-
-        $form = $crawler->selectButton('address_select[submit]')->form();
-        $form['address_select[address]'] = $missingId;
-        $crawler = $this->client->submit($form);
+        $crawler = $this->client->submitForm('address_select[submit]', [
+            'address_select[address]' => $missingId
+        ]);
 
         $this->expectException(InvalidArgumentException::class);
     }
@@ -166,16 +160,17 @@ class CheckoutControllerTest extends WebTestCase
 
         // select address
         $crawler = $this->client->request('GET', '/address_select');
-        $form = $crawler->selectButton('address_select[submit]')->form();
-        $form['address_select[address]'] = '1';
-        $crawler = $this->client->submit($form);
+        $crawler = $this->client->submitForm('address_select[submit]', [
+            'address_select[address]' => '1'
+        ]);
 
+        // card info
         $crawler = $this->client->request('GET', '/payment');
-        $form = $crawler->selectButton('payment[submit]')->form();
-        $form['payment[card]']    = $this->sandbox['card_success'];
-        $form['payment[expiry]']  = $this->sandbox['expiry'];
-        $form['payment[cvs]']     = $this->sandbox['cvs'];
-        $crawler = $this->client->submit($form);
+        $crawler = $this->client->submitForm('payment[submit]', [
+            'payment[card]'   => $this->sandbox['card_valid'],
+            'payment[expiry]' => $this->sandbox['expiry'],
+            'payment[cvs]'    => $this->sandbox['cvs'],
+        ]);
 
         $this->assertResponseRedirects('/shop');
     }
@@ -187,16 +182,17 @@ class CheckoutControllerTest extends WebTestCase
 
         // select address
         $crawler = $this->client->request('GET', '/address_select');
-        $form = $crawler->selectButton('address_select[submit]')->form();
-        $form['address_select[address]'] = '1';
-        $crawler = $this->client->submit($form);
+        $crawler = $this->client->submitForm('address_select[submit]', [
+            'address_select[address]' => '1'
+        ]);
 
+        // card info
         $crawler = $this->client->request('GET', '/payment');
-        $form = $crawler->selectButton('payment[submit]')->form();
-        $form['payment[card]']    = $this->sandbox['card_failure'];
-        $form['payment[expiry]']  = $this->sandbox['expiry'];
-        $form['payment[cvs]']     = $this->sandbox['cvs'];
-        $crawler = $this->client->submit($form);
+        $crawler = $this->client->submitForm('payment[submit]', [
+            'payment[card]'   => $this->sandbox['card_invalid'],
+            'payment[expiry]' => $this->sandbox['expiry'],
+            'payment[cvs]'    => $this->sandbox['cvs'],
+        ]);
 
         $this->assertRouteSame('payment');
     }
