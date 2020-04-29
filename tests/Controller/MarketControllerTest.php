@@ -10,6 +10,7 @@ class MarketControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $crawler = $client->request('GET', '/market');
+        
         $this->assertEquals(8, $crawler->filter('div.ebay')->count());
     }
 }

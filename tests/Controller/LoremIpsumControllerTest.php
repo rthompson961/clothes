@@ -14,6 +14,7 @@ class LoremIpsumControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $client->request('GET', '/' . $page);
+        
         $this->assertResponseIsSuccessful();
     }
 
