@@ -15,11 +15,6 @@ class CheckoutControllerTest extends WebTestCase
     {
         $this->client = static::createClient();
 
-        $this->sandbox['card_valid']   = '5424000000000015';
-        $this->sandbox['card_invalid'] = '5424000000000010';
-        $this->sandbox['expiry']       = '1220';
-        $this->sandbox['cvs']          = '999';
-
         // login
         $crawler = $this->client->request('GET', '/login');
         $crawler = $this->client->submitForm('submit', [
@@ -46,7 +41,7 @@ class CheckoutControllerTest extends WebTestCase
     public function testNoBasketRedirect(string $page): void
     {
         $this->client->request('GET', '/' . $page);
-        
+
         $this->assertResponseRedirects('/basket');
     }
 
@@ -155,8 +150,13 @@ class CheckoutControllerTest extends WebTestCase
         $this->expectException(InvalidArgumentException::class);
     }
 
-    public function testPaymentSuccess(): void
+   /**
+     * @dataProvider cardProvider
+     */
+    public function testPayment(array $card, string $route): void
     {
+        $this->client->followRedirects();
+
         // add product
         $this->client->request('GET', '/add/1/1');
 
@@ -165,37 +165,29 @@ class CheckoutControllerTest extends WebTestCase
         $crawler = $this->client->submitForm('address_select[submit]', [
             'address_select[address]' => '1'
         ]);
-
+        
         // card info
         $crawler = $this->client->request('GET', '/payment');
         $crawler = $this->client->submitForm('payment[submit]', [
-            'payment[card]'   => $this->sandbox['card_valid'],
-            'payment[expiry]' => $this->sandbox['expiry'],
-            'payment[cvs]'    => $this->sandbox['cvs'],
+            'payment[card]'   => $card['number'],
+            'payment[expiry]' => $card['expiry'],
+            'payment[cvs]'    => $card['cvs'],
         ]);
 
-        $this->assertResponseRedirects('/shop');
+        $this->assertRouteSame($route);
     }
 
-    public function testPaymentFailure(): void
+    public function cardProvider(): array
     {
-        // add product
-        $this->client->request('GET', '/add/1/1');
-
-        // select address
-        $crawler = $this->client->request('GET', '/address_select');
-        $crawler = $this->client->submitForm('address_select[submit]', [
-            'address_select[address]' => '1'
-        ]);
-
-        // card info
-        $crawler = $this->client->request('GET', '/payment');
-        $crawler = $this->client->submitForm('payment[submit]', [
-            'payment[card]'   => $this->sandbox['card_invalid'],
-            'payment[expiry]' => $this->sandbox['expiry'],
-            'payment[cvs]'    => $this->sandbox['cvs'],
-        ]);
-
-        $this->assertRouteSame('payment');
+        return [
+            [
+                ['number' => '5424000000000015', 'expiry' => '1220', 'cvs' => '999'],
+                 'shop'
+            ], 
+            [
+                ['number' => '5424000000000010', 'expiry' => '1220', 'cvs' => '999'],
+                'payment'
+            ], 
+        ];
     }
 }
