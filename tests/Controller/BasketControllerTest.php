@@ -20,7 +20,7 @@ class BasketControllerTest extends WebTestCase
             ['id' => '2', 'quantity' => '1'],
         ];
         foreach ($values as $val) {
-            $this->client->request('GET', "/add/{$val['id']}/{$val['quantity']}");
+            $this->client->request('GET', "/basket_add/{$val['id']}/{$val['quantity']}");
         }
     }
 

@@ -38,11 +38,11 @@
                 <td>&pound;{{ (unit.price / 100)|number_format(2, '.', ',') }}</td>
                 <td>{{ unit.quantity }}</td>
                 <td>&pound;{{ (unit.subtotal / 100)|number_format(2, '.', ',') }}</td>
-                <td><a class="remove" href="{{ path('remove', {'id' : unit.id }) }}">❌</a></td>
+                <td><a class="remove" href="{{ path('basket_remove', {'id' : unit.id }) }}">❌</a></td>
             </tr>
             {% endfor %}
             <tr>
-                <th colspan="5"><a class="empty" href="{{ path('empty') }}"><button>Empty Basket</button></a></th>
+                <th colspan="5"><a class="empty" href="{{ path('basket_empty') }}"><button>Empty Basket</button></a></th>
                 <th class="total">&pound;{{ (total / 100)|number_format(2, '.', ',') }}</th>
             </tr>
         </table>

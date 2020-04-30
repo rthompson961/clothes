@@ -26,7 +26,7 @@ class ProductController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
 
-            return $this->redirectToRoute('add', [
+            return $this->redirectToRoute('basket_add', [
                 'id'       => $data['product'],
                 'quantity' => $data['quantity']
             ]);

@@ -130,7 +130,7 @@ class CheckoutControllerTest extends WebTestCase
     public function testSelectAddressSuccess(): void
     {
         // add product to basket
-        $this->client->request('GET', '/add/1/1');
+        $this->client->request('GET', '/basket_add/1/1');
 
         $crawler = $this->client->request('GET', '/address_select');
         $crawler = $this->client->submitForm('address_select[submit]', [
@@ -148,7 +148,7 @@ class CheckoutControllerTest extends WebTestCase
         $missingId = '3'; // 1 = data fixture, 2 = added in earlier test
 
         // add product to basket
-        $this->client->request('GET', '/add/1/1');
+        $this->client->request('GET', '/basket_add/1/1');
         $crawler = $this->client->request('GET', '/address_select');
         $crawler = $this->client->submitForm('address_select[submit]', [
             'address_select[address]' => $missingId
@@ -165,7 +165,7 @@ class CheckoutControllerTest extends WebTestCase
         $this->client->followRedirects();
 
         // add product
-        $this->client->request('GET', '/add/1/1');
+        $this->client->request('GET', '/basket_add/1/1');
 
         // select address
         $crawler = $this->client->request('GET', '/address_select');

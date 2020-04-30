@@ -38,7 +38,7 @@ class BasketController extends AbstractController
     }
 
     /**
-     * @Route("/add/{id}/{quantity}", name="add", requirements={"id"="\d+","quantity"="\d+"})
+     * @Route("/basket_add/{id}/{quantity}", name="basket_add", requirements={"id"="\d+","quantity"="\d+"})
      */
     public function add(int $id, int $quantity): RedirectResponse
     {
@@ -71,7 +71,7 @@ class BasketController extends AbstractController
     }
 
     /**
-     * @Route("/remove/{id}", name="remove", requirements={"id"="\d+"})
+     * @Route("/basket_remove/{id}", name="basket_remove", requirements={"id"="\d+"})
      */
     public function remove(int $id): RedirectResponse
     {
@@ -91,7 +91,7 @@ class BasketController extends AbstractController
     }
  
     /**
-     * @Route("/empty", name="empty")
+     * @Route("/basket_empty", name="basket_empty")
      */
     public function empty(): RedirectResponse
     {
