@@ -19,13 +19,13 @@ class BasketController extends AbstractController
         $total = 0;
         if ($this->get('session')->has('basket')) {
             $basket = $this->get('session')->get('basket');
-            $units = $this->getDoctrine()
+            $units  = $this->getDoctrine()
                 ->getRepository(ProductUnit::class)
                 ->findBasketUnits(array_keys($basket));
 
             foreach ($units as &$unit) {
-                $unit['quantity']   = $basket[$unit['id']];
-                $unit['subtotal']   = $unit['price'] * $unit['quantity'];
+                $unit['quantity'] = $basket[$unit['id']];
+                $unit['subtotal'] = $unit['price'] * $unit['quantity'];
 
                 $total += $unit['subtotal'];
             }
