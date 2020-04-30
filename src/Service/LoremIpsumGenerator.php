@@ -71,11 +71,11 @@ class LoremIpsumGenerator
             'dictum'
         ];
 
-        $count = mt_rand($min, $max);
+        $length = mt_rand($min, $max);
         $recentWords     = [];
         $recentWordSize  = 10;
-        $result          = '';
-        for ($i = 1; $i <= $count; $i++) {
+        $paragraph       = '';
+        for ($i = 1; $i <= $length; $i++) {
             $word = self::pickWord($wordList, $recentWords);
 
             // restrict recent words to appopriate size
@@ -90,14 +90,14 @@ class LoremIpsumGenerator
                 $word = ucfirst($word);
             } else {
                 // space before each word except first
-                $result .= ' ';
+                $paragraph .= ' ';
             }
 
-            $result .= $word;
+            $paragraph .= $word;
         }
-        $result .= '.';
+        $paragraph .= '.';
 
-        return $result;
+        return $paragraph;
     }
 
     public function pickWord(array $wordList, array $recentWords): string
