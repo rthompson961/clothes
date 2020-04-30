@@ -19,6 +19,31 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CheckoutController extends AbstractController
 {
+   /**
+     * @Route("/address_add", name="address_add")
+     */
+    public function addAddress(Request $request): Response
+    {
+        $address = new Address();
+
+        $form = $this->createForm(AddressAddType::class, $address);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $address = $form->getData();
+            $address->setUser($this->getUser());
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($address);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('address_select');
+        }
+
+        return $this->render('checkout/address_add.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
 
     /**
      * @Route("/address_select", name="address_select")
@@ -59,33 +84,6 @@ class CheckoutController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
-    /**
-     * @Route("/address_add", name="address_add")
-     */
-    public function addAddress(Request $request): Response
-    {
-        $address = new Address();
-
-        $form = $this->createForm(AddressAddType::class, $address);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $address = $form->getData();
-            $address->setUser($this->getUser());
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($address);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('address_select');
-        }
-
-        return $this->render('checkout/address_add.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-
 
     /**
      * @Route("/payment", name="payment")
