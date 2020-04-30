@@ -23,7 +23,7 @@ class CheckoutController extends AbstractController
     /**
      * @Route("/address_select", name="address_select")
      */
-    public function addressSelect(Request $request): Response
+    public function selectAddress(Request $request): Response
     {
         // do not allow checkout without items in basket
         if (!$this->get('session')->has('basket')) {

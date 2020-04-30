@@ -121,7 +121,7 @@ class CheckoutControllerTest extends WebTestCase
         ];
     }
 
-    public function testAddressSelectSuccess(): void
+    public function testSelectAddressSuccess(): void
     {
         // add product to basket
         $this->client->request('GET', '/add/1/1');
@@ -136,7 +136,7 @@ class CheckoutControllerTest extends WebTestCase
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testAddressSelectFailure(): void
+    public function testSelectAddressFailure(): void
     {
         $missingId = '3'; // 1 = data fixture, 2 = added in earlier test
 
