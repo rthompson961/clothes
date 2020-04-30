@@ -24,7 +24,7 @@ class CheckoutControllerTest extends WebTestCase
     }
 
    /**
-     * @dataProvider pageProvider
+     * @dataProvider membersOnlyPageProvider
      */
     public function testGuestRedirect(string $page): void
     {
@@ -35,8 +35,13 @@ class CheckoutControllerTest extends WebTestCase
         $this->assertResponseRedirects('/login');
     }
 
+    public function membersOnlyPageProvider(): array
+    {
+        return [['address_add'], ['address_select'], ['payment']];
+    }
+
    /**
-     * @dataProvider pageProvider
+     * @dataProvider nonEmptyBasketPageProvider
      */
     public function testNoBasketRedirect(string $page): void
     {
@@ -45,7 +50,7 @@ class CheckoutControllerTest extends WebTestCase
         $this->assertResponseRedirects('/basket');
     }
 
-    public function pageProvider(): array
+    public function nonEmptyBasketPageProvider(): array
     {
         return [['address_select'], ['payment']];
     }

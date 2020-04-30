@@ -20,6 +20,6 @@ security:
                 path: logout
                 target: home
     access_control:
-        - { path: ^/address_new, roles: ROLE_USER }
+        - { path: ^/address_add, roles: ROLE_USER }
         - { path: ^/address_select, roles: ROLE_USER }
         - { path: ^/payment, roles: ROLE_USER }
