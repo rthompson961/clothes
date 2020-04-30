@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Service\LoremIpsumHelper;
+use App\Service\LoremIpsumGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,7 +17,7 @@ class LoremIpsumController extends AbstractController
      * @Route("/terms", name="terms")
      * @Route("/returns", name="returns")
      */
-    public function index(string $_route, LoremIpsumHelper $loremIpsumHelper): Response
+    public function index(string $_route, LoremIpsumGenerator $ipsum): Response
     {
         switch ($_route) {
             case 'faq':
@@ -31,14 +31,14 @@ class LoremIpsumController extends AbstractController
                 break;
         }
 
-        $ipsum = [];
+        $text = [];
         for ($i = 1; $i <= 6; $i++) {
-            $ipsum[] = $loremIpsumHelper->getParagraph();
+            $text[] = $ipsum->getParagraph();
         }
         
         return $this->render('lorem_ipsum/index.html.twig', [
             'title' => $title,
-            'ipsum' => $ipsum
+            'text'  => $text
         ]);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-class LoremIpsumHelper
+class LoremIpsumGenerator
 {
     public function getParagraph(int $min = 80, int $max = 120): string
     {
