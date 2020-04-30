@@ -50,15 +50,15 @@ class CheckoutControllerTest extends WebTestCase
         return [['address_select'], ['payment']];
     }
 
-    public function testAddressNewSuccess(): void
+    public function testAddAddressSuccess(): void
     {
-        $crawler = $this->client->request('GET', '/address_new');
-        $crawler = $this->client->submitForm('address_new[submit]', [
-            'address_new[address1]' => '1 street',
-            'address_new[address2]' => 'neighbourhood',
-            'address_new[address3]' => 'town',
-            'address_new[county]'   => 'county',
-            'address_new[postcode]' => 'ab123cd',
+        $crawler = $this->client->request('GET', '/address_add');
+        $crawler = $this->client->submitForm('address_add[submit]', [
+            'address_add[address1]' => '1 street',
+            'address_add[address2]' => 'neighbourhood',
+            'address_add[address3]' => 'town',
+            'address_add[county]'   => 'county',
+            'address_add[postcode]' => 'ab123cd',
         ]);
 
         $this->assertResponseRedirects('/address_select');
@@ -67,18 +67,18 @@ class CheckoutControllerTest extends WebTestCase
    /**
      * @dataProvider validationProvider
      */
-    public function testAddressNewValidation(array $vals, string $error, int $count): void
+    public function testAddAddressValidation(array $vals, string $error, int $count): void
     {
-        $crawler = $this->client->request('GET', '/address_new');
-        $crawler = $this->client->submitForm('address_new[submit]', [
-            'address_new[address1]' => $vals['address1'],
-            'address_new[address2]' => $vals['address2'],
-            'address_new[county]'   => $vals['county'],
-            'address_new[postcode]' => $vals['postcode'],
+        $crawler = $this->client->request('GET', '/address_add');
+        $crawler = $this->client->submitForm('address_add[submit]', [
+            'address_add[address1]' => $vals['address1'],
+            'address_add[address2]' => $vals['address2'],
+            'address_add[county]'   => $vals['county'],
+            'address_add[postcode]' => $vals['postcode'],
         ]);
 
-        $this->assertSelectorTextSame('#address_new li', $error);
-        $this->assertEquals($count, $crawler->filter('#address_new  li')->count());
+        $this->assertSelectorTextSame('#address_add li', $error);
+        $this->assertEquals($count, $crawler->filter('#address_add  li')->count());
     }
 
     public function validationProvider(): array

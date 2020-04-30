@@ -8,7 +8,7 @@ use App\Entity\OrderStatus;
 use App\Entity\Order;
 use App\Entity\ProductUnit;
 use App\Entity\User;
-use App\Form\Type\AddressNewType;
+use App\Form\Type\AddressAddType;
 use App\Form\Type\AddressSelectType;
 use App\Form\Type\PaymentType;
 use App\Service\PaymentProcessor;
@@ -39,7 +39,7 @@ class CheckoutController extends AbstractController
 
         // user has no addresses stored so prompt them to create one
         if (!$addresses) {
-            return $this->redirectToRoute('address_new');
+            return $this->redirectToRoute('address_add');
         }
 
         // create the form passing in the list of addresses
@@ -61,13 +61,13 @@ class CheckoutController extends AbstractController
     }
 
     /**
-     * @Route("/address_new", name="address_new")
+     * @Route("/address_add", name="address_add")
      */
-    public function addressNew(Request $request): Response
+    public function addAddress(Request $request): Response
     {
         $address = new Address();
 
-        $form = $this->createForm(AddressNewType::class, $address);
+        $form = $this->createForm(AddressAddType::class, $address);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -81,7 +81,7 @@ class CheckoutController extends AbstractController
             return $this->redirectToRoute('address_select');
         }
 
-        return $this->render('checkout/address_new.html.twig', [
+        return $this->render('checkout/address_add.html.twig', [
             'form' => $form->createView(),
         ]);
     }
