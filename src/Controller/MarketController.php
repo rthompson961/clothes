@@ -14,7 +14,6 @@ class MarketController extends AbstractController
     public function index(): Response
     {
         $endpoint = 'https://svcs.ebay.com/services/search/FindingService/v1';
-
         $headers = [
             'X-EBAY-SOA-OPERATION-NAME: findItemsByKeywords',
             'X-EBAY-SOA-SERVICE-VERSION: 1.3.0',
@@ -45,7 +44,6 @@ class MarketController extends AbstractController
 
         $response = curl_exec($curl);
         curl_close($curl);
-        // curl_exec can return both true and false when RETURNTRANSFER is false
         if (!is_string($response)) {
             throw new \Exception('Could not execute ebay curl session');
         }
@@ -57,7 +55,7 @@ class MarketController extends AbstractController
         }
     
         return $this->render('market/index.html.twig', [
-            'search' => $search,
+            'search'   => $search,
             'response' => $response
         ]);
     }
