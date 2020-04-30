@@ -27,7 +27,7 @@ class ProductController extends AbstractController
             $data = $form->getData();
 
             return $this->redirectToRoute('add', [
-                'id' => $data['product'],
+                'id'       => $data['product'],
                 'quantity' => $data['quantity']
             ]);
         }
