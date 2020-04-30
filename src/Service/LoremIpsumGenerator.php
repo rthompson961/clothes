@@ -4,7 +4,20 @@ namespace App\Service;
 
 class LoremIpsumGenerator
 {
-    public function getParagraph(int $min = 80, int $max = 120): string
+    public function getParagraph(int $size = 3): string
+    {
+        $paragraph = '';
+        for ($i = 1; $i <= $size; $i++) {
+            if ($i !== 1) {
+                $paragraph .= ' ';
+            }
+            $paragraph .= self::getSentence();
+        }
+
+        return $paragraph;
+    }
+
+    public function getSentence(int $min = 16, int $max = 40): string
     {
         $wordList = [
             'lorem',
@@ -74,30 +87,26 @@ class LoremIpsumGenerator
         $length = mt_rand($min, $max);
         $recentWords     = [];
         $recentWordSize  = 10;
-        $paragraph       = '';
+        $sentence  = [];
         for ($i = 1; $i <= $length; $i++) {
             $word = self::pickWord($wordList, $recentWords);
 
-            // restrict recent words to appopriate size
+            // restrict recent words to appropriate size
             if (count($recentWords) >= $recentWordSize) {
                 // remove oldest entry
                 array_shift($recentWords);
             }
 
             $recentWords[] = $word;
-
-            if ($i === 1) {
-                $word = ucfirst($word);
-            } else {
-                // space before each word except first
-                $paragraph .= ' ';
-            }
-
-            $paragraph .= $word;
+            $sentence[] = $word;
         }
-        $paragraph .= '.';
 
-        return $paragraph;
+        // capitalise first word
+        $sentence[0] = ucfirst($sentence[0]);
+        $sentence = implode(' ', $sentence);
+        $sentence .= '.';
+
+        return $sentence;
     }
 
     public function pickWord(array $wordList, array $recentWords): string
