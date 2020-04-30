@@ -30,6 +30,7 @@ class CheckoutControllerTest extends WebTestCase
     {
         // destroy session
         $this->client->restart();
+
         $this->client->request('GET', '/' . $page);
 
         $this->assertResponseRedirects('/login');
@@ -130,6 +131,7 @@ class CheckoutControllerTest extends WebTestCase
     {
         // add product to basket
         $this->client->request('GET', '/add/1/1');
+
         $crawler = $this->client->request('GET', '/address_select');
         $crawler = $this->client->submitForm('address_select[submit]', [
             'address_select[address]' => '1'
