@@ -153,7 +153,7 @@ class CheckoutControllerTest extends WebTestCase
    /**
      * @dataProvider cardProvider
      */
-    public function testPayment(array $card, string $route): void
+    public function testPayment(string $card, string $route): void
     {
         $this->client->followRedirects();
 
@@ -165,13 +165,13 @@ class CheckoutControllerTest extends WebTestCase
         $crawler = $this->client->submitForm('address_select[submit]', [
             'address_select[address]' => '1'
         ]);
-        
+
         // card info
         $crawler = $this->client->request('GET', '/payment');
         $crawler = $this->client->submitForm('payment[submit]', [
-            'payment[card]'   => $card['number'],
-            'payment[expiry]' => $card['expiry'],
-            'payment[cvs]'    => $card['cvs'],
+            'payment[card]'   => $card,
+            'payment[expiry]' => '1220',
+            'payment[cvs]'    => '999',
         ]);
 
         $this->assertRouteSame($route);
@@ -180,14 +180,8 @@ class CheckoutControllerTest extends WebTestCase
     public function cardProvider(): array
     {
         return [
-            [
-                ['number' => '5424000000000015', 'expiry' => '1220', 'cvs' => '999'],
-                 'shop'
-            ], 
-            [
-                ['number' => '5424000000000010', 'expiry' => '1220', 'cvs' => '999'],
-                'payment'
-            ], 
+            ['5424000000000015', 'shop'],
+            ['5424000000000010', 'payment'],
         ];
     }
 }
