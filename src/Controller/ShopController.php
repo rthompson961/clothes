@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Service\QueryStringSanitiser;
 use App\Service\ShopUrlBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,25 +15,18 @@ class ShopController extends AbstractController
     /**
      * @Route("/shop", name="shop")
      */
-    public function index(Request $request, ShopUrlBuilder $shopUrlBuilder): Response
-    {
-        // store requested page number as a positive integer
-        $page = $request->query->get('page', 1);
-        $page = abs((int) $page);
-        // store requested sort order
+    public function index(
+        Request $request,
+        ShopUrlBuilder $shopUrlBuilder,
+        QueryStringSanitiser $sanitiser
+    ): Response {
+        // store requested page number, sort order & filters
+        $page = $sanitiser->getInt('page', 1);
         $validSort = ['first', 'name', 'low', 'high'];
-        $sort = $request->query->get('sort');
-        if (!in_array($sort, $validSort)) {
-            $sort = 'first';
-        }
-        // store requested filter id values as positive integers
+        $sort = $sanitiser->getChoice('sort', $validSort, 'first');
         $filters = ['category' => [], 'brand' => [], 'colour' => []];
         foreach (['category', 'brand', 'colour'] as $key) {
-            if (is_array($request->query->get($key))) {
-                foreach ($request->query->get($key) as $val) {
-                    $filters[$key][] = abs((int) $val);
-                }
-            }
+            $filters[$key] = $sanitiser->getIntArray($key);
         }
 
         $options['filters'] = $shopUrlBuilder->getFilters($page, $sort, $filters);
