@@ -18,18 +18,18 @@ class ShopUrlBuilder
         $this->options['colour']   = $em->getRepository(Colour::class)->findAllAsArray();
     }
 
-    public function getFilters(int $page, string $sort, array $filters): array
+    public function getFilters(array $query): array
     {
         foreach ($this->options as $key => &$type) {
             foreach ($type as &$row) {
-                if (in_array($row['id'], $filters[$key])) {
+                if (in_array($row['id'], $query['filters'][$key])) {
                     $row['active'] = true;
-                    $newFilters = $this->removeFilter($key, $filters, $row['id']);
+                    $newFilters = $this->removeFilter($key, $query['filters'], $row['id']);
                 } else {
                     $row['active'] = false;
-                    $newFilters = $this->addFilter($key, $filters, $row['id']);
+                    $newFilters = $this->addFilter($key, $query['filters'], $row['id']);
                 }
-                $row['url'] = $this->buildUrl($page, $sort, $newFilters);
+                $row['url'] = $this->buildUrl($query['page'], $query['sort'], $newFilters);
             }
         }
 

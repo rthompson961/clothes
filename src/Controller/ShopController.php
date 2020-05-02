@@ -21,35 +21,33 @@ class ShopController extends AbstractController
         QueryStringSanitiser $sanitiser
     ): Response {
         // store requested page number, sort order & filters
-        $page = $sanitiser->getInt('page', 1);
+        $query['page'] = $sanitiser->getInt('page', 1);
         $validSort = ['first', 'name', 'low', 'high'];
-        $sort = $sanitiser->getChoice('sort', $validSort, 'first');
-        $filters = ['category' => [], 'brand' => [], 'colour' => []];
+        $query['sort'] = $sanitiser->getChoice('sort', $validSort, 'first');
+        $query['filters'] = ['category' => [], 'brand' => [], 'colour' => []];
         foreach (['category', 'brand', 'colour'] as $key) {
-            $filters[$key] = $sanitiser->getIntArray($key);
+            $query['filters'][$key] = $sanitiser->getIntArray($key);
         }
+        $query['limit'] = 6;
+        $query['offset'] = $query['page'] * $query['limit'] - $query['limit'];
 
-        $options['filters'] = $shopUrlBuilder->getFilters($page, $sort, $filters);
+        $options['filters'] = $shopUrlBuilder->getFilters($query);
 
-        $count = $this->getDoctrine()->getRepository(Product::class)->findProductCount($filters);
-        $limit = 6;
-        $offset = $page * $limit - $limit;
-        $products = $this->getDoctrine()
-            ->getRepository(Product::class)
-            ->findProducts($filters, $sort, $offset, $limit);
+        $count = $this->getDoctrine()->getRepository(Product::class)->findProductCount($query['filters']);
+        $products = $this->getDoctrine()->getRepository(Product::class)->findProducts($query);
 
         // create list of urls to follow to change sort order
         foreach ($validSort as $val) {
-            $options['sort'][$val] = $shopUrlBuilder->buildUrl($page, $val, $filters);
-            if ($val == $sort) {
+            $options['sort'][$val] = $shopUrlBuilder->buildUrl($query['page'], $val, $query['filters']);
+            if ($val == $query['sort']) {
                 $options['sort'][$val] = null;
             }
         }
         // create list of urls to follow to change page
         $options['page'] = [];
-        for ($i = 1; $i <= (int) ceil($count / $limit); $i++) {
-            $options['page'][$i] = $shopUrlBuilder->buildUrl($i, $sort, $filters);
-            if ($i == $page) {
+        for ($i = 1; $i <= (int) ceil($count / $query['limit']); $i++) {
+            $options['page'][$i] = $shopUrlBuilder->buildUrl($i, $query['sort'], $query['filters']);
+            if ($i == $query['page']) {
                 $options['page'][$i] = null;
             }
         }

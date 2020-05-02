@@ -41,23 +41,23 @@ class ProductRepository extends ServiceEntityRepository
         return $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function findProducts(array $filters, string $sort, int $offset, int $limit): ?array
+    public function findProducts(array $query): ?array
     {
         $qb = $this->createQueryBuilder('p');
 
-        if ($filters['category']) {
-            $qb->andWhere($qb->expr()->in('p.category', $filters['category']));
+        if ($query['filters']['category']) {
+            $qb->andWhere($qb->expr()->in('p.category', $query['filters']['category']));
         }
 
-        if ($filters['brand']) {
-            $qb->andWhere($qb->expr()->in('p.brand', $filters['brand']));
+        if ($query['filters']['brand']) {
+            $qb->andWhere($qb->expr()->in('p.brand', $query['filters']['brand']));
         }
 
-        if ($filters['colour']) {
-            $qb->andWhere($qb->expr()->in('p.colour', $filters['colour']));
+        if ($query['filters']['colour']) {
+            $qb->andWhere($qb->expr()->in('p.colour', $query['filters']['colour']));
         }
 
-        switch ($sort) {
+        switch ($query['sort']) {
             case 'name':
                 $field = 'name';
                 break;
@@ -69,10 +69,10 @@ class ProductRepository extends ServiceEntityRepository
                 $field = 'id';
                 break;
         }
-        $dir = $sort == 'high' ? 'DESC' : 'ASC';
+        $dir = $query['sort'] == 'high' ? 'DESC' : 'ASC';
         $qb->orderBy('p.' . $field, $dir)
-           ->setFirstResult($offset)
-           ->setMaxResults($limit);
+           ->setFirstResult($query['offset'])
+           ->setMaxResults($query['limit']);
                     
         return $qb->getQuery()->getResult();
     }
