@@ -7,7 +7,7 @@ use App\Entity\Category;
 use App\Entity\Colour;
 use Doctrine\ORM\EntityManagerInterface;
 
-class ShopUrlBuilder
+class ShopInterfaceBuilder
 {
     private array $options;
 

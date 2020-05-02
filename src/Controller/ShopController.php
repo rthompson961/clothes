@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Service\QueryStringSanitiser;
-use App\Service\ShopUrlBuilder;
+use App\Service\ShopInterfaceBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,7 +16,7 @@ class ShopController extends AbstractController
      */
     public function index(
         QueryStringSanitiser $sanitiser,
-        ShopUrlBuilder $shopUrlBuilder
+        ShopInterfaceBuilder $builder
     ): Response {
         // store requested page number, sort order & filters
         $query['page'] = $sanitiser->getInt('page', 1);
@@ -29,14 +29,14 @@ class ShopController extends AbstractController
         $query['limit'] = 6;
         $query['offset'] = $query['page'] * $query['limit'] - $query['limit'];
 
-        $options['filters'] = $shopUrlBuilder->getFilters($query);
+        $options['filters'] = $builder->getFilters($query);
 
         $count = $this->getDoctrine()->getRepository(Product::class)->findProductCount($query['filters']);
         $products = $this->getDoctrine()->getRepository(Product::class)->findProducts($query);
 
         // create list of urls to follow to change sort order
         foreach ($validSort as $val) {
-            $options['sort'][$val] = $shopUrlBuilder->buildUrl($query['page'], $val, $query['filters']);
+            $options['sort'][$val] = $builder->buildUrl($query['page'], $val, $query['filters']);
             if ($val == $query['sort']) {
                 $options['sort'][$val] = null;
             }
@@ -44,7 +44,7 @@ class ShopController extends AbstractController
         // create list of urls to follow to change page
         $options['page'] = [];
         for ($i = 1; $i <= (int) ceil($count / $query['limit']); $i++) {
-            $options['page'][$i] = $shopUrlBuilder->buildUrl($i, $query['sort'], $query['filters']);
+            $options['page'][$i] = $builder->buildUrl($i, $query['sort'], $query['filters']);
             if ($i == $query['page']) {
                 $options['page'][$i] = null;
             }
