@@ -6,7 +6,6 @@ use App\Entity\Product;
 use App\Service\QueryStringSanitiser;
 use App\Service\ShopUrlBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -16,9 +15,8 @@ class ShopController extends AbstractController
      * @Route("/shop", name="shop")
      */
     public function index(
-        Request $request,
-        ShopUrlBuilder $shopUrlBuilder,
-        QueryStringSanitiser $sanitiser
+        QueryStringSanitiser $sanitiser,
+        ShopUrlBuilder $shopUrlBuilder
     ): Response {
         // store requested page number, sort order & filters
         $query['page'] = $sanitiser->getInt('page', 1);
