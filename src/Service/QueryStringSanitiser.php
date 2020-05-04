@@ -21,17 +21,6 @@ class QueryStringSanitiser
         return abs((int) $val);
     }
 
-    public function getChoice(string $key, array $choices, string $default): string
-    {
-        $val = $this->request->query->get($key);
-
-        if (in_array($val, $choices)) {
-            return $val;
-        }
-
-        return $default;
-    }
-
     public function getIntArray(string $key): array
     {
         $values = $this->request->query->get($key);
@@ -46,5 +35,16 @@ class QueryStringSanitiser
         }
 
         return $clean;
+    }
+
+    public function getChoice(string $key, array $choices, string $default): string
+    {
+        $val = $this->request->query->get($key);
+
+        if (in_array($val, $choices)) {
+            return $val;
+        }
+
+        return $default;
     }
 }
