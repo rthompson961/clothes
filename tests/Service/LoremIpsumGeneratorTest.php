@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class LoremIpsumGeneratorTest extends TestCase
 {
-    private int $minSentence = 20;
+    private int $minSentence = 16;
     private int $maxSentence = 40;
 
     public function testSentence(): void
