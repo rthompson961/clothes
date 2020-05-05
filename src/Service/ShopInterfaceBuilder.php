@@ -2,41 +2,62 @@
 
 namespace App\Service;
 
-use App\Entity\Brand;
-use App\Entity\Category;
-use App\Entity\Colour;
-use Doctrine\ORM\EntityManagerInterface;
-
 class ShopInterfaceBuilder
 {
-    private array $options;
-
-    public function __construct(EntityManagerInterface $em)
+    public function getFilterAttributes(string $key, array $options, array $query): array
     {
-        $this->options['category'] = $em->getRepository(Category::class)->findAllAsArray();
-        $this->options['brand']    = $em->getRepository(Brand::class)->findAllAsArray();
-        $this->options['colour']   = $em->getRepository(Colour::class)->findAllAsArray();
-    }
-
-    public function getFilters(array $query): array
-    {
-        foreach ($this->options as $key => &$type) {
-            foreach ($type as &$row) {
-                if (in_array($row['id'], $query['filters'][$key])) {
-                    $row['active'] = true;
-                    $newFilters = $this->removeFilter($key, $query['filters'], $row['id']);
-                } else {
-                    $row['active'] = false;
-                    $newFilters = $this->addFilter($key, $query['filters'], $row['id']);
-                }
-                $row['url'] = $this->buildUrl($query['page'], $query['sort'], $newFilters);
+        foreach ($options as &$row) {
+            if (in_array($row['id'], $query['filters'][$key])) {
+                $row['active'] = true;
+                $row['url'] = $this->buildUrl(
+                    $query['page'],
+                    $query['sort'],
+                    $this->removeFilter($key, $row['id'], $query['filters'])
+                );
+            } else {
+                $row['active'] = false;
+                $row['url'] = $this->buildUrl(
+                    $query['page'],
+                    $query['sort'],
+                    $this->addFilter($key, $row['id'], $query['filters'])
+                );
             }
         }
 
-        return $this->options;
+        return $options;
     }
 
-    public function buildUrl(int $page, string $sort, array $filters): string
+    public function getSortOptions(array $choices, array $query): array
+    {
+        $result = [];
+        foreach ($choices as $choice) {
+            $result[$choice] = $this->buildUrl($query['page'], $choice, $query['filters']);
+
+            // current value already selected
+            if ($choice == $query['sort']) {
+                $result[$choice] = null;
+            }
+        }
+
+        return $result;
+    }
+
+    public function getPageOptions(array $choices, array $query): array
+    {
+        $result = [];
+        foreach ($choices as $choice) {
+            $result[$choice] = $this->buildUrl($choice, $query['sort'], $query['filters']);
+
+            // current value already selected
+            if ($choice == $query['page']) {
+                $result[$choice] = null;
+            }
+        }
+
+        return $result;
+    }
+
+    private function buildUrl(int $page, string $sort, array $filters): string
     {
         $url  = '?page=' . $page;
         $url .= '&sort=' . $sort;
@@ -49,16 +70,16 @@ class ShopInterfaceBuilder
         return $url;
     }
 
-    private function addFilter(string $key, array $filters, int $item): array
+    private function addFilter(string $key, int $val, array $filters): array
     {
-        $filters[$key][] = $item;
+        $filters[$key][] = $val;
 
         return $filters;
     }
 
-    private function removeFilter(string $key, array $filters, int $item): array
+    private function removeFilter(string $key, int $val, array $filters): array
     {
-        $filters[$key] = array_diff($filters[$key], [$item]);
+        $filters[$key] = array_diff($filters[$key], [$val]);
 
         return $filters;
     }

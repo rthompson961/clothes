@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Brand;
+use App\Entity\Category;
+use App\Entity\Colour;
 use App\Entity\Product;
 use App\Service\QueryStringSanitiser;
 use App\Service\ShopInterfaceBuilder;
@@ -20,8 +23,8 @@ class ShopController extends AbstractController
     ): Response {
         // store requested page number, sort order & filters
         $query['page'] = $sanitiser->getInt('page', 1);
-        $validSort = ['first', 'name', 'low', 'high'];
-        $query['sort'] = $sanitiser->getChoice('sort', $validSort, 'first');
+        $valid['sort'] = ['first', 'name', 'low', 'high'];
+        $query['sort'] = $sanitiser->getChoice('sort', $valid['sort'], 'first');
         $query['filters'] = ['category' => [], 'brand' => [], 'colour' => []];
         foreach (['category', 'brand', 'colour'] as $key) {
             $query['filters'][$key] = $sanitiser->getIntArray($key);
@@ -29,26 +32,36 @@ class ShopController extends AbstractController
         $query['limit'] = 6;
         $query['offset'] = $query['page'] * $query['limit'] - $query['limit'];
 
-        $options['filters'] = $builder->getFilters($query);
-
-        $count = $this->getDoctrine()->getRepository(Product::class)->findProductCount($query['filters']);
-        $products = $this->getDoctrine()->getRepository(Product::class)->findProducts($query);
-
-        // create list of urls to follow to change sort order
-        foreach ($validSort as $val) {
-            $options['sort'][$val] = $builder->buildUrl($query['page'], $val, $query['filters']);
-            if ($val == $query['sort']) {
-                $options['sort'][$val] = null;
-            }
+        // get possible filter selections available in the sidebar
+        $lookup['category'] = $this->getDoctrine()
+            ->getRepository(Category::class)
+            ->findAllAsArray();
+        $lookup['brand']    = $this->getDoctrine()
+            ->getRepository(Brand::class)
+            ->findAllAsArray();
+        $lookup['colour']   = $this->getDoctrine()
+            ->getRepository(Colour::class)
+            ->findAllAsArray();
+        foreach (['category', 'brand', 'colour'] as $key) {
+            $options['filters'][$key] = $builder->getFilterAttributes(
+                $key,
+                $lookup[$key],
+                $query
+            );
         }
-        // create list of urls to follow to change page
-        $options['page'] = [];
-        for ($i = 1; $i <= (int) ceil($count / $query['limit']); $i++) {
-            $options['page'][$i] = $builder->buildUrl($i, $query['sort'], $query['filters']);
-            if ($i == $query['page']) {
-                $options['page'][$i] = null;
-            }
-        }
+
+        // get product count and products for the current page
+        $count = $this->getDoctrine()
+            ->getRepository(Product::class)
+            ->findProductCount($query['filters']);
+        $products = $this->getDoctrine()
+            ->getRepository(Product::class)
+            ->findProducts($query);
+
+        // create list of links to change sort order and page
+        $options['sort'] = $builder->getSortOptions($valid['sort'], $query);
+        $valid['page']   = range(1, (int) ceil($count / $query['limit']));
+        $options['page'] = $builder->getPageOptions($valid['page'], $query);
 
         return $this->render('shop/index.html.twig', [
             'filters'     => $options['filters'],
