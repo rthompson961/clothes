@@ -20,10 +20,11 @@ class ShopController extends AbstractController
     public function index(Request $request, ShopInterfaceBuilder $builder): Response
     {
         // store requested page number, sort order & filters
-        $query['page'] = abs((int) $request->query->get('page', 1));
-        if (!$query['page']) {
+        $query['page'] = (int) $request->query->get('page');
+        if ($query['page'] < 1) {
             $query['page'] = 1;
         }
+
         $query['sort'] = $request->query->get('sort');
         $valid['sort'] = ['first', 'name', 'low', 'high'];
         if (!in_array($query['sort'], $valid['sort'])) {
