@@ -45,15 +45,10 @@ class ShopController extends AbstractController
         $query['offset'] = $query['page'] * $query['limit'] - $query['limit'];
 
         // get possible filter selections available in the sidebar
-        $lookup['category'] = $this->getDoctrine()
-            ->getRepository(Category::class)
-            ->findAllAsArray();
-        $lookup['brand']    = $this->getDoctrine()
-            ->getRepository(Brand::class)
-            ->findAllAsArray();
-        $lookup['colour']   = $this->getDoctrine()
-            ->getRepository(Colour::class)
-            ->findAllAsArray();
+        $doctrine = $this->getDoctrine();
+        $lookup['category'] = $doctrine->getRepository(Category::class)->findAllAsArray();
+        $lookup['brand']    = $doctrine->getRepository(Brand::class)->findAllAsArray();
+        $lookup['colour']   = $doctrine->getRepository(Colour::class)->findAllAsArray();
         foreach (['category', 'brand', 'colour'] as $key) {
             $options['filters'][$key] = $builder->getFilterAttributes(
                 $key,
@@ -63,12 +58,8 @@ class ShopController extends AbstractController
         }
 
         // get product count and products for the current page
-        $count = $this->getDoctrine()
-            ->getRepository(Product::class)
-            ->findProductCount($query['filters']);
-        $products = $this->getDoctrine()
-            ->getRepository(Product::class)
-            ->findProducts($query);
+        $count = $doctrine->getRepository(Product::class)->findProductCount($query['filters']);
+        $products = $doctrine->getRepository(Product::class)->findProducts($query);
 
         // create list of links to change sort order and page
         $options['sort'] = $builder->getSortOptions($valid['sort'], $query);
