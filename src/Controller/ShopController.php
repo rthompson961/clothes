@@ -43,8 +43,12 @@ class ShopController extends AbstractController
         $query['limit'] = 6;
         $query['offset'] = $query['page'] * $query['limit'] - $query['limit'];
 
-        // get possible filter selections available in the sidebar
+        // get product count and products for the current page
         $doctrine = $this->getDoctrine();
+        $count = $doctrine->getRepository(Product::class)->findProductCount($query['filters']);
+        $products = $doctrine->getRepository(Product::class)->findProducts($query);
+
+        // create list of filters to add/remove categories, brands and colours
         $lookup['category'] = $doctrine->getRepository(Category::class)->findAllAsArray();
         $lookup['brand']    = $doctrine->getRepository(Brand::class)->findAllAsArray();
         $lookup['colour']   = $doctrine->getRepository(Colour::class)->findAllAsArray();
@@ -55,11 +59,6 @@ class ShopController extends AbstractController
                 $query
             );
         }
-
-        // get product count and products for the current page
-        $count = $doctrine->getRepository(Product::class)->findProductCount($query['filters']);
-        $products = $doctrine->getRepository(Product::class)->findProducts($query);
-
         // create list of links to change sort order and page
         $options['sort'] = $widget->getSortOptions($query);
         $lastPage = (int) ceil($count / $query['limit']);
