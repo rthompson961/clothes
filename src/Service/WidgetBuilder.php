@@ -2,8 +2,17 @@
 
 namespace App\Service;
 
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+
 class WidgetBuilder
 {
+    private UrlGeneratorInterface $router;
+
+    public function __construct(UrlGeneratorInterface $router)
+    {
+        $this->router = $router;
+    }
+
     public function getFilterAttributes(string $key, array $options, array $query): array
     {
         foreach ($options as &$row) {
@@ -66,8 +75,11 @@ class WidgetBuilder
 
     private function buildUrl(int $page, string $sort, array $filters): string
     {
-        $url  = '?page=' . $page;
-        $url .= '&sort=' . $sort;
+        $url = $this->router->generate('shop', [
+            'page' => $page,
+            'sort' => $sort
+        ]);
+
         foreach ($filters as $key => $values) {
             foreach ($values as $val) {
                 $url .= '&' . $key . '[]=' . $val;

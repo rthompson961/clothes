@@ -3,16 +3,22 @@
 namespace App\Tests\Service;
 
 use App\Service\WidgetBuilder;
-use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Routing\Router;
 
-class WidgetBuilderTest extends TestCase
+class WidgetBuilderTest extends WebTestCase
 {
     private WidgetBuilder $widget;
     private array $query;
 
     protected function setUp(): void
     {
-        $this->widget = new WidgetBuilder();
+        $client = static::createClient();
+        if ($client->getContainer() === null) {
+            throw new \Exception('Could not get service container');
+        }
+        $router = $client->getContainer()->get('router');
+        $this->widget = new WidgetBuilder($router);
 
         $this->query['page'] = 2;
         $this->query['sort'] = 'name';
@@ -42,19 +48,19 @@ class WidgetBuilderTest extends TestCase
                 'id'     => 1,
                 'name'   => 'blue',
                 'active' => false,
-                'url'    => '?page=2&sort=name&brand[]=2&brand[]=5&colour[]=3&colour[]=1'
+                'url'    => '/shop?page=2&sort=name&brand[]=2&brand[]=5&colour[]=3&colour[]=1'
             ],
             [
                 'id'     => 2,
                 'name'   => 'red',
                 'active' => false,
-                'url'    => '?page=2&sort=name&brand[]=2&brand[]=5&colour[]=3&colour[]=2'
+                'url'    => '/shop?page=2&sort=name&brand[]=2&brand[]=5&colour[]=3&colour[]=2'
             ],
             [
                 'id'     => 3,
                 'name'   => 'green',
                 'active' => true,
-                'url'    => '?page=2&sort=name&brand[]=2&brand[]=5'
+                'url'    => '/shop?page=2&sort=name&brand[]=2&brand[]=5'
             ]
         ];
 
@@ -65,10 +71,10 @@ class WidgetBuilderTest extends TestCase
     {
         $result = $this->widget->getSortOptions($this->query);
         $expected = [
-            'First In' => '?page=2&sort=first&brand[]=2&brand[]=5&colour[]=3',
+            'First In' => '/shop?page=2&sort=first&brand[]=2&brand[]=5&colour[]=3',
             'Name'  => null,
-            'Lowest Price'   => '?page=2&sort=low&brand[]=2&brand[]=5&colour[]=3',
-            'Highest Price'  => '?page=2&sort=high&brand[]=2&brand[]=5&colour[]=3',
+            'Lowest Price'   => '/shop?page=2&sort=low&brand[]=2&brand[]=5&colour[]=3',
+            'Highest Price'  => '/shop?page=2&sort=high&brand[]=2&brand[]=5&colour[]=3',
         ];
 
         $this->assertTrue($result === $expected);
@@ -78,9 +84,9 @@ class WidgetBuilderTest extends TestCase
     {
         $result = $this->widget->getPageOptions(3, $this->query);
         $expected = [
-            1  => '?page=1&sort=name&brand[]=2&brand[]=5&colour[]=3',
+            1  => '/shop?page=1&sort=name&brand[]=2&brand[]=5&colour[]=3',
             2  => null,
-            3  => '?page=3&sort=name&brand[]=2&brand[]=5&colour[]=3'
+            3  => '/shop?page=3&sort=name&brand[]=2&brand[]=5&colour[]=3'
         ];
 
         $this->assertTrue($result === $expected);
