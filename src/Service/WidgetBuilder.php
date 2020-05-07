@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-class ShopInterfaceBuilder
+class WidgetBuilder
 {
     public function getFilterAttributes(string $key, array $options, array $query): array
     {

@@ -2,17 +2,17 @@
 
 namespace App\Tests\Service;
 
-use App\Service\ShopInterfaceBuilder;
+use App\Service\WidgetBuilder;
 use PHPUnit\Framework\TestCase;
 
-class ShopInterfaceBuilderTest extends TestCase
+class WidgetBuilderTest extends TestCase
 {
-    private ShopInterfaceBuilder $builder;
+    private WidgetBuilder $widget;
     private array $query;
 
     protected function setUp(): void
     {
-        $this->builder = new ShopInterfaceBuilder();
+        $this->widget = new WidgetBuilder();
 
         $this->query['page'] = 2;
         $this->query['sort'] = 'name';
@@ -36,7 +36,7 @@ class ShopInterfaceBuilderTest extends TestCase
             ]
         ];
 
-        $result = $this->builder->getFilterAttributes('colour', $choices, $this->query);
+        $result = $this->widget->getFilterAttributes('colour', $choices, $this->query);
         $expected = [
             [
                 'id'     => 1,
@@ -65,7 +65,7 @@ class ShopInterfaceBuilderTest extends TestCase
     {
         $choices = ['name', 'low', 'high'];
 
-        $result = $this->builder->getSortOptions($choices, $this->query);
+        $result = $this->widget->getSortOptions($choices, $this->query);
         $expected = [
             'name'  => null,
             'low'   => '?page=2&sort=low&brand[]=2&brand[]=5&colour[]=3',
@@ -79,7 +79,7 @@ class ShopInterfaceBuilderTest extends TestCase
     {
         $choices = [1, 2, 3];
 
-        $result = $this->builder->getPageOptions($choices, $this->query);
+        $result = $this->widget->getPageOptions($choices, $this->query);
         $expected = [
             1  => '?page=1&sort=name&brand[]=2&brand[]=5&colour[]=3',
             2  => null,

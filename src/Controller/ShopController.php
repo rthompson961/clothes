@@ -6,7 +6,7 @@ use App\Entity\Brand;
 use App\Entity\Category;
 use App\Entity\Colour;
 use App\Entity\Product;
-use App\Service\ShopInterfaceBuilder;
+use App\Service\WidgetBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +17,7 @@ class ShopController extends AbstractController
     /**
      * @Route("/shop", name="shop")
      */
-    public function index(Request $request, ShopInterfaceBuilder $builder): Response
+    public function index(Request $request, WidgetBuilder $widget): Response
     {
         // store requested page number, sort order & filters
         $query['page'] = (int) $request->query->get('page');
@@ -51,7 +51,7 @@ class ShopController extends AbstractController
         $lookup['brand']    = $doctrine->getRepository(Brand::class)->findAllAsArray();
         $lookup['colour']   = $doctrine->getRepository(Colour::class)->findAllAsArray();
         foreach (['category', 'brand', 'colour'] as $key) {
-            $options['filters'][$key] = $builder->getFilterAttributes(
+            $options['filters'][$key] = $widget->getFilterAttributes(
                 $key,
                 $lookup[$key],
                 $query
@@ -63,9 +63,9 @@ class ShopController extends AbstractController
         $products = $doctrine->getRepository(Product::class)->findProducts($query);
 
         // create list of links to change sort order and page
-        $options['sort'] = $builder->getSortOptions($valid['sort'], $query);
+        $options['sort'] = $widget->getSortOptions($valid['sort'], $query);
         $valid['page']   = range(1, (int) ceil($count / $query['limit']));
-        $options['page'] = $builder->getPageOptions($valid['page'], $query);
+        $options['page'] = $widget->getPageOptions($valid['page'], $query);
 
         return $this->render('shop/index.html.twig', [
             'filters'     => $options['filters'],
