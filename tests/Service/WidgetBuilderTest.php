@@ -48,19 +48,19 @@ class WidgetBuilderTest extends WebTestCase
                 'id'     => 1,
                 'name'   => 'blue',
                 'active' => false,
-                'url'    => '/shop?page=2&sort=name&brand[]=2&brand[]=5&colour[]=3&colour[]=1'
+                'url'    => '/shop?page=2&sort=name&brand=2,5&colour=1,3'
             ],
             [
                 'id'     => 2,
                 'name'   => 'red',
                 'active' => false,
-                'url'    => '/shop?page=2&sort=name&brand[]=2&brand[]=5&colour[]=3&colour[]=2'
+                'url'    => '/shop?page=2&sort=name&brand=2,5&colour=2,3'
             ],
             [
                 'id'     => 3,
                 'name'   => 'green',
                 'active' => true,
-                'url'    => '/shop?page=2&sort=name&brand[]=2&brand[]=5'
+                'url'    => '/shop?page=2&sort=name&brand=2,5'
             ]
         ];
 
@@ -71,10 +71,10 @@ class WidgetBuilderTest extends WebTestCase
     {
         $result = $this->widget->getSortOptions($this->query);
         $expected = [
-            'First In' => '/shop?page=2&sort=first&brand[]=2&brand[]=5&colour[]=3',
+            'First In' => '/shop?page=2&sort=first&brand=2,5&colour=3',
             'Name'  => null,
-            'Lowest Price'   => '/shop?page=2&sort=low&brand[]=2&brand[]=5&colour[]=3',
-            'Highest Price'  => '/shop?page=2&sort=high&brand[]=2&brand[]=5&colour[]=3',
+            'Lowest Price'   => '/shop?page=2&sort=low&brand=2,5&colour=3',
+            'Highest Price'  => '/shop?page=2&sort=high&brand=2,5&colour=3',
         ];
 
         $this->assertTrue($result === $expected);
@@ -84,9 +84,9 @@ class WidgetBuilderTest extends WebTestCase
     {
         $result = $this->widget->getPageOptions(3, $this->query);
         $expected = [
-            1  => '/shop?page=1&sort=name&brand[]=2&brand[]=5&colour[]=3',
+            1  => '/shop?page=1&sort=name&brand=2,5&colour=3',
             2  => null,
-            3  => '/shop?page=3&sort=name&brand[]=2&brand[]=5&colour[]=3'
+            3  => '/shop?page=3&sort=name&brand=2,5&colour=3'
         ];
 
         $this->assertTrue($result === $expected);

@@ -75,16 +75,18 @@ class WidgetBuilder
 
     private function buildUrl(int $page, string $sort, array $filters): string
     {
-        $url = $this->router->generate('shop', [
-            'page' => $page,
-            'sort' => $sort
-        ]);
-
-        foreach ($filters as $key => $values) {
-            foreach ($values as $val) {
-                $url .= '&' . $key . '[]=' . $val;
+        foreach (['category', 'brand', 'colour'] as $key) {
+            if ($filters[$key]) {
+                $filters[$key] = implode(',', $filters[$key]);
             }
         }
+        $url = $this->router->generate('shop', [
+            'page' => $page,
+            'sort' => $sort,
+            'category' => $filters['category'],
+            'brand' => $filters['brand'],
+            'colour' => $filters['colour'],
+        ]);
 
         return $url;
     }
@@ -92,6 +94,7 @@ class WidgetBuilder
     private function addFilter(string $key, int $val, array $filters): array
     {
         $filters[$key][] = $val;
+        sort($filters[$key]);
 
         return $filters;
     }

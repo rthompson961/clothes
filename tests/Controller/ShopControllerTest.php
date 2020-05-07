@@ -22,8 +22,8 @@ class ShopControllerTest extends WebTestCase
         $this->assertEquals(6, $crawler->filter('div.product')->count());
 
         $links = $crawler->filter('#sidebar a');
-        $this->assertEquals('/shop?page=1&sort=first&category[]=1', $links->first()->attr('href'));
-        $this->assertEquals('/shop?page=1&sort=first&colour[]=10', $links->last()->attr('href'));
+        $this->assertEquals('/shop?page=1&sort=first&category=1', $links->first()->attr('href'));
+        $this->assertEquals('/shop?page=1&sort=first&colour=10', $links->last()->attr('href'));
 
         $links = $crawler->filter('p.sort a');
         $this->assertEquals('/shop?page=1&sort=name', $links->first()->attr('href'));
@@ -42,8 +42,8 @@ class ShopControllerTest extends WebTestCase
         $this->assertEquals(6, $crawler->filter('div.product')->count());
 
         $links = $crawler->filter('#sidebar a');
-        $this->assertEquals('/shop?page=5&sort=first&category[]=1', $links->first()->attr('href'));
-        $this->assertEquals('/shop?page=5&sort=first&colour[]=10', $links->last()->attr('href'));
+        $this->assertEquals('/shop?page=5&sort=first&category=1', $links->first()->attr('href'));
+        $this->assertEquals('/shop?page=5&sort=first&colour=10', $links->last()->attr('href'));
 
         $links = $crawler->filter('p.sort a');
         $this->assertEquals('/shop?page=5&sort=name', $links->first()->attr('href'));
@@ -62,8 +62,8 @@ class ShopControllerTest extends WebTestCase
         $this->assertEquals(6, $crawler->filter('div.product')->count());
 
         $links = $crawler->filter('#sidebar a');
-        $this->assertEquals('/shop?page=3&sort=low&category[]=1', $links->first()->attr('href'));
-        $this->assertEquals('/shop?page=3&sort=low&colour[]=10', $links->last()->attr('href'));
+        $this->assertEquals('/shop?page=3&sort=low&category=1', $links->first()->attr('href'));
+        $this->assertEquals('/shop?page=3&sort=low&colour=10', $links->last()->attr('href'));
 
         $links = $crawler->filter('p.sort a');
         $this->assertEquals('/shop?page=3&sort=first', $links->first()->attr('href'));
@@ -76,24 +76,24 @@ class ShopControllerTest extends WebTestCase
 
     public function testWithFilters(): void
     {
-        $crawler = $this->client->request('GET', '/shop?page=5&sort=name&category[]=6&category[]=7');
+        $crawler = $this->client->request('GET', '/shop?page=5&sort=name&category=6,7');
 
         $this->assertSelectorTextSame('h4', '26 Products');
         $this->assertEquals(2, $crawler->filter('div.product')->count());
 
         $links = $crawler->filter('#sidebar a');
-        $this->assertEquals('/shop?page=5&sort=name&category[]=7', $links->first()->attr('href'));
+        $this->assertEquals('/shop?page=5&sort=name&category=7', $links->first()->attr('href'));
         $this->assertEquals(
-            '/shop?page=5&sort=name&category[]=6&category[]=7&colour[]=10',
+            '/shop?page=5&sort=name&category=6,7&colour=10',
             $links->last()->attr('href')
         );
 
         $links = $crawler->filter('p.sort a');
-        $this->assertEquals('/shop?page=5&sort=first&category[]=6&category[]=7', $links->first()->attr('href'));
-        $this->assertEquals('/shop?page=5&sort=high&category[]=6&category[]=7', $links->last()->attr('href'));
+        $this->assertEquals('/shop?page=5&sort=first&category=6,7', $links->first()->attr('href'));
+        $this->assertEquals('/shop?page=5&sort=high&category=6,7', $links->last()->attr('href'));
 
         $links = $crawler->filter('p.pages a');
-        $this->assertEquals('/shop?page=1&sort=name&category[]=6&category[]=7', $links->first()->attr('href'));
-        $this->assertEquals('/shop?page=4&sort=name&category[]=6&category[]=7', $links->last()->attr('href'));
+        $this->assertEquals('/shop?page=1&sort=name&category=6,7', $links->first()->attr('href'));
+        $this->assertEquals('/shop?page=4&sort=name&category=6,7', $links->last()->attr('href'));
     }
 }

@@ -30,14 +30,15 @@ class ShopController extends AbstractController
         }
         $query['filters'] = ['category' => [], 'brand' => [], 'colour' => []];
         foreach (['category', 'brand', 'colour'] as $key) {
-            $values = $request->query->get($key);
-            if (!is_array($values)) {
-                break;
+            $vals = $request->query->get($key);
+            if ($vals) {
+                $vals = explode(',', $vals);
+                array_walk($vals, function (&$val) {
+                    $val = abs((int) $val);
+                });
+                $vals = array_filter($vals);
+                $query['filters'][$key] = $vals;
             }
-            array_walk($values, function (&$val) {
-                $val = abs((int) $val);
-            });
-            $query['filters'][$key] = $values;
         }
         $query['limit'] = 6;
         $query['offset'] = $query['page'] * $query['limit'] - $query['limit'];
