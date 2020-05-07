@@ -66,9 +66,7 @@ class ShopController extends AbstractController
         $options['page'] = $widget->getPageOptions(range(1, (int) ceil($count / $query['limit'])), $query);
 
         return $this->render('shop/index.html.twig', [
-            'filters'     => $options['filters'],
-            'sort'        => $options['sort'],
-            'page'        => $options['page'],
+            'options'     => $options,
             'count'       => $count,
             'products'    => $products
         ]);

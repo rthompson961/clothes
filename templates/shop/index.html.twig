@@ -6,7 +6,7 @@
 <div id="sidebar">
     <div id="sidebar-active">
         <ul>
-        {% for type, values in filters %}
+        {% for type, values in options.filters %}
             {% for val in values %}
                 {% if val.active %}
                     <li><a href="{{ val.url }}"><b>❌ {{ type|capitalize }}: </b>{{ val.name }}</a></li>
@@ -16,7 +16,7 @@
         </ul>
     </div>
 
-    {% for type, values in filters %}
+    {% for type, values in options.filters %}
         {% if values|length > 1 %}
             <p>{{ type|capitalize }}</p>
             <ul>
@@ -39,7 +39,7 @@
     {% if products %}
         <p class="sort">
             <b>Sort:</b> 
-            {% for title, link in sort %}
+            {% for title, link in options.sort %}
                 {% if link %}
                     <a href="{{ link }}">{{ title|capitalize }}</a>
                 {% else %}
@@ -48,9 +48,9 @@
             {% endfor %}
         </p>
 
-        {% if page|length > 1 %}
+        {% if options.page|length > 1 %}
             <p class="pages">
-                {% for title, link in page %}
+                {% for title, link in options.page %}
                     {% if link %}
                         <a href="{{ link }}">{{ title }}</a>
                     {% else %}
@@ -82,9 +82,9 @@
             </div>
         {% endfor %}
 
-        {% if page|length > 1 %}
+        {% if options.page|length > 1 %}
             <p class="pages">
-                {% for title, link in page %}
+                {% for title, link in options.page %}
                     {% if link %}
                         <a href="{{ link }}">{{ title }}</a>
                     {% else %}
