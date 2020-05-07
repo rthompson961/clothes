@@ -24,12 +24,10 @@ class ShopController extends AbstractController
         if ($query['page'] < 1) {
             $query['page'] = 1;
         }
-
         $query['sort'] = $request->query->get('sort');
         if (!in_array($query['sort'], ['first', 'name', 'low', 'high'])) {
             $query['sort'] = 'first';
         }
-
         $query['filters'] = ['category' => [], 'brand' => [], 'colour' => []];
         foreach (['category', 'brand', 'colour'] as $key) {
             $values = $request->query->get($key);
@@ -62,7 +60,7 @@ class ShopController extends AbstractController
         $products = $doctrine->getRepository(Product::class)->findProducts($query);
 
         // create list of links to change sort order and page
-        $options['sort'] = $widget->getSortOptions(['first', 'name', 'low', 'high'], $query);
+        $options['sort'] = $widget->getSortOptions($query);
         $lastPage = (int) ceil($count / $query['limit']);
         $options['page'] = $widget->getPageOptions($lastPage, $query);
 

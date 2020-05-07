@@ -27,15 +27,22 @@ class WidgetBuilder
         return $options;
     }
 
-    public function getSortOptions(array $choices, array $query): array
+    public function getSortOptions(array $query): array
     {
+        $choices = [
+            'first' => 'First In',
+            'name'  => 'Name',
+            'low'   => 'Lowest Price',
+            'high'  => 'Highest Price'
+        ];
+
         $result = [];
-        foreach ($choices as $choice) {
-            $result[$choice] = $this->buildUrl($query['page'], $choice, $query['filters']);
+        foreach ($choices as $key => $val) {
+            $result[$val] = $this->buildUrl($query['page'], $key, $query['filters']);
 
             // current value already selected
-            if ($choice == $query['sort']) {
-                $result[$choice] = null;
+            if ($key == $query['sort']) {
+                $result[$val] = null;
             }
         }
 

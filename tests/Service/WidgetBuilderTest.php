@@ -63,13 +63,12 @@ class WidgetBuilderTest extends TestCase
 
     public function testSortOptions(): void
     {
-        $choices = ['name', 'low', 'high'];
-
-        $result = $this->widget->getSortOptions($choices, $this->query);
+        $result = $this->widget->getSortOptions($this->query);
         $expected = [
-            'name'  => null,
-            'low'   => '?page=2&sort=low&brand[]=2&brand[]=5&colour[]=3',
-            'high'  => '?page=2&sort=high&brand[]=2&brand[]=5&colour[]=3',
+            'First In' => '?page=2&sort=first&brand[]=2&brand[]=5&colour[]=3',
+            'Name'  => null,
+            'Lowest Price'   => '?page=2&sort=low&brand[]=2&brand[]=5&colour[]=3',
+            'Highest Price'  => '?page=2&sort=high&brand[]=2&brand[]=5&colour[]=3',
         ];
 
         $this->assertTrue($result === $expected);
