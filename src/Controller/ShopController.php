@@ -26,8 +26,7 @@ class ShopController extends AbstractController
         }
 
         $query['sort'] = $request->query->get('sort');
-        $valid['sort'] = ['first', 'name', 'low', 'high'];
-        if (!in_array($query['sort'], $valid['sort'])) {
+        if (!in_array($query['sort'], ['first', 'name', 'low', 'high'])) {
             $query['sort'] = 'first';
         }
 
@@ -63,9 +62,8 @@ class ShopController extends AbstractController
         $products = $doctrine->getRepository(Product::class)->findProducts($query);
 
         // create list of links to change sort order and page
-        $options['sort'] = $widget->getSortOptions($valid['sort'], $query);
-        $valid['page']   = range(1, (int) ceil($count / $query['limit']));
-        $options['page'] = $widget->getPageOptions($valid['page'], $query);
+        $options['sort'] = $widget->getSortOptions(['first', 'name', 'low', 'high'], $query);
+        $options['page'] = $widget->getPageOptions(range(1, (int) ceil($count / $query['limit'])), $query);
 
         return $this->render('shop/index.html.twig', [
             'filters'     => $options['filters'],
