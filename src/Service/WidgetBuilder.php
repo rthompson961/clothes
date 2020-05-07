@@ -13,7 +13,7 @@ class WidgetBuilder
         $this->router = $router;
     }
 
-    public function getFilterAttributes(string $key, array $options, array $query): array
+    public function getFilterOptions(string $key, array $options, array $query): array
     {
         foreach ($options as &$row) {
             if (in_array($row['id'], $query['filters'][$key])) {

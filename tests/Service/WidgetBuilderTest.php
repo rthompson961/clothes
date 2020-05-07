@@ -42,7 +42,7 @@ class WidgetBuilderTest extends WebTestCase
             ]
         ];
 
-        $result = $this->widget->getFilterAttributes('colour', $choices, $this->query);
+        $result = $this->widget->getFilterOptions('colour', $choices, $this->query);
         $expected = [
             [
                 'id'     => 1,

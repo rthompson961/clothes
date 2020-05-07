@@ -49,7 +49,7 @@ class ShopController extends AbstractController
         $lookup['brand']    = $doctrine->getRepository(Brand::class)->findAllAsArray();
         $lookup['colour']   = $doctrine->getRepository(Colour::class)->findAllAsArray();
         foreach (['category', 'brand', 'colour'] as $key) {
-            $options['filters'][$key] = $widget->getFilterAttributes(
+            $options['filters'][$key] = $widget->getFilterOptions(
                 $key,
                 $lookup[$key],
                 $query
