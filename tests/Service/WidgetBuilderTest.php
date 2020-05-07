@@ -48,13 +48,13 @@ class WidgetBuilderTest extends WebTestCase
                 'id'     => 1,
                 'name'   => 'blue',
                 'active' => false,
-                'url'    => '/shop?page=2&sort=name&brand=2,5&colour=1,3'
+                'url'    => '/shop?page=2&sort=name&brand=2,5&colour=3,1'
             ],
             [
                 'id'     => 2,
                 'name'   => 'red',
                 'active' => false,
-                'url'    => '/shop?page=2&sort=name&brand=2,5&colour=2,3'
+                'url'    => '/shop?page=2&sort=name&brand=2,5&colour=3,2'
             ],
             [
                 'id'     => 3,

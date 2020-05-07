@@ -94,7 +94,6 @@ class WidgetBuilder
     private function addFilter(string $key, int $val, array $filters): array
     {
         $filters[$key][] = $val;
-        sort($filters[$key]);
 
         return $filters;
     }
