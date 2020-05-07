@@ -63,7 +63,8 @@ class ShopController extends AbstractController
 
         // create list of links to change sort order and page
         $options['sort'] = $widget->getSortOptions(['first', 'name', 'low', 'high'], $query);
-        $options['page'] = $widget->getPageOptions(range(1, (int) ceil($count / $query['limit'])), $query);
+        $lastPage = (int) ceil($count / $query['limit']);
+        $options['page'] = $widget->getPageOptions($lastPage, $query);
 
         return $this->render('shop/index.html.twig', [
             'options'     => $options,

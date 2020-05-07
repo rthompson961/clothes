@@ -77,9 +77,7 @@ class WidgetBuilderTest extends TestCase
 
     public function testPageOptions(): void
     {
-        $choices = [1, 2, 3];
-
-        $result = $this->widget->getPageOptions($choices, $this->query);
+        $result = $this->widget->getPageOptions(3, $this->query);
         $expected = [
             1  => '?page=1&sort=name&brand[]=2&brand[]=5&colour[]=3',
             2  => null,

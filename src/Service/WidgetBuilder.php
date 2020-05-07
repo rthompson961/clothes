@@ -42,19 +42,19 @@ class WidgetBuilder
         return $result;
     }
 
-    public function getPageOptions(array $choices, array $query): array
+    public function getPageOptions(int $max, array $query): array
     {
-        $result = [];
-        foreach ($choices as $choice) {
-            $result[$choice] = $this->buildUrl($choice, $query['sort'], $query['filters']);
+        $pages = [];
+        for ($i = 1; $i <= $max; $i++) {
+            $pages[$i] = $this->buildUrl($i, $query['sort'], $query['filters']);
 
             // current value already selected
-            if ($choice == $query['page']) {
-                $result[$choice] = null;
+            if ($i == $query['page']) {
+                $pages[$i] = null;
             }
         }
 
-        return $result;
+        return $pages;
     }
 
     private function buildUrl(int $page, string $sort, array $filters): string
