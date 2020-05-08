@@ -23,6 +23,7 @@ class BrandRepository extends ServiceEntityRepository
     public function findAllAsArray(): array
     {
         $result = $this->createQueryBuilder('b')
+            ->orderBy('b.name')
             ->getQuery()
             ->getArrayResult();
 

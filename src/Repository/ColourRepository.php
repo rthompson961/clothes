@@ -23,6 +23,7 @@ class ColourRepository extends ServiceEntityRepository
     public function findAllAsArray(): array
     {
         $result = $this->createQueryBuilder('c')
+            ->orderBy('c.name')
             ->getQuery()
             ->getArrayResult();
 
