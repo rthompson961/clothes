@@ -75,20 +75,14 @@ class WidgetBuilder
 
     private function buildUrl(int $page, string $sort, array $filters): string
     {
+        $args = ['page' => $page, 'sort' => $sort];
         foreach (['category', 'brand', 'colour'] as $key) {
             if ($filters[$key]) {
-                $filters[$key] = implode(',', $filters[$key]);
+                $args[$key] = implode(',', $filters[$key]);
             }
         }
-        $url = $this->router->generate('shop', [
-            'page' => $page,
-            'sort' => $sort,
-            'category' => $filters['category'],
-            'brand' => $filters['brand'],
-            'colour' => $filters['colour'],
-        ]);
 
-        return $url;
+        return $this->router->generate('shop', $args);
     }
 
     private function addFilter(string $key, int $val, array $filters): array
