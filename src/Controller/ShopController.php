@@ -7,8 +7,8 @@ use App\Entity\Category;
 use App\Entity\Colour;
 use App\Entity\Product;
 use App\Service\WidgetBuilder;
+use App\Service\QueryStringSanitiser;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -17,28 +17,13 @@ class ShopController extends AbstractController
     /**
      * @Route("/shop", name="shop")
      */
-    public function index(Request $request, WidgetBuilder $widget): Response
+    public function index(QueryStringSanitiser $sanitiser, WidgetBuilder $widget): Response
     {
         // store requested page number, sort order & filters
-        $query['page'] = (int) $request->query->get('page');
-        if ($query['page'] < 1) {
-            $query['page'] = 1;
-        }
-        $query['sort'] = $request->query->get('sort');
-        if (!in_array($query['sort'], ['first', 'name', 'low', 'high'])) {
-            $query['sort'] = 'first';
-        }
-        $query['filters'] = ['category' => [], 'brand' => [], 'colour' => []];
+        $query['page'] = $sanitiser->getInt('page');
+        $query['sort'] = $sanitiser->getChoice('sort', ['first', 'name', 'low', 'high']);
         foreach (['category', 'brand', 'colour'] as $key) {
-            $vals = $request->query->get($key);
-            if ($vals) {
-                $vals = explode(',', $vals);
-                array_walk($vals, function (&$val) {
-                    $val = abs((int) $val);
-                });
-                $vals = array_filter($vals);
-                $query['filters'][$key] = $vals;
-            }
+            $query['filters'][$key] = $sanitiser->getIntList($key);
         }
         $query['limit'] = 6;
         $query['offset'] = $query['page'] * $query['limit'] - $query['limit'];
