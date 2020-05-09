@@ -19,14 +19,15 @@ class WidgetBuilderTest extends WebTestCase
         $router = $client->getContainer()->get('router');
         $this->widget = new WidgetBuilder($em, $router);
 
-        $this->query['page'] = 2;
-        $this->query['sort'] = 'name';
-        $this->query['filters'] = ['category' => [], 'brand' => [2, 5], 'colour' => [3]];
+        $query['page'] = 2;
+        $query['sort'] = 'name';
+        $query['filters'] = ['category' => [], 'brand' => [2, 5], 'colour' => [3]];
+        $this->widget->setQuery($query);
     }
 
     public function testFilterAttributes(): void
     {
-        $result = $this->widget->getFilterOptions('colour', $this->query);
+        $result = $this->widget->getFilterOptions('colour');
         $expected = [
             [
                 'id'     => 2,
@@ -95,7 +96,7 @@ class WidgetBuilderTest extends WebTestCase
 
     public function testSortOptions(): void
     {
-        $result = $this->widget->getSortOptions($this->query);
+        $result = $this->widget->getSortOptions();
         $expected = [
             'First In' => '/shop?page=2&sort=first&brand=2,5&colour=3',
             'Name'  => null,
@@ -108,7 +109,7 @@ class WidgetBuilderTest extends WebTestCase
 
     public function testPageOptions(): void
     {
-        $result = $this->widget->getPageOptions(3, $this->query);
+        $result = $this->widget->getPageOptions(3);
         $expected = [
             1  => '/shop?page=1&sort=name&brand=2,5&colour=3',
             2  => null,

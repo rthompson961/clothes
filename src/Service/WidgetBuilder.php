@@ -10,6 +10,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class WidgetBuilder
 {
+    private int $page;
+    private string $sort;
+    private array $filters;
     private array $options;
     private UrlGeneratorInterface $router;
 
@@ -21,22 +24,31 @@ class WidgetBuilder
         $this->router = $router;
     }
 
-    public function getFilterOptions(string $key, array $query): array
+    public function setQuery(array $query): void
+    {
+        list(
+            'page' => $this->page,
+            'sort' => $this->sort,
+            'filters' => $this->filters
+        ) = $query;
+    }
+
+    public function getFilterOptions(string $key): array
     {
         foreach ($this->options[$key] as &$row) {
-            if (in_array($row['id'], $query['filters'][$key])) {
+            if (in_array($row['id'], $this->filters[$key])) {
                 $row['active'] = true;
                 $row['url'] = $this->buildUrl(
-                    $query['page'],
-                    $query['sort'],
-                    $this->removeFilter($key, $row['id'], $query['filters'])
+                    $this->page,
+                    $this->sort,
+                    $this->removeFilter($key, $row['id'], $this->filters)
                 );
             } else {
                 $row['active'] = false;
                 $row['url'] = $this->buildUrl(
-                    $query['page'],
-                    $query['sort'],
-                    $this->addFilter($key, $row['id'], $query['filters'])
+                    $this->page,
+                    $this->sort,
+                    $this->addFilter($key, $row['id'], $this->filters)
                 );
             }
         }
@@ -44,7 +56,7 @@ class WidgetBuilder
         return $this->options[$key];
     }
 
-    public function getSortOptions(array $query): array
+    public function getSortOptions(): array
     {
         $choices = [
             'first' => 'First In',
@@ -55,10 +67,10 @@ class WidgetBuilder
 
         $result = [];
         foreach ($choices as $key => $val) {
-            $result[$val] = $this->buildUrl($query['page'], $key, $query['filters']);
+            $result[$val] = $this->buildUrl($this->page, $key, $this->filters);
 
             // current value already selected
-            if ($key == $query['sort']) {
+            if ($key == $this->sort) {
                 $result[$val] = null;
             }
         }
@@ -66,14 +78,14 @@ class WidgetBuilder
         return $result;
     }
 
-    public function getPageOptions(int $max, array $query): array
+    public function getPageOptions(int $max): array
     {
         $pages = [];
         for ($i = 1; $i <= $max; $i++) {
-            $pages[$i] = $this->buildUrl($i, $query['sort'], $query['filters']);
+            $pages[$i] = $this->buildUrl($i, $this->sort, $this->filters);
 
             // current value already selected
-            if ($i == $query['page']) {
+            if ($i == $this->page) {
                 $pages[$i] = null;
             }
         }

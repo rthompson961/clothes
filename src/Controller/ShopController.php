@@ -31,13 +31,14 @@ class ShopController extends AbstractController
         $products = $doctrine->findProducts($query);
 
         // create list of filters to add/remove categories, brands and colours
+        $widget->setQuery($query);
         foreach (['category', 'brand', 'colour'] as $key) {
-            $options['filters'][$key] = $widget->getFilterOptions($key, $query);
+            $options['filters'][$key] = $widget->getFilterOptions($key);
         }
         // create list of links to change sort order and page
-        $options['sort'] = $widget->getSortOptions($query);
+        $options['sort'] = $widget->getSortOptions();
         $lastPage = (int) ceil($count / $query['limit']);
-        $options['page'] = $widget->getPageOptions($lastPage, $query);
+        $options['page'] = $widget->getPageOptions($lastPage);
 
         return $this->render('shop/index.html.twig', [
             'options'     => $options,
