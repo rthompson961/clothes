@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Brand;
+use App\Entity\Category;
+use App\Entity\Colour;
 use App\Entity\Product;
 use App\Service\WidgetBuilder;
 use App\Service\QueryStringSanitiser;
@@ -26,14 +29,17 @@ class ShopController extends AbstractController
         $query['offset'] = $query['page'] * $query['limit'] - $query['limit'];
 
         // get product count and products for the current page
-        $doctrine = $this->getDoctrine()->getRepository(Product::class);
-        $count = $doctrine->findProductCount($query['filters']);
-        $products = $doctrine->findProducts($query);
+        $doctrine = $this->getDoctrine();
+        $count = $doctrine->getRepository(Product::class)->findProductCount($query['filters']);
+        $products = $doctrine->getRepository(Product::class)->findProducts($query);
 
         // create list of filters to add/remove categories, brands and colours
         $widget->setQuery($query);
+        $lookup['category'] = $doctrine->getRepository(Category::class)->findAllAsArray();
+        $lookup['brand']    = $doctrine->getRepository(Brand::class)->findAllAsArray();
+        $lookup['colour']   = $doctrine->getRepository(Colour::class)->findAllAsArray();
         foreach (['category', 'brand', 'colour'] as $key) {
-            $options['filters'][$key] = $widget->getFilterOptions($key);
+            $options['filters'][$key] = $widget->getFilterOptions($key, $lookup[$key]);
         }
         // create list of links to change sort order and page
         $options['sort'] = $widget->getSortOptions();

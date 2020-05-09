@@ -5,7 +5,6 @@ namespace App\Tests\Service;
 use App\Service\WidgetBuilder;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Routing\Router;
-use Doctrine\ORM\EntityManagerInterface;
 
 class WidgetBuilderTest extends WebTestCase
 {
@@ -15,9 +14,8 @@ class WidgetBuilderTest extends WebTestCase
     protected function setUp(): void
     {
         $client = static::createClient();
-        $em = $client->getContainer()->get('doctrine.orm.entity_manager');
         $router = $client->getContainer()->get('router');
-        $this->widget = new WidgetBuilder($em, $router);
+        $this->widget = new WidgetBuilder($router);
 
         $query['page'] = 2;
         $query['sort'] = 'name';
@@ -27,67 +25,40 @@ class WidgetBuilderTest extends WebTestCase
 
     public function testFilterAttributes(): void
     {
-        $result = $this->widget->getFilterOptions('colour');
-        $expected = [
+        $choices = [
             [
-                'id'     => 2,
-                'name'   => 'Black',
-                'active' => false,
-                'url'    => '/shop?page=2&sort=name&brand=2,5&colour=3,2'
+                'id' => 1,
+                'name' => 'red'
             ],
             [
+                'id' => 2,
+                'name' => 'blue'
+            ],
+            [
+                'id' => 3,
+                'name' => 'green'
+            ]
+        ];
+
+        $result = $this->widget->getFilterOptions('colour', $choices);
+        $expected = [
+            [
                 'id'     => 1,
-                'name'   => 'Blue',
+                'name'   => 'red',
                 'active' => false,
                 'url'    => '/shop?page=2&sort=name&brand=2,5&colour=3,1'
             ],
             [
-                'id'     => 4,
-                'name'   => 'Grey',
+                'id'     => 2,
+                'name'   => 'blue',
                 'active' => false,
-                'url'    => '/shop?page=2&sort=name&brand=2,5&colour=3,4'
-            ],
-            [
-                'id'     => 5,
-                'name'   => 'Navy',
-                'active' => false,
-                'url'    => '/shop?page=2&sort=name&brand=2,5&colour=3,5'
+                'url'    => '/shop?page=2&sort=name&brand=2,5&colour=3,2'
             ],
             [
                 'id'     => 3,
-                'name'   => 'Olive',
+                'name'   => 'green',
                 'active' => true,
                 'url'    => '/shop?page=2&sort=name&brand=2,5'
-            ],
-            [
-                'id'     => 6,
-                'name'   => 'Orange',
-                'active' => false,
-                'url'    => '/shop?page=2&sort=name&brand=2,5&colour=3,6'
-            ],
-            [
-                'id'     => 7,
-                'name'   => 'Plum',
-                'active' => false,
-                'url'    => '/shop?page=2&sort=name&brand=2,5&colour=3,7'
-            ],
-            [
-                'id'     => 8,
-                'name'   => 'Red',
-                'active' => false,
-                'url'    => '/shop?page=2&sort=name&brand=2,5&colour=3,8'
-            ],
-            [
-                'id'     => 9,
-                'name'   => 'Stone',
-                'active' => false,
-                'url'    => '/shop?page=2&sort=name&brand=2,5&colour=3,9'
-            ],
-            [
-                'id'     => 10,
-                'name'   => 'White',
-                'active' => false,
-                'url'    => '/shop?page=2&sort=name&brand=2,5&colour=3,10'
             ]
         ];
 

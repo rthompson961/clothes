@@ -2,25 +2,17 @@
 
 namespace App\Service;
 
-use App\Entity\Brand;
-use App\Entity\Category;
-use App\Entity\Colour;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class WidgetBuilder
 {
+    private UrlGeneratorInterface $router;
     private int $page;
     private string $sort;
     private array $filters;
-    private array $options;
-    private UrlGeneratorInterface $router;
 
-    public function __construct(EntityManagerInterface $em, UrlGeneratorInterface $router)
+    public function __construct(UrlGeneratorInterface $router)
     {
-        $this->options['category'] = $em->getRepository(Category::class)->findAllAsArray();
-        $this->options['brand']    = $em->getRepository(Brand::class)->findAllAsArray();
-        $this->options['colour']   = $em->getRepository(Colour::class)->findAllAsArray();
         $this->router = $router;
     }
 
@@ -33,9 +25,9 @@ class WidgetBuilder
         ) = $query;
     }
 
-    public function getFilterOptions(string $key): array
+    public function getFilterOptions(string $key, array $options): array
     {
-        foreach ($this->options[$key] as &$row) {
+        foreach ($options as &$row) {
             if (in_array($row['id'], $this->filters[$key])) {
                 $row['active'] = true;
                 $row['url'] = $this->buildUrl(
@@ -53,7 +45,7 @@ class WidgetBuilder
             }
         }
 
-        return $this->options[$key];
+        return $options;
     }
 
     public function getSortOptions(): array
