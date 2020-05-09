@@ -23,12 +23,11 @@ class MarketController extends AbstractController
             'Content-Type: text/xml;charset=utf-8',
         ];
 
-        $search   = 'mens jacket';
-        $count    = 8;
+        $search = 'mens jacket fashion';
         $body  = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         $body .= "<findItemsByKeywordsRequest xmlns=\"http://www.ebay.com/marketplace/search/v1/services\">\n";
         $body .= "<keywords>$search</keywords>\n";
-        $body .= "<paginationInput>\n <entriesPerPage>$count</entriesPerPage>\n</paginationInput>\n";
+        $body .= "<paginationInput>\n <entriesPerPage>8</entriesPerPage>\n</paginationInput>\n";
         $body .= "</findItemsByKeywordsRequest>";
 
         $curl = curl_init($endpoint);
