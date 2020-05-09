@@ -12,6 +12,9 @@ parameters:
         -
             message: '#Cannot access property \$query on Symfony\\Component\\HttpFoundation\\Request\|null.#'
             path: src/Service/QueryStringSanitiser.php
+        -
+            message: '#Cannot call method get() on Symfony\Component\DependencyInjection\ContainerInterface|null.#'
+            path: tests/Service/WidgetBuilderTest.php
     level: 8
     symfony:
         container_xml_path: '%rootDir%/../../../var/cache/dev/App_KernelDevDebugContainer.xml'

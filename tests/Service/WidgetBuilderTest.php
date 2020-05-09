@@ -15,9 +15,6 @@ class WidgetBuilderTest extends WebTestCase
     protected function setUp(): void
     {
         $client = static::createClient();
-        if ($client->getContainer() === null) {
-            throw new \Exception('Could not get service container');
-        }
         $em = $client->getContainer()->get('doctrine.orm.entity_manager');
         $router = $client->getContainer()->get('router');
         $this->widget = new WidgetBuilder($em, $router);
