@@ -15,10 +15,18 @@ use App\Service\PaymentProcessor;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class CheckoutController extends AbstractController
 {
+    private SessionInterface $session;
+
+    public function __construct(SessionInterface $session)
+    {
+        $this->session = $session;
+    }
+
    /**
      * @Route("/address_add", name="address_add")
      */
@@ -51,7 +59,7 @@ class CheckoutController extends AbstractController
     public function selectAddress(Request $request): Response
     {
         // do not allow checkout without items in basket
-        if (!$this->get('session')->has('basket')) {
+        if (!$this->session->has('basket')) {
             return $this->redirectToRoute('basket');
         }
 
@@ -75,7 +83,7 @@ class CheckoutController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $this->get('session')->set('address', $data['address']);
+            $this->session->set('address', $data['address']);
 
             return $this->redirectToRoute('payment');
         }
@@ -91,7 +99,7 @@ class CheckoutController extends AbstractController
     public function payment(Request $request, PaymentProcessor $payment): Response
     {
         // do not allow checkout without items in basket or a selected address
-        if (!$this->get('session')->has('basket') || !$this->get('session')->has('address')) {
+        if (!$this->session->has('basket') || !$this->session->has('address')) {
             return $this->redirectToRoute('basket');
         }
 
@@ -99,7 +107,7 @@ class CheckoutController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $basket = $this->get('session')->get('basket');
+            $basket = $this->session->get('basket');
             // get data for each basket item
             $units = $this->getDoctrine()
                 ->getRepository(ProductUnit::class)
@@ -122,7 +130,7 @@ class CheckoutController extends AbstractController
                 $user = $this->getUser();
                 $address = $this->getDoctrine()
                     ->getRepository(Address::class)
-                    ->find($this->get('session')->get('address'));
+                    ->find($this->session->get('address'));
                 if (!$address) {
                     throw new \Exception('Could not find address');
                 }
@@ -161,9 +169,9 @@ class CheckoutController extends AbstractController
                 $entityManager->flush();
 
                 // empty basket & remove selected address
-                $this->get('session')->remove('basket');
-                $this->get('session')->remove('basket_count');
-                $this->get('session')->remove('address');
+                $this->session->remove('basket');
+                $this->session->remove('basket_count');
+                $this->session->remove('address');
 
                 $this->addFlash('order', 'Thank you for your order!');
                 return $this->redirectToRoute('shop');
