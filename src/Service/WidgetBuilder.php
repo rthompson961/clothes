@@ -67,11 +67,11 @@ class WidgetBuilder
 
         $result = [];
         foreach ($choices as $key => $val) {
-            $result[$val] = $this->buildUrl($this->page, $key, $this->filters);
-
-            // current value already selected
+            // set url to apply setting if current value not already selected
             if ($key == $this->sort) {
                 $result[$val] = null;
+            } else {
+                $result[$val] = $this->buildUrl($this->page, $key, $this->filters);
             }
         }
 
@@ -82,11 +82,11 @@ class WidgetBuilder
     {
         $pages = [];
         for ($i = 1; $i <= $max; $i++) {
-            $pages[$i] = $this->buildUrl($i, $this->sort, $this->filters);
-
-            // current value already selected
+            // set url to apply setting if current value not already selected
             if ($i == $this->page) {
                 $pages[$i] = null;
+            } else {
+                $pages[$i] = $this->buildUrl($i, $this->sort, $this->filters);
             }
         }
 
