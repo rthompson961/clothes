@@ -10,6 +10,12 @@ parameters:
         - %rootDir%/../../../src/Security/LoginFormAuthenticator.php
     ignoreErrors:
         -
+            message: '#Parameter \#1 \$user of method App\\Repository\\AddressRepository::findUserAddresses\(\) expects App\\Entity\\User, object\|null given.#'
+            path: src/Controller/CheckoutController.php
+        -
+            message: '#Parameter \#1 \$user of method App\\Entity\\Order::setUser\(\) expects App\\Entity\\User, object\|null given.#'
+            path: src/Controller/CheckoutController.php
+        -
             message: '#Cannot access property \$query on Symfony\\Component\\HttpFoundation\\Request\|null.#'
             path: src/Service/QueryStringSanitiser.php
         -

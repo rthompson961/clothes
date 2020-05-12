@@ -64,12 +64,10 @@ class CheckoutController extends AbstractController
             return $this->redirectToRoute('basket');
         }
 
-        /** @var User */
-        $user = $this->getUser();
         // get all addresses belonging to the current user
         $addresses = $this->getDoctrine()
             ->getRepository(Address::class)
-            ->findUserAddresses($user);
+            ->findUserAddresses($this->getUser());
 
         // user has no addresses stored so prompt them to create one
         if (!$addresses) {
@@ -127,8 +125,6 @@ class CheckoutController extends AbstractController
             $response = $payment->sendRequest($form->getData(), $total);
 
             if ($response['transactionResponse']['responseCode'] === "1") {
-                /** @var User */
-                $user = $this->getUser();
                 $address = $this->getDoctrine()
                     ->getRepository(Address::class)
                     ->find($this->session->get('address'));
@@ -145,7 +141,7 @@ class CheckoutController extends AbstractController
                 $entityManager = $this->getDoctrine()->getManager();
                 // insert order into database
                 $order = new Order();
-                $order->setUser($user);
+                $order->setUser($this->getUser());
                 $order->setAddress($address);
                 $order->setStatus($status);
                 $order->setTotal($total);
