@@ -32,12 +32,6 @@ class Order
     private Address $address;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\OrderStatus")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private OrderStatus $status;
-
-    /**
      * @ORM\Column(type="integer")
      */
     private int $total;
@@ -78,18 +72,6 @@ class Order
     public function setAddress(Address $address): self
     {
         $this->address = $address;
-
-        return $this;
-    }
-
-    public function getStatus(): OrderStatus
-    {
-        return $this->status;
-    }
-
-    public function setStatus(OrderStatus $status): self
-    {
-        $this->status = $status;
 
         return $this;
     }

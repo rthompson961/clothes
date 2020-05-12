@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Address;
 use App\Entity\OrderItem;
-use App\Entity\OrderStatus;
 use App\Entity\Order;
 use App\Entity\ProductUnit;
 use App\Form\AddressSelectType;
@@ -102,19 +101,12 @@ class CheckoutController extends AbstractController
                 if (!$address) {
                     throw new \Exception('Could not find address');
                 }
-                $status = $this->getDoctrine()
-                    ->getRepository(OrderStatus::class)
-                    ->findOneBy(['name' => 'Placed']);
-                if (!$status) {
-                    throw new \Exception('Could not find order status');
-                }
 
                 $entityManager = $this->getDoctrine()->getManager();
                 // insert order into database
                 $order = new Order();
                 $order->setUser($this->getUser());
                 $order->setAddress($address);
-                $order->setStatus($status);
                 $order->setTotal($total);
                 $entityManager->persist($order);
 
