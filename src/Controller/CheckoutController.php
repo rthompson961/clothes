@@ -7,8 +7,6 @@ use App\Entity\OrderItem;
 use App\Entity\OrderStatus;
 use App\Entity\Order;
 use App\Entity\ProductUnit;
-use App\Entity\User;
-use App\Form\AddressAddType;
 use App\Form\AddressSelectType;
 use App\Form\PaymentType;
 use App\Service\PaymentProcessor;
@@ -27,37 +25,10 @@ class CheckoutController extends AbstractController
         $this->session = $session;
     }
 
-   /**
-     * @Route("/address_add", name="address_add")
-     */
-    public function addAddress(Request $request): Response
-    {
-        $address = new Address();
-
-        $form = $this->createForm(AddressAddType::class, $address);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-
-            $address = $form->getData();
-            $address->setUser($this->getUser());
-
-            $entityManager->persist($address);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('address_select');
-        }
-
-        return $this->render('checkout/address_add.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-
     /**
      * @Route("/address_select", name="address_select")
      */
-    public function selectAddress(Request $request): Response
+    public function address(Request $request): Response
     {
         // do not allow checkout without items in basket
         if (!$this->session->has('basket')) {
@@ -87,7 +58,7 @@ class CheckoutController extends AbstractController
             return $this->redirectToRoute('payment');
         }
 
-        return $this->render('checkout/address_select.html.twig', [
+        return $this->render('checkout/address.html.twig', [
             'form' => $form->createView(),
         ]);
     }
