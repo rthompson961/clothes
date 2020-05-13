@@ -44,6 +44,13 @@ class BasketControllerTest extends WebTestCase
 
         $this->assertSelectorTextSame('a.basket', '1 Item');
         $this->assertSelectorTextSame('th.total', '£49.99');
+
+        // remove last item
+        $link = $crawler->filter('a.remove')->link();
+        $crawler = $this->client->click($link);
+        $crawler = $this->client->request('GET', '/basket');
+
+        $this->assertSelectorTextSame('p.empty', 'Your shopping basket is empty');
     }
 
     public function testEmpty(): void

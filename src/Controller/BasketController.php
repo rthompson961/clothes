@@ -25,7 +25,7 @@ class BasketController extends AbstractController
     {
         $units = [];
         $total = 0;
-        if ($this->session->has('basket')) {
+        if ($this->session->has('basket') && count($this->session->get('basket'))) {
             $basket = $this->session->get('basket');
             $units  = $this->getDoctrine()
                 ->getRepository(ProductUnit::class)
