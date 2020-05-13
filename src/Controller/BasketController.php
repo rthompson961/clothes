@@ -51,11 +51,7 @@ class BasketController extends AbstractController
     public function add(int $id, int $quantity): RedirectResponse
     {
         // get the current basket if there is one
-        if ($this->session->has('basket')) {
-            $basket = $this->session->get('basket');
-        } else {
-            $basket = [];
-        }
+        $basket = $this->session->get('basket') ?? [];
 
         // add the current item to the basket
         if (array_key_exists($id, $basket)) {
