@@ -99,8 +99,7 @@ class BasketController extends AbstractController
      */
     public function empty(): RedirectResponse
     {
-        $this->session->remove('basket');
-        $this->session->remove('basket_count');
+        $this->session->clear();
 
         return $this->redirectToRoute('basket');
     }

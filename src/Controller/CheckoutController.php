@@ -129,9 +129,7 @@ class CheckoutController extends AbstractController
                 $entityManager->flush();
 
                 // empty basket & remove selected address
-                $this->session->remove('basket');
-                $this->session->remove('basket_count');
-                $this->session->remove('address');
+                $this->session->clear();
 
                 $this->addFlash('order', 'Thank you for your order!');
                 return $this->redirectToRoute('shop');
