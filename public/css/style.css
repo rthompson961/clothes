@@ -465,10 +465,6 @@ p.pages a:hover {
 
 /* marketplace page */
 
-#market p.terms {
-    margin-bottom: 30px;
-}
-
 #market div {
     float: left;
     height: 580px;

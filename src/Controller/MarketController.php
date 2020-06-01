@@ -22,13 +22,11 @@ class MarketController extends AbstractController
             'X-EBAY-SOA-SECURITY-APPNAME: ' . $_SERVER['EBAY_APPNAME'],
             'Content-Type: text/xml;charset=utf-8',
         ];
-
-        $search = 'mens jacket fashion';
-        $body  = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-        $body .= "<findItemsByKeywordsRequest xmlns=\"http://www.ebay.com/marketplace/search/v1/services\">\n";
-        $body .= "<keywords>$search</keywords>\n";
-        $body .= "<paginationInput>\n <entriesPerPage>8</entriesPerPage>\n</paginationInput>\n";
-        $body .= "</findItemsByKeywordsRequest>";
+        $body  = '<?xml version="1.0" encoding="utf-8"?>';
+        $body .= '<findItemsByKeywordsRequest xmlns="http://www.ebay.com/marketplace/search/v1/services">';
+        $body .= '<keywords>mens jacket fashion</keywords>';
+        $body .= '<paginationInput><entriesPerPage>8</entriesPerPage></paginationInput>';
+        $body .= '</findItemsByKeywordsRequest>';
 
         $curl = curl_init($endpoint);
         if ($curl === false) {
@@ -38,7 +36,6 @@ class MarketController extends AbstractController
         curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
-        // Return value rather than outputting
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
         $response = curl_exec($curl);
@@ -53,9 +50,6 @@ class MarketController extends AbstractController
             throw new \Exception('Ebay response did not acknowledge success');
         }
     
-        return $this->render('market/index.html.twig', [
-            'search'   => $search,
-            'response' => $response
-        ]);
+        return $this->render('market/index.html.twig', ['response' => $response]);
     }
 }
