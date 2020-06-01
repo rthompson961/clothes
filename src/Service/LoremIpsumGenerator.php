@@ -4,20 +4,7 @@ namespace App\Service;
 
 class LoremIpsumGenerator
 {
-    public function getParagraph(int $size = 3): string
-    {
-        $paragraph = '';
-        for ($i = 1; $i <= $size; $i++) {
-            if ($i !== 1) {
-                $paragraph .= ' ';
-            }
-            $paragraph .= self::getSentence();
-        }
-
-        return $paragraph;
-    }
-
-    public function getSentence(int $min = 16, int $max = 40): string
+    public function getParagraph(int $size = 84): string
     {
         $list = [
             'aenean',
@@ -84,13 +71,11 @@ class LoremIpsumGenerator
             'viverra',
         ];
 
-        $length = mt_rand($min, $max);
         $recent = [];
-        $recentSize  = 10;
-        $sentence  = [];
-        for ($i = 1; $i <= $length; $i++) {
+        $recentSize = 10;
+        $paragraph = [];
+        for ($i = 1; $i <= $size; $i++) {
             $word = self::pickWord($list, $recent);
-
             // restrict recent words to appropriate size
             if (count($recent) >= $recentSize) {
                 // remove oldest entry
@@ -98,15 +83,14 @@ class LoremIpsumGenerator
             }
 
             $recent[] = $word;
-            $sentence[] = $word;
+            $paragraph[] = $word;
         }
 
-        // capitalise first word
-        $sentence[0] = ucfirst($sentence[0]);
-        $sentence = implode(' ', $sentence);
-        $sentence .= '.';
+        $paragraph[0] = ucfirst($paragraph[0]);
+        $paragraph = implode(' ', $paragraph);
+        $paragraph .= '.';
 
-        return $sentence;
+        return $paragraph;
     }
 
     public function pickWord(array $list, array $recent): string
