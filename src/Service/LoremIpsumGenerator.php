@@ -19,85 +19,85 @@ class LoremIpsumGenerator
 
     public function getSentence(int $min = 16, int $max = 40): string
     {
-        $wordList = [
-            'lorem',
-            'ipsum',
-            'dui',
-            'non',
-            'hendrerit',
-            'maximus',
-            'dignissim',
-            'felis',
-            'libero',
-            'rutrum',
-            'sed',
-            'venenatis',
-            'lectus',
-            'risus',
-            'eget',
-            'turpis',
-            'pellentesque',
-            'feugiat',
-            'neque',
-            'orci',
-            'mi',
-            'vel',
-            'viverra',
-            'pulvinar',
-            'morbi',
-            'condimentum',
-            'varius',
-            'natoque',
-            'et',
-            'magnis',
-            'montes',
-            'nisl',
+        $list = [
             'aenean',
-            'ullamcorper',
-            'cras',
-            'nulla',
-            'justo',
-            'suspendisse',
-            'enim',
-            'leo',
-            'arcu',
             'aliquam',
-            'gravidar',
-            'fusce',
             'ante',
-            'purus',
-            'odio',
-            'quisque',
-            'vivamus',
-            'maecenas',
-            'necessitatibus',
-            'saepe',
-            'oluptatibus',
-            'repellat',
-            'pharetra',
-            'interdum',
-            'optio',
-            'soluta',
+            'arcu',
+            'condimentum',
+            'cras',
+            'dictum',
+            'dignissim',
+            'dui',
+            'eget',
+            'enim',
+            'et',
+            'felis',
+            'feugiat',
+            'fusce',
+            'gravidar',
+            'hendrerit',
             'impedit',
-            'tristique',
+            'interdum',
+            'ipsum',
+            'justo',
+            'lectus',
+            'leo',
+            'libero',
+            'lorem',
+            'maecenas',
+            'magnis',
             'mattis',
-            'dictum'
+            'maximus',
+            'mi',
+            'montes',
+            'morbi',
+            'natoque',
+            'necessitatibus',
+            'neque',
+            'nisl',
+            'non',
+            'nulla',
+            'odio',
+            'oluptatibus',
+            'optio',
+            'orci',
+            'pellentesque',
+            'pharetra',
+            'pulvinar',
+            'purus',
+            'quisque',
+            'repellat',
+            'risus',
+            'rutrum',
+            'saepe',
+            'sed',
+            'soluta',
+            'suspendisse',
+            'tristique',
+            'turpis',
+            'ullamcorper',
+            'varius',
+            'vel',
+            'venenatis',
+            'vivamus',
+            'viverra',
         ];
 
         $length = mt_rand($min, $max);
-        $recentWords     = [];
-        $recentWordSize  = 10;
+        $recent = [];
+        $recentSize  = 10;
         $sentence  = [];
         for ($i = 1; $i <= $length; $i++) {
-            $word = self::pickWord($wordList, $recentWords);
+            $word = self::pickWord($list, $recent);
 
             // restrict recent words to appropriate size
-            if (count($recentWords) >= $recentWordSize) {
+            if (count($recent) >= $recentSize) {
                 // remove oldest entry
-                array_shift($recentWords);
+                array_shift($recent);
             }
 
-            $recentWords[] = $word;
+            $recent[] = $word;
             $sentence[] = $word;
         }
 
@@ -109,12 +109,12 @@ class LoremIpsumGenerator
         return $sentence;
     }
 
-    public function pickWord(array $wordList, array $recentWords): string
+    public function pickWord(array $list, array $recent): string
     {
-        $word = $wordList[mt_rand(0, count($wordList) - 1)];
+        $word = $list[mt_rand(0, count($list) - 1)];
 
-        if (in_array($word, $recentWords)) {
-            $word = self::pickWord($wordList, $recentWords);
+        if (in_array($word, $recent)) {
+            $word = self::pickWord($list, $recent);
         }
 
         return $word;
