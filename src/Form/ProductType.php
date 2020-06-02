@@ -32,12 +32,6 @@ class ProductType extends AbstractType
             }
         }
 
-        // list of 1 to 10 for quantity selection
-        $quantities = [];
-        for ($i = 1; $i <= 10; $i++) {
-            $quantities[$i] = $i;
-        }
-
         $builder->add('product', ChoiceType::class, [
             'choices'  => $sizes,
             'choice_attr' => $attr,
@@ -45,7 +39,7 @@ class ProductType extends AbstractType
             'label' => false
         ]);
         $builder->add('quantity', ChoiceType::class, [
-            'choices'  => $quantities,
+            'choices'  => [1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5],
             'label' => false
         ]);
         $builder->add('submit', SubmitType::class, ['label' => 'Add to Basket']);
