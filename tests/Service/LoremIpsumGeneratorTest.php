@@ -10,27 +10,13 @@ class LoremIpsumGeneratorTest extends TestCase
     public function testParagraph(): void
     {
         $ipsum  = new LoremIpsumGenerator();
-        $paragraph = $ipsum->getParagraph();
+        $paragraph = $ipsum->getParagraph(10);
 
+        // no duplicates
+        $array = explode(' ', $paragraph);
+        $this->assertTrue(count($array) === count(array_unique($array)));
         // starts with a capital letter and ends with fullstop
         $this->assertTrue(ctype_upper(substr($paragraph, 0, 1)));
         $this->assertStringEndsWith('.', $paragraph);
-    }
-
-    public function testWord(): void
-    {
-        $wordList    = ['apple', 'orange', 'banana', 'strawberry'];
-        $recentWords = ['apple', 'strawberry'];
-
-        $ipsum  = new LoremIpsumGenerator();
-        $words  = [];
-        for ($i = 1; $i <= 2; $i++) {
-            $words[] = $ipsum->pickWord($wordList, $recentWords);
-            $recentWords[] = end($words);
-        }
-
-        $this->assertCount(2, $words);
-        $this->assertContains('orange', $words);
-        $this->assertContains('banana', $words);
     }
 }
