@@ -62,14 +62,8 @@ class BasketController extends AbstractController
 
         // update session variable to match the new basket
         $this->session->set('basket', $basket);
-
         // update the total number of items in the basket
-        if ($this->session->has('basket_count')) {
-            $count = $this->session->get('basket_count');
-            $this->session->set('basket_count', $count + $quantity);
-        } else {
-            $this->session->set('basket_count', $quantity);
-        }
+        $this->session->set('basket_count', array_sum($basket));
 
         return $this->redirectToRoute('basket');
     }
@@ -80,15 +74,12 @@ class BasketController extends AbstractController
     public function remove(int $id): RedirectResponse
     {
         if ($this->session->has('basket') && array_key_exists($id, $this->session->get('basket'))) {
-            $basket = $this->session->get('basket');
-
-            // remove quantity from basket item  count
-            $count = $this->session->get('basket_count');
-            $this->session->set('basket_count', $count - $basket[$id]);
-
             // remove item and update basket
+            $basket = $this->session->get('basket');
             unset($basket[$id]);
             $this->session->set('basket', $basket);
+            // update the total number of items in the basket
+            $this->session->set('basket_count', array_sum($basket));
         }
 
         return $this->redirectToRoute('basket');
