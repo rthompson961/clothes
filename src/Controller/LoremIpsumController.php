@@ -33,8 +33,7 @@ class LoremIpsumController extends AbstractController
 
         $text = [];
         for ($i = 1; $i <= 6; $i++) {
-            $size = mt_rand(60, 120);
-            $text[] = $ipsum->getParagraph($size);
+            $text[] = $ipsum->getParagraph(mt_rand(60, 120));
         }
         
         return $this->render('lorem_ipsum/index.html.twig', [
