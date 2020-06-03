@@ -4,7 +4,7 @@ namespace App\Service;
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class WidgetBuilder
+class ShopBuilder
 {
     private UrlGeneratorInterface $router;
     private int $page;

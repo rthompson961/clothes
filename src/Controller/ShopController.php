@@ -6,7 +6,7 @@ use App\Entity\Brand;
 use App\Entity\Category;
 use App\Entity\Colour;
 use App\Entity\Product;
-use App\Service\WidgetBuilder;
+use App\Service\ShopBuilder;
 use App\Service\QueryStringSanitiser;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +17,7 @@ class ShopController extends AbstractController
     /**
      * @Route("/shop", name="shop")
      */
-    public function index(QueryStringSanitiser $sanitiser, WidgetBuilder $widget): Response
+    public function index(QueryStringSanitiser $sanitiser, shopBuilder $builder): Response
     {
         // store requested page number, sort order & filters
         $query['page'] = $sanitiser->getInt('page');
@@ -34,17 +34,17 @@ class ShopController extends AbstractController
         $products = $doctrine->getRepository(Product::class)->findProducts($query);
 
         // create list of filters to add/remove categories, brands and colours
-        $widget->setQuery($query);
+        $builder->setQuery($query);
         $lookup['category'] = $doctrine->getRepository(Category::class)->findAllAsArray();
         $lookup['brand']    = $doctrine->getRepository(Brand::class)->findAllAsArray();
         $lookup['colour']   = $doctrine->getRepository(Colour::class)->findAllAsArray();
         foreach (['category', 'brand', 'colour'] as $key) {
-            $options['filters'][$key] = $widget->getFilterOptions($key, $lookup[$key]);
+            $options['filters'][$key] = $builder->getFilterOptions($key, $lookup[$key]);
         }
         // create list of links to change sort order and page
-        $options['sort'] = $widget->getSortOptions();
+        $options['sort'] = $builder->getSortOptions();
         $lastPage = (int) ceil($count / $query['limit']);
-        $options['page'] = $widget->getPageOptions($lastPage);
+        $options['page'] = $builder->getPageOptions($lastPage);
 
         return $this->render('shop/index.html.twig', [
             'options'     => $options,

@@ -2,25 +2,25 @@
 
 namespace App\Tests\Service;
 
-use App\Service\WidgetBuilder;
+use App\Service\ShopBuilder;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Routing\Router;
 
-class WidgetBuilderTest extends WebTestCase
+class ShopBuilderTest extends WebTestCase
 {
-    private WidgetBuilder $widget;
+    private ShopBuilder $builder;
     private array $query;
 
     protected function setUp(): void
     {
         $client = static::createClient();
         $router = $client->getContainer()->get('router');
-        $this->widget = new WidgetBuilder($router);
+        $this->builder = new ShopBuilder($router);
 
         $query['page'] = 2;
         $query['sort'] = 'name';
         $query['filters'] = ['category' => [], 'brand' => [2, 5], 'colour' => [3]];
-        $this->widget->setQuery($query);
+        $this->builder->setQuery($query);
     }
 
     public function testFilterAttributes(): void
@@ -40,7 +40,7 @@ class WidgetBuilderTest extends WebTestCase
             ]
         ];
 
-        $result = $this->widget->getFilterOptions('colour', $choices);
+        $result = $this->builder->getFilterOptions('colour', $choices);
         $expected = [
             [
                 'id'     => 1,
@@ -67,7 +67,7 @@ class WidgetBuilderTest extends WebTestCase
 
     public function testSortOptions(): void
     {
-        $result = $this->widget->getSortOptions();
+        $result = $this->builder->getSortOptions();
         $expected = [
             'First In' => '/shop?page=2&sort=first&brand=2,5&colour=3',
             'Name'  => null,
@@ -80,7 +80,7 @@ class WidgetBuilderTest extends WebTestCase
 
     public function testPageOptions(): void
     {
-        $result = $this->widget->getPageOptions(3);
+        $result = $this->builder->getPageOptions(3);
         $expected = [
             1  => '/shop?page=1&sort=name&brand=2,5&colour=3',
             2  => null,

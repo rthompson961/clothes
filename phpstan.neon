@@ -20,7 +20,7 @@ parameters:
             path: src/Service/QueryStringSanitiser.php
         -
             message: '#Cannot call method get() on Symfony\Component\DependencyInjection\ContainerInterface|null.#'
-            path: tests/Service/WidgetBuilderTest.php
+            path: tests/Service/ShopBuilderTest.php
     level: 8
     symfony:
         container_xml_path: '%rootDir%/../../../var/cache/dev/App_KernelDevDebugContainer.xml'
