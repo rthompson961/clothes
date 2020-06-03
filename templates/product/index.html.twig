@@ -10,8 +10,6 @@
 <div class="product">
     <h2>{{ product.name }}</h2>
     <h3>&pound;{{ (product.price / 100)|number_format(2, '.', ',') }}</h3>
-    <p><b>Colour:</b> {{ product.colour.name }}</p>
-    <p><b>Brand:</b> {{ product.brand.name }}</p>
     
     {{ form(form) }}
     
