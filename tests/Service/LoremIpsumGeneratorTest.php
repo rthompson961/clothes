@@ -10,10 +10,10 @@ class LoremIpsumGeneratorTest extends TestCase
     public function testParagraph(): void
     {
         $ipsum  = new LoremIpsumGenerator();
-        $text = $ipsum->getParagraph(10);
+        $result = $ipsum->getParagraph(10);
 
-        // no duplicates
-        $text = explode(' ', $text);
-        $this->assertTrue(count($text) === count(array_unique($text)));
+        $result = explode(' ', $result);
+        // result is appropriate length and contains no duplicates
+        $this->assertTrue(count(array_unique($result)) == 10);
     }
 }
