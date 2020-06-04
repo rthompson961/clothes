@@ -102,7 +102,6 @@ class CheckoutController extends AbstractController
             }
 
             $entityManager = $this->getDoctrine()->getManager();
-            // insert order into database
             $order = new Order();
             $order->setUser($this->getUser());
             $order->setAddress($address);
@@ -116,7 +115,6 @@ class CheckoutController extends AbstractController
                 if (!$unitObject) {
                     throw new \Exception('Could not find unit object');
                 }
-                // insert order items into database
                 $item = new OrderItem();
                 $item->setOrder($order);
                 $item->setProductUnit($unitObject);
@@ -124,18 +122,14 @@ class CheckoutController extends AbstractController
                 $item->setQuantity($basket[$unit['id']]);
                 $entityManager->persist($item);
             }
-            // complete database transaction
             $entityManager->flush();
 
-            // empty basket & remove selected address
+            // empty basket & redirect
             $this->session->clear();
-
             $this->addFlash('order', 'Thank you for your order!');
             return $this->redirectToRoute('shop');
         }
 
-        return $this->render('checkout/index.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        return $this->render('checkout/index.html.twig', ['form' => $form->createView()]);
     }
 }
