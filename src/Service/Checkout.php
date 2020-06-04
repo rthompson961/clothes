@@ -2,9 +2,9 @@
 
 namespace App\Service;
 
-class PaymentProcessor
+class Checkout
 {
-    public function sendRequest(array $data, int $total): array
+    public function sendPayment(array $data, int $total): array
     {
         $endpoint = 'https://apitest.authorize.net/xml/v1/request.api';
         $body  = [

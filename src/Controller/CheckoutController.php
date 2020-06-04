@@ -8,7 +8,7 @@ use App\Entity\Order;
 use App\Entity\ProductUnit;
 use App\Form\AddressSelectType;
 use App\Form\PaymentType;
-use App\Service\PaymentProcessor;
+use App\Service\Checkout;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -65,7 +65,7 @@ class CheckoutController extends AbstractController
     /**
      * @Route("/payment", name="payment")
      */
-    public function payment(Request $request, PaymentProcessor $payment): Response
+    public function payment(Request $request, Checkout $checkout): Response
     {
         // do not allow checkout without items in basket or a selected address
         if (!$this->session->has('basket') || !$this->session->has('address')) {
@@ -92,7 +92,7 @@ class CheckoutController extends AbstractController
             }
 
             // send order details and payment information to card processor
-            $response = $payment->sendRequest($form->getData(), $total);
+            $response = $checkout->sendPayment($form->getData(), $total);
 
             if ($response['transactionResponse']['responseCode'] === "1") {
                 $address = $this->getDoctrine()
