@@ -7,7 +7,7 @@ class LoremIpsumGenerator
     public function getParagraph(int $size = 84): string
     {
         $recent = [];
-        $recentSize = 10;
+        $recentSize = 20;
         $paragraph = [];
         for ($i = 1; $i <= $size; $i++) {
             $word = self::pickWord($recent);
