@@ -84,7 +84,6 @@ class CheckoutController extends AbstractController
 
             $total = $checkout->getTotal($units);
             if ($checkout->isOutOfStock($units)) {
-                $this->addFlash('basket', 'There are out of stock items in your basket');
                 return $this->redirectToRoute('basket');
             }
 

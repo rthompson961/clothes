@@ -7,10 +7,6 @@
     <h2>Basket</h2>
 
     {% if units %}
-        {% for flash_message in app.session.flashBag.get('basket') %}
-            <p class="flash">{{ flash_message }}</p>
-        {% endfor %}
-
         <p class="count">
         You have {{ app.session.get('basket_count') }} Item{% if app.session.get('basket_count') > 1 %}s{% endif %}
         </p>
