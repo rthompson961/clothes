@@ -49,4 +49,25 @@ class Checkout
 
         return json_decode($response, true);
     }
+
+    public function getTotal(array $units): int
+    {
+        $total = 0;
+        foreach ($units as $unit) {
+            $total += $unit['price'];
+        }
+
+        return $total;
+    }
+
+    public function isOutOfStock(array $units): bool
+    {
+        foreach ($units as $unit) {
+            if (!$unit['stock']) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

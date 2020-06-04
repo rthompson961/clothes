@@ -81,14 +81,11 @@ class CheckoutController extends AbstractController
             $units = $this->getDoctrine()
                 ->getRepository(ProductUnit::class)
                 ->findBasketUnits(array_keys($basket));
-            // get order total cost and do a stock check
-            $total = 0;
-            foreach ($units as $unit) {
-                $total += $unit['price'];
-                if (!$unit['stock']) {
-                    $this->addFlash('basket', 'There are out of stock items in your basket');
-                    return $this->redirectToRoute('basket');
-                }
+
+            $total = $checkout->getTotal($units);
+            if ($checkout->isOutOfStock($units)) {
+                $this->addFlash('basket', 'There are out of stock items in your basket');
+                return $this->redirectToRoute('basket');
             }
 
             // send order details and payment information to card processor

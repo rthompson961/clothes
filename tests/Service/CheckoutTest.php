@@ -36,4 +36,60 @@ class CheckoutTest extends TestCase
         $this->assertTrue($result['transactionResponse']['responseCode'] === "3");
         $this->assertTrue($text === 'The credit card number is invalid.');
     }
+
+    public function testTotal(): void
+    {
+        $checkout = new Checkout();
+        $data = [
+            [
+                'price' => 2200
+            ],
+            [
+                'price' => 900
+            ]
+        ];
+
+        $result = $checkout->getTotal($data);
+
+        $this->assertTrue($result === 3100);
+    }
+
+   /**
+     * @dataProvider stockProvider
+     */
+    public function testStock(array $data, bool $expected): void
+    {
+        $checkout = new Checkout();
+        $result = $checkout->isOutOfStock($data);
+
+        $this->assertTrue($result === $expected);
+    }
+
+    public function stockProvider(): array
+    {
+        return [
+            [
+                [
+                    [
+                        'stock' => '17'
+                    ],
+                    [
+                        'stock' => '13'
+                    ]
+                ],
+                false
+            ],
+            [
+                [
+                    [
+                        'stock' => '17'
+                    ],
+                    [
+                        'stock' => '0'
+                    ]
+                ],
+                true
+            ],
+        ];
+    }
 }
