@@ -91,46 +91,48 @@ class CheckoutController extends AbstractController
             // send order details and payment information to card processor
             $response = $checkout->sendPayment($form->getData(), $total);
 
-            if ($response['transactionResponse']['responseCode'] === "1") {
-                $address = $this->getDoctrine()
-                    ->getRepository(Address::class)
-                    ->find($this->session->get('address'));
-                if (!$address) {
-                    throw new \Exception('Could not find address');
-                }
-
-                $entityManager = $this->getDoctrine()->getManager();
-                // insert order into database
-                $order = new Order();
-                $order->setUser($this->getUser());
-                $order->setAddress($address);
-                $order->setTotal($total);
-                $entityManager->persist($order);
-
-                foreach ($units as $unit) {
-                    $unitObject = $this->getDoctrine()
-                        ->getRepository(ProductUnit::class)
-                        ->find($unit['id']);
-                    if (!$unitObject) {
-                        throw new \Exception('Could not find unit object');
-                    }
-                    // insert order items into database
-                    $item = new OrderItem();
-                    $item->setOrder($order);
-                    $item->setProductUnit($unitObject);
-                    $item->setPrice($unit['price']);
-                    $item->setQuantity($basket[$unit['id']]);
-                    $entityManager->persist($item);
-                }
-                // complete database transaction
-                $entityManager->flush();
-
-                // empty basket & remove selected address
-                $this->session->clear();
-
-                $this->addFlash('order', 'Thank you for your order!');
-                return $this->redirectToRoute('shop');
+            if ($response['transactionResponse']['responseCode'] !== "1") {
+                return $this->redirectToRoute('payment');
             }
+
+            $address = $this->getDoctrine()
+                ->getRepository(Address::class)
+                ->find($this->session->get('address'));
+            if (!$address) {
+                throw new \Exception('Could not find address');
+            }
+
+            $entityManager = $this->getDoctrine()->getManager();
+            // insert order into database
+            $order = new Order();
+            $order->setUser($this->getUser());
+            $order->setAddress($address);
+            $order->setTotal($total);
+            $entityManager->persist($order);
+
+            foreach ($units as $unit) {
+                $unitObject = $this->getDoctrine()
+                    ->getRepository(ProductUnit::class)
+                    ->find($unit['id']);
+                if (!$unitObject) {
+                    throw new \Exception('Could not find unit object');
+                }
+                // insert order items into database
+                $item = new OrderItem();
+                $item->setOrder($order);
+                $item->setProductUnit($unitObject);
+                $item->setPrice($unit['price']);
+                $item->setQuantity($basket[$unit['id']]);
+                $entityManager->persist($item);
+            }
+            // complete database transaction
+            $entityManager->flush();
+
+            // empty basket & remove selected address
+            $this->session->clear();
+
+            $this->addFlash('order', 'Thank you for your order!');
+            return $this->redirectToRoute('shop');
         }
 
         return $this->render('checkout/index.html.twig', [
