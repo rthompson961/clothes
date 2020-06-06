@@ -38,6 +38,15 @@ class ProductUnitRepository extends ServiceEntityRepository
         return $result ?? [];
     }
 
+    public function findBasketUnitObjects(array $basket): array
+    {
+        $qb = $this->createQueryBuilder('u');
+        $qb->where($qb->expr()->in('u.id', $basket));
+        $result = $qb->getQuery()->getResult();
+
+        return $result ?? [];
+    }
+
     public function findProductUnits(int $id): array
     {
         $qb = $this->createQueryBuilder('u')

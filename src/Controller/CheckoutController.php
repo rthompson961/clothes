@@ -81,6 +81,9 @@ class CheckoutController extends AbstractController
             $units = $this->getDoctrine()
                 ->getRepository(ProductUnit::class)
                 ->findBasketUnits(array_keys($basket));
+            $objects = $this->getDoctrine()
+                ->getRepository(ProductUnit::class)
+                ->findBasketUnitObjects(array_keys($basket));
 
             $total = $checkout->getTotal($units);
             if ($checkout->isOutOfStock($units)) {
@@ -109,15 +112,15 @@ class CheckoutController extends AbstractController
             $entityManager->persist($order);
 
             foreach ($units as $unit) {
-                $unitObject = $this->getDoctrine()
-                    ->getRepository(ProductUnit::class)
-                    ->find($unit['id']);
-                if (!$unitObject) {
-                    throw new \Exception('Could not find unit object');
+                $obj = null;
+                foreach ($objects as $obj) {
+                    if ($obj->getId() === $unit['id']) {
+                        break;
+                    }
                 }
                 $item = new OrderItem();
                 $item->setOrder($order);
-                $item->setProductUnit($unitObject);
+                $item->setProductUnit($obj);
                 $item->setPrice($unit['price']);
                 $item->setQuantity($basket[$unit['id']]);
                 $entityManager->persist($item);
