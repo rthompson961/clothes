@@ -77,17 +77,18 @@ class CheckoutController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $basket = $this->session->get('basket');
+
             // get data for each basket item
             $units = $this->getDoctrine()
                 ->getRepository(ProductUnit::class)
-                ->findBasketUnits(array_keys($basket));
-            $objects = $this->getDoctrine()
-                ->getRepository(ProductUnit::class)
-                ->findBasketUnitObjects(array_keys($basket));
-
-            $total = $checkout->getTotal($units);
-            if ($checkout->isOutOfStock($units)) {
-                return $this->redirectToRoute('basket');
+                ->findBy(['id' => array_keys($basket)]);
+            // get order total and check stock
+            $total = 0;
+            foreach ($units as $unit) {
+                $total += $basket[$unit->getId()] * $unit->getPrice();
+                if (!$unit->getStock()) {
+                    return $this->redirectToRoute('basket');
+                }
             }
 
             // send order details and payment information to card processor
@@ -111,12 +112,12 @@ class CheckoutController extends AbstractController
             $order->setTotal($total);
             $entityManager->persist($order);
 
-            for ($i = 0; $i < count($units); $i++) {
+            foreach ($units as $unit) {
                 $item = new OrderItem();
                 $item->setOrder($order);
-                $item->setProductUnit($objects[$i]);
-                $item->setPrice($units[$i]['price']);
-                $item->setQuantity($basket[$units[$i]['id']]);
+                $item->setProductUnit($unit);
+                $item->setPrice($unit->getPrice());
+                $item->setQuantity($basket[$unit->getId()]);
                 $entityManager->persist($item);
             }
             $entityManager->flush();
