@@ -111,18 +111,12 @@ class CheckoutController extends AbstractController
             $order->setTotal($total);
             $entityManager->persist($order);
 
-            foreach ($units as $unit) {
-                $obj = null;
-                foreach ($objects as $obj) {
-                    if ($obj->getId() === $unit['id']) {
-                        break;
-                    }
-                }
+            for ($i = 0; $i < count($units); $i++) {
                 $item = new OrderItem();
                 $item->setOrder($order);
-                $item->setProductUnit($obj);
-                $item->setPrice($unit['price']);
-                $item->setQuantity($basket[$unit['id']]);
+                $item->setProductUnit($objects[$i]);
+                $item->setPrice($units[$i]['price']);
+                $item->setQuantity($basket[$units[$i]['id']]);
                 $entityManager->persist($item);
             }
             $entityManager->flush();
