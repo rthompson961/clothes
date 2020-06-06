@@ -11,10 +11,11 @@ class ProductUnitFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        $productCount = 66;
+        $products = 66;
         $unit = 0;
         $maxStock = 30;
-        for ($product = 1; $product <= $productCount; $product++) {
+        for ($i = 1; $i <= $products; $i++) {
+            $product = $this->getReference('product-' . $i);
             foreach (['small', 'medium', 'large'] as $size) {
                 $unit++;
                 // randomise stock with 1 in 5 being out of stock
@@ -33,8 +34,9 @@ class ProductUnitFixtures extends Fixture implements DependentFixtureInterface
                 }
 
                 $productUnit = new ProductUnit();
-                $productUnit->setProduct($this->getReference('product-' . $product));
+                $productUnit->setProduct($product);
                 $productUnit->setSize($this->getReference('size-' . $size));
+                $productUnit->setPrice($product->getPrice());
                 $productUnit->setStock($stock);
                 $manager->persist($productUnit);
 
