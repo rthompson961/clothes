@@ -33,11 +33,6 @@ class ProductUnit
     /**
      * @ORM\Column(type="integer")
      */
-    private int $price;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
     private int $stock;
 
     public function getId(): ?int
@@ -65,18 +60,6 @@ class ProductUnit
     public function setSize(Size $size): self
     {
         $this->size = $size;
-
-        return $this;
-    }
-
-    public function getPrice(): int
-    {
-        return $this->price;
-    }
-
-    public function setPrice(int $price): self
-    {
-        $this->price = $price;
 
         return $this;
     }

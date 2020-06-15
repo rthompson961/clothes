@@ -85,7 +85,7 @@ class CheckoutController extends AbstractController
             // get order total and check stock
             $total = 0;
             foreach ($units as $unit) {
-                $total += $basket[$unit->getId()] * $unit->getPrice();
+                $total += $basket[$unit->getId()] * $unit->getProduct()->getPrice();
                 if (!$unit->getStock()) {
                     return $this->redirectToRoute('basket');
                 }
@@ -116,7 +116,7 @@ class CheckoutController extends AbstractController
                 $item = new OrderItem();
                 $item->setOrder($order);
                 $item->setProductUnit($unit);
-                $item->setPrice($unit->getPrice());
+                $item->setPrice($unit->getProduct()->getPrice());
                 $item->setQuantity($basket[$unit->getId()]);
                 $entityManager->persist($item);
             }

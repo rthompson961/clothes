@@ -36,7 +36,6 @@ class ProductUnitFixtures extends Fixture implements DependentFixtureInterface
                 $productUnit = new ProductUnit();
                 $productUnit->setProduct($product);
                 $productUnit->setSize($this->getReference('size-' . $size));
-                $productUnit->setPrice($product->getPrice());
                 $productUnit->setStock($stock);
                 $manager->persist($productUnit);
 
