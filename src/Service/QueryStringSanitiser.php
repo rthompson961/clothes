@@ -14,7 +14,7 @@ class QueryStringSanitiser
         $this->request = $requestStack->getCurrentRequest();
     }
 
-    public function getInt(string $key): int
+    public function get(string $key): int
     {
         $input = $this->request->query->get($key);
 
@@ -25,7 +25,7 @@ class QueryStringSanitiser
         return $input;
     }
 
-    public function getIntList(string $key): array
+    public function getList(string $key): array
     {
         $input = $this->request->query->get($key);
 

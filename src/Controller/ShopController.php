@@ -17,13 +17,13 @@ class ShopController extends AbstractController
     /**
      * @Route("/shop", name="shop")
      */
-    public function index(QueryStringSanitiser $sanitiser, shopBuilder $builder): Response
+    public function index(QueryStringSanitiser $queryString, shopBuilder $builder): Response
     {
         // store requested page number, sort order & filters
-        $query['page'] = $sanitiser->getInt('page');
-        $query['sort'] = $sanitiser->getChoice('sort', ['first', 'name', 'low', 'high']);
+        $query['page'] = $queryString->get('page');
+        $query['sort'] = $queryString->getChoice('sort', ['first', 'name', 'low', 'high']);
         foreach (['category', 'brand', 'colour'] as $key) {
-            $query['filters'][$key] = $sanitiser->getIntList($key);
+            $query['filters'][$key] = $queryString->getList($key);
         }
         $query['limit'] = 6;
         $query['offset'] = $query['page'] * $query['limit'] - $query['limit'];

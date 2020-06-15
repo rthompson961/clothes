@@ -19,7 +19,7 @@ class QueryStringSanitiserTest extends TestCase
         $requestStack->push($request);
 
         $sanitiser  = new QueryStringSanitiser($requestStack);
-        $result = $sanitiser->getInt('page');
+        $result = $sanitiser->get('page');
 
         $this->assertTrue($result === $expected);
     }
@@ -48,7 +48,7 @@ class QueryStringSanitiserTest extends TestCase
         $requestStack->push($request);
 
         $sanitiser  = new QueryStringSanitiser($requestStack);
-        $result = $sanitiser->getIntList('size');
+        $result = $sanitiser->getList('size');
 
         $this->assertTrue($result === $expected);
     }
