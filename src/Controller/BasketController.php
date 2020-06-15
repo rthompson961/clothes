@@ -23,24 +23,31 @@ class BasketController extends AbstractController
      */
     public function index(): Response
     {
-        $units = [];
+        $items = [];
         $total = 0;
         if ($this->session->has('basket') && count($this->session->get('basket'))) {
             $basket = $this->session->get('basket');
-            $units  = $this->getDoctrine()
+            $units = $this->getDoctrine()
                 ->getRepository(ProductUnit::class)
-                ->findBasketUnits(array_keys($basket));
+                ->findBy(['id' => array_keys($basket)]);
 
-            foreach ($units as &$unit) {
-                $unit['quantity'] = $basket[$unit['id']];
-                $unit['subtotal'] = $unit['price'] * $unit['quantity'];
+            foreach ($units as $unit) {
+                $item['id']         = $unit->getId();
+                $item['product_id'] = $unit->getProduct()->getId();
+                $item['name']       = $unit->getProduct()->getName();
+                $item['size']       = $unit->getSize()->getName();
+                $item['price']      = $unit->getProduct()->getPrice();
+                $item['stock']      = $unit->getStock();
+                $item['quantity']   = $basket[$unit->getId()];
+                $item['subtotal']   = $item['price'] * $item['quantity'];
 
-                $total += $unit['subtotal'];
+                $items[] = $item;
+                $total  += $item['subtotal'];
             }
         }
                                 
         return $this->render('basket/index.html.twig', [
-            'units' => $units,
+            'items' => $items,
             'total' => $total
         ]);
     }

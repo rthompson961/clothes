@@ -19,13 +19,13 @@ class ProductUnit
     private ?int $id = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Product", inversedBy="productUnits")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Product", inversedBy="productUnits", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
     private Product $product;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Size")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Size", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
     private Size $size;

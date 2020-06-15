@@ -6,7 +6,7 @@
 <div id="basket">
     <h2>Basket</h2>
 
-    {% if units %}
+    {% if items %}
         <p class="count">
         You have {{ app.session.get('basket_count') }} Item{% if app.session.get('basket_count') > 1 %}s{% endif %}
         </p>
@@ -20,21 +20,21 @@
                 <th>Sub Total</th>
                 <th>Remove</th>
             </tr>
-            {% for unit in units %}
+            {% for item in items %}
             <tr>
                 <td>
-                    <a href="{{ path('product', {'id' : unit.product_id}) }}">
-                        <img src="{{ asset('img/product/' ~ "%03d"|format(unit.product_id) ~ '.jpg') }}" 
-                            alt="{{ unit.name }}" 
+                    <a href="{{ path('product', {'id' : item.product_id}) }}">
+                        <img src="{{ asset('img/product/' ~ "%03d"|format(item.product_id) ~ '.jpg') }}" 
+                            alt="{{ item.name }}" 
                         />
                     </a>
                 </td>
-                <td class="name">{{ unit.name }}</td>
-                <td>{{ unit.size }}</td>
-                <td>&pound;{{ (unit.price / 100)|number_format(2, '.', ',') }}</td>
-                <td>{{ unit.quantity }}</td>
-                <td>&pound;{{ (unit.subtotal / 100)|number_format(2, '.', ',') }}</td>
-                <td><a class="remove" href="{{ path('basket_remove', {'id' : unit.id }) }}">❌</a></td>
+                <td class="name">{{ item.name }}</td>
+                <td>{{ item.size }}</td>
+                <td>&pound;{{ (item.price / 100)|number_format(2, '.', ',') }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>&pound;{{ (item.subtotal / 100)|number_format(2, '.', ',') }}</td>
+                <td><a class="remove" href="{{ path('basket_remove', {'id' : item.id }) }}">❌</a></td>
             </tr>
             {% endfor %}
             <tr>
