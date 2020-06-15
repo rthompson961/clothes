@@ -4,20 +4,24 @@ namespace App\Service;
 
 class LoremIpsumGenerator
 {
+    private const RECENTPICKSSIZE = 20;
+
     public function getParagraph(int $size = 84): string
     {
-        $recent = [];
-        $recentSize = 20;
         $paragraph = [];
+        $recentPicks = [];
+
         for ($i = 1; $i <= $size; $i++) {
-            $word = self::pickWord($recent);
-            // restrict recent words to appropriate size
-            if (count($recent) >= $recentSize) {
+            $word = self::pickWord($recentPicks);
+
+            // restrict recently picked works to max size
+            if (count($recentPicks) >= self::RECENTPICKSSIZE) {
                 // remove oldest entry
-                array_shift($recent);
+                array_shift($recentPicks);
             }
-            $recent[] = $word;
-            $paragraph[] = $word;
+
+            $paragraph[]   = $word;
+            $recentPicks[] = $word;
         }
         $paragraph[0] = ucfirst($paragraph[0]);
         $paragraph = implode(' ', $paragraph);
@@ -93,7 +97,10 @@ class LoremIpsumGenerator
             'viverra',
         ];
 
+        // select a word
         $word = $list[mt_rand(0, count($list) - 1)];
+
+        // if word selected recently pick again
         if (in_array($word, $recent)) {
             $word = self::pickWord($recent);
         }

@@ -31,6 +31,7 @@ class LoremIpsumController extends AbstractController
                 break;
         }
 
+        // generate six paragraphs of lorem ipsum
         $text = [];
         for ($i = 1; $i <= 6; $i++) {
             $text[] = $ipsum->getParagraph(mt_rand(60, 120));
