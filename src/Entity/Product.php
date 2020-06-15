@@ -41,13 +41,13 @@ class Product
     private Brand $brand;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Colour")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Colour", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
     private Colour $colour;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\ProductGroup", inversedBy="products")
+     * @ORM\ManyToOne(targetEntity="App\Entity\ProductGroup", inversedBy="products", fetch="EAGER")
      * @ORM\JoinColumn(nullable=true)
      */
     private ?ProductGroup $productGroup = null;

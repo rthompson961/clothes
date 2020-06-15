@@ -25,7 +25,7 @@ class ProductGroup
 
     /**
      * @var Collection<Product>
-     * @ORM\OneToMany(targetEntity="App\Entity\Product", mappedBy="productGroup")
+     * @ORM\OneToMany(targetEntity="App\Entity\Product", mappedBy="productGroup", fetch="EAGER")
      */
     private Collection $products;
 
