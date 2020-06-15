@@ -21,14 +21,14 @@ class ProductType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         // Get each size for the current product
-        $units = $this->unitRepository->findProductUnits($options['product']);
+        $units = $this->unitRepository->findBy(['product' => $options['product']]);
         $sizes = [];
         $attr  = [];
         foreach ($units as $unit) {
-            $sizes[$unit['size']] = $unit['id'];
+            $sizes[$unit->getSize()->getName()] = $unit->getId();
 
-            if (!$unit['stock']) {
-                $attr[$unit['size']] = ['disabled' => true];
+            if (!$unit->getStock()) {
+                $attr[$unit->getSize()->getName()] = ['disabled' => true];
             }
         }
 

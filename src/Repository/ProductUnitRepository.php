@@ -20,20 +20,4 @@ class ProductUnitRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, ProductUnit::class);
     }
-
-    public function findProductUnits(int $id): array
-    {
-        $qb = $this->createQueryBuilder('u')
-            ->select('u.id')
-            ->addSelect('u.stock')
-            ->addSelect('s.name as size')
-            ->innerJoin('u.product', 'p')
-            ->innerJoin('u.size', 's')
-            ->where('p.id = ?1')
-            ->setParameter(1, $id)
-            ->getQuery()
-            ->getArrayResult();
-
-        return $qb ?? [];
-    }
 }
