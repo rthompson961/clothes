@@ -8,59 +8,19 @@
 
     <a href="{{ path('shop') }}">
         <div>
-            <img src="{{ asset('img/product/007.jpg') }}" alt="All categories" />
+            <img src="{{ asset('img/category/all.jpg') }}" alt="All" />
             <h3>All</h3>
         </div>
     </a>
 
-    <a href="{{ path('shop', {'category' : 1}) }}">
-        <div>
-            <img src="{{ asset('img/product/001.jpg') }}" alt="Jackets" />
-            <h3>Jackets</h3>
-        </div>
-    </a>
-
-    <a href="{{ path('shop', {'category' : 2}) }}">
-        <div>
-            <img src="{{ asset('img/product/018.jpg') }}" alt="Fleeces" />
-            <h3>Fleeces</h3>
-        </div>
-    </a>
-
-    <a href="{{ path('shop', {'category' : 3}) }}">
-        <div>
-            <img src="{{ asset('img/product/012.jpg') }}" alt="Parkas" />
-            <h3>Parkas</h3>
-        </div>
-    </a>
-
-    <a href="{{ path('shop', {'category' : 4}) }}">
-        <div>
-            <img src="{{ asset('img/product/021.jpg') }}" alt="Sweatshirts" />
-            <h3>Sweatshirts</h3>
-        </div>
-    </a>
-
-    <a href="{{ path('shop', {'category' : 5}) }}">
-        <div>
-            <img src="{{ asset('img/product/034.jpg') }}" alt="Hoodies" />
-            <h3>Hoodies</h3>
-        </div>
-    </a>
-
-    <a href="{{ path('shop', {'category' : 6}) }}">
-        <div>
-            <img src="{{ asset('img/product/041.jpg') }}" alt="T-Shirts" />
-            <h3>T-Shirts</h3>
-        </div>
-    </a>
-
-    <a href="{{ path('shop', {'category' : 7}) }}">
-        <div>
-            <img src="{{ asset('img/product/060.jpg') }}" alt="Jeans" />
-            <h3>Jeans</h3>
-        </div>
-    </a>
+    {% for category in categories %}
+        <a href="{{ path('shop', {'category' : category.id}) }}">
+            <div>
+                <img src="{{ asset('img/category/' ~ "%03d"|format(category.id) ~ '.jpg') }}" alt="{{ category.name }}" />
+                <h3>{{ category.name }}</h3>
+            </div>
+        </a>
+    {% endfor %}
 
 </div>
 
