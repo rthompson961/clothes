@@ -14,7 +14,7 @@ services:
     volumes:
       - $PWD:/var/www/html
     environment:
-      - DB_URL=mysql://root:root@mysql:3306/clothes?serverVersion=5.7
+      - DATABASE_URL=mysql://root:root@mysql:3306/clothes?serverVersion=5.7
     depends_on:
       - mysql
   mysql:
