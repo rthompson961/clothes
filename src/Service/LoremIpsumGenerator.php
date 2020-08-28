@@ -4,24 +4,23 @@ namespace App\Service;
 
 class LoremIpsumGenerator
 {
-    private const RECENTPICKSSIZE = 20;
+    private const HISTORYSIZE = 20;
 
-    public function getParagraph(int $size = 84): string
+    public function getParagraph(int $length = 84): string
     {
         $paragraph = [];
-        $recentPicks = [];
+        $history = [];
 
-        for ($i = 1; $i <= $size; $i++) {
-            $word = self::pickWord($recentPicks);
+        for ($i = 1; $i <= $length; $i++) {
+            $word = self::pickWord($history);
 
-            // restrict recently picked works to max size
-            if (count($recentPicks) >= self::RECENTPICKSSIZE) {
-                // remove oldest entry
-                array_shift($recentPicks);
+            // restrict history of words already picked to max size
+            if (count($history) >= self::HISTORYSIZE) {
+                array_shift($history); // remove oldest entry
             }
 
-            $paragraph[]   = $word;
-            $recentPicks[] = $word;
+            $paragraph[] = $word;
+            $history[] = $word;
         }
         $paragraph[0] = ucfirst($paragraph[0]);
         $paragraph = implode(' ', $paragraph);
@@ -30,7 +29,7 @@ class LoremIpsumGenerator
         return $paragraph;
     }
 
-    private function pickWord(array $recent): string
+    private function pickWord(array $history): string
     {
         $list = [
             'aenean',
@@ -101,8 +100,8 @@ class LoremIpsumGenerator
         $word = $list[mt_rand(0, count($list) - 1)];
 
         // if word selected recently pick again
-        if (in_array($word, $recent)) {
-            $word = self::pickWord($recent);
+        if (in_array($word, $history)) {
+            $word = self::pickWord($history);
         }
 
         return $word;
