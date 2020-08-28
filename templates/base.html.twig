@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{% block title %}Clothes{% endblock %} | Fashion Shop</title>
+<title>{% block title %}Store{% endblock %} | Clothes Shop</title>
 {% block stylesheets %}
 <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
 {% endblock %}
@@ -13,7 +13,7 @@
 <div id="container">
 <div id="header" class="clearfix">
     <div id="header-left">
-        <h1><a href="{{ path('home') }}">Fashion Shop</a></h1>
+        <h1><a href="{{ path('home') }}">Clothes Shop</a></h1>
     </div>
     <div id="header-right">
         {% if is_granted('ROLE_USER') %}
@@ -64,7 +64,7 @@
         <li><a href="{{ path('returns') }}">Returns</a></li>
     </ul>
 
-    <p>Fashion Shop &copy; {{ "now"|date("Y") }}</p>
+    <p>Clothes Shop &copy; {{ "now"|date("Y") }}</p>
 </div>
 
 </div>
