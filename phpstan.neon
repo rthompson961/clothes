@@ -6,6 +6,7 @@ parameters:
     doctrine:
         objectManagerLoader: %rootDir%/../../../tests/phpstan/doctrine-orm-bootstrap.php
     excludes_analyse:
+        - %rootDir%/../../../src/Migrations/*
         - %rootDir%/../../../src/DataFixtures/*
         - %rootDir%/../../../src/Security/LoginFormAuthenticator.php
     ignoreErrors:
