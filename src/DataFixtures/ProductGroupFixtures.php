@@ -15,8 +15,7 @@ class ProductGroupFixtures extends Fixture
             2 => 'Dupont Hooded Quilted Jacket',
             3 => 'Next Shower Resistant Utility Parka',
             4 => 'Next Fleece Zip Neck Pullover',
-            5 => 'Next Crew Sweatshirt',
-            6 => 'Hugo Boss Salbo Crew Sweatshirt'
+            5 => 'Next Crew Sweatshirt'
         ];
         foreach ($values as $key => $val) {
             $group = new ProductGroup();

@@ -165,68 +165,65 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
                 'colour' => $this->getReference('colour-white'),
             ],
             21 => [
-                'name' => 'Next Crew Sweatshirt Grey',
+                'name' => 'Next Stag Sweatshirt Grey',
                 'price' => 2199,
                 'category' => $this->getReference('category-sweatshirts'),
                 'brand' => $this->getReference('brand-next'),
-                'colour' => $this->getReference('colour-grey'),
-                'productGroup' => $this->getReference('group-5')
+                'colour' => $this->getReference('colour-grey')
             ],
             22 => [
                 'name' => 'Next Crew Sweatshirt Black',
-                'price' => 2199,
+                'price' => 1999,
                 'category' => $this->getReference('category-sweatshirts'),
                 'brand' => $this->getReference('brand-next'),
                 'colour' => $this->getReference('colour-black'),
                 'productGroup' => $this->getReference('group-5')
             ],
             23 => [
-                'name' => 'Next Crew Sweatshirt Blue',
-                'price' => 2199,
+                'name' => 'Next Crew Sweatshirt Grey',
+                'price' => 1999,
                 'category' => $this->getReference('category-sweatshirts'),
                 'brand' => $this->getReference('brand-next'),
-                'colour' => $this->getReference('colour-blue'),
+                'colour' => $this->getReference('colour-grey'),
                 'productGroup' => $this->getReference('group-5')
             ],
             24 => [
                 'name' => 'Next Crew Sweatshirt Plum',
-                'price' => 2199,
+                'price' => 1999,
                 'category' => $this->getReference('category-sweatshirts'),
                 'brand' => $this->getReference('brand-next'),
                 'colour' => $this->getReference('colour-plum'),
                 'productGroup' => $this->getReference('group-5')
             ],
             25 => [
-                'name' => 'Next Crew Sweatshirt Red',
-                'price' => 2199,
+                'name' => 'Next Crew Sweatshirt Stone',
+                'price' => 1999,
                 'category' => $this->getReference('category-sweatshirts'),
                 'brand' => $this->getReference('brand-next'),
-                'colour' => $this->getReference('colour-red'),
+                'colour' => $this->getReference('colour-stone'),
                 'productGroup' => $this->getReference('group-5')
             ],
             26 => [
                 'name' => 'Next Crew Sweatshirt Navy',
-                'price' => 2199,
+                'price' => 1999,
                 'category' => $this->getReference('category-sweatshirts'),
                 'brand' => $this->getReference('brand-next'),
                 'colour' => $this->getReference('colour-navy'),
                 'productGroup' => $this->getReference('group-5')
             ],
             27 => [
-                'name' => 'Hugo Boss Salbo Crew Neck Sweatshirt Red',
-                'price' => 11999,
+                'name' => 'Hugo Boss Nacinia Sweatshirt White',
+                'price' => 8899,
                 'category' => $this->getReference('category-sweatshirts'),
                 'brand' => $this->getReference('brand-hugo'),
-                'colour' => $this->getReference('colour-red'),
-                'productGroup' => $this->getReference('group-6')
+                'colour' => $this->getReference('colour-white')
             ],
             28 => [
-                'name' => 'Hugo Boss Salbo Crew Neck Sweatshirt Black',
-                'price' => 11999,
+                'name' => 'Hugo Boss Authentic Sweatshirt Black',
+                'price' => 6499,
                 'category' => $this->getReference('category-sweatshirts'),
                 'brand' => $this->getReference('brand-hugo'),
-                'colour' => $this->getReference('colour-black'),
-                'productGroup' => $this->getReference('group-6')
+                'colour' => $this->getReference('colour-black')
             ],
             29 => [
                 'name' => 'Superdry Core Sport Sweatshirt Navy',
@@ -236,11 +233,11 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
                 'colour' => $this->getReference('colour-navy'),
             ],
             30 => [
-                'name' => 'Tommy Hilfiger Icon Bomber Jacket Stone',
+                'name' => 'Tommy Hilfiger Icon Down Bomber Jacket Navy',
                 'price' => 3999,
                 'category' => $this->getReference('category-jackets'),
                 'brand' => $this->getReference('brand-tommy'),
-                'colour' => $this->getReference('colour-stone'),
+                'colour' => $this->getReference('colour-navy'),
             ],
             31 => [
                 'name' => 'Hugo Boss Authentic Hoodie Black',
