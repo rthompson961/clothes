@@ -34,15 +34,14 @@ class ShopController extends AbstractController
         $query['offset'] = $query['page'] * $productRepository::ITEMS_PER_PAGE - $productRepository::ITEMS_PER_PAGE;
 
         // get product count and products for the current page
-        $doctrine = $this->getDoctrine();
-        $count = $doctrine->getRepository(Product::class)->findProductCount($query['filters']);
-        $products = $doctrine->getRepository(Product::class)->findProducts($query);
+        $count    = $productRepository->findProductCount($query);
+        $products = $productRepository->findProducts($query);
 
         // create list of filters to add/remove categories, brands and colours
         $builder->setQuery($query);
-        $lookup['category'] = $doctrine->getRepository(Category::class)->findAllAsArray();
-        $lookup['brand']    = $doctrine->getRepository(Brand::class)->findAllAsArray();
-        $lookup['colour']   = $doctrine->getRepository(Colour::class)->findAllAsArray();
+        $lookup['category'] = $this->getDoctrine()->getRepository(Category::class)->findAllAsArray();
+        $lookup['brand']    = $this->getDoctrine()->getRepository(Brand::class)->findAllAsArray();
+        $lookup['colour']   = $this->getDoctrine()->getRepository(Colour::class)->findAllAsArray();
         foreach (['category', 'brand', 'colour'] as $key) {
             $options['filters'][$key] = $builder->getFilterOptions($key, $lookup[$key]);
         }

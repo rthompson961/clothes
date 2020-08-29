@@ -23,21 +23,15 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-    public function findProductCount(array $filters): ?int
+    public function findProductCount(array $query): ?int
     {
         $qb = $this->createQueryBuilder('p')
             ->select('count(p.id)');
 
-        if ($filters['category']) {
-            $qb->andWhere($qb->expr()->in('p.category', $filters['category']));
-        }
-
-        if ($filters['brand']) {
-            $qb->andWhere($qb->expr()->in('p.brand', $filters['brand']));
-        }
-
-        if ($filters['colour']) {
-            $qb->andWhere($qb->expr()->in('p.colour', $filters['colour']));
+        foreach (['category', 'brand', 'colour'] as $key) {
+            if ($query['filters'][$key]) {
+                $qb->andWhere($qb->expr()->in('p.' . $key, $query['filters'][$key]));
+            }
         }
 
         return $qb->getQuery()->getSingleScalarResult();
@@ -47,16 +41,10 @@ class ProductRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('p');
 
-        if ($query['filters']['category']) {
-            $qb->andWhere($qb->expr()->in('p.category', $query['filters']['category']));
-        }
-
-        if ($query['filters']['brand']) {
-            $qb->andWhere($qb->expr()->in('p.brand', $query['filters']['brand']));
-        }
-
-        if ($query['filters']['colour']) {
-            $qb->andWhere($qb->expr()->in('p.colour', $query['filters']['colour']));
+        foreach (['category', 'brand', 'colour'] as $key) {
+            if ($query['filters'][$key]) {
+                $qb->andWhere($qb->expr()->in('p.' . $key, $query['filters'][$key]));
+            }
         }
 
         switch ($query['sort']) {
@@ -72,6 +60,7 @@ class ProductRepository extends ServiceEntityRepository
                 break;
         }
         $dir = $query['sort'] == 'high' ? 'DESC' : 'ASC';
+
         $qb->orderBy('p.' . $field, $dir)
            ->setFirstResult($query['offset'])
            ->setMaxResults(self::ITEMS_PER_PAGE);
