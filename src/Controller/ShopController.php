@@ -19,12 +19,9 @@ class ShopController extends AbstractController
      */
     public function index(Request $request, shopBuilder $builder): Response
     {
-        // store requested page number, sort order & filters
+        // store requested product selection values
         $query['page'] = $request->query->getInt('page');
         $query['sort'] = $request->query->get('sort');
-        if (!in_array($query['sort'], ['first', 'name', 'low', 'high'])) {
-            $query['sort'] = 'first';
-        }
 
         foreach (['category', 'brand', 'colour'] as $key) {
             $query['filters'][$key] = [];
