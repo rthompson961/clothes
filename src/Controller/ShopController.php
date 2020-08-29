@@ -6,6 +6,7 @@ use App\Entity\Brand;
 use App\Entity\Category;
 use App\Entity\Colour;
 use App\Entity\Product;
+use App\Repository\ProductRepository;
 use App\Service\ShopBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,7 +18,7 @@ class ShopController extends AbstractController
     /**
      * @Route("/shop", name="shop")
      */
-    public function index(Request $request, shopBuilder $builder): Response
+    public function index(Request $request, ProductRepository $productRepository, shopBuilder $builder): Response
     {
         // store requested product selection values
         $query['page'] = $request->query->getInt('page');
@@ -30,8 +31,7 @@ class ShopController extends AbstractController
             }
         }
 
-        $query['limit'] = 6;
-        $query['offset'] = $query['page'] * $query['limit'] - $query['limit'];
+        $query['offset'] = $query['page'] * $productRepository::ITEMS_PER_PAGE - $productRepository::ITEMS_PER_PAGE;
 
         if ($query['offset'] < 1) {
             $query['offset'] = 0;
@@ -52,7 +52,7 @@ class ShopController extends AbstractController
         }
         // create list of links to change sort order and page
         $options['sort'] = $builder->getSortOptions();
-        $lastPage = (int) ceil($count / $query['limit']);
+        $lastPage = (int) ceil($count / $productRepository::ITEMS_PER_PAGE);
         $options['page'] = $builder->getPageOptions($lastPage);
 
         return $this->render('shop/index.html.twig', [

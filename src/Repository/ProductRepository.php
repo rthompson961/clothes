@@ -16,6 +16,8 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  */
 class ProductRepository extends ServiceEntityRepository
 {
+    public const ITEMS_PER_PAGE = 6;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Product::class);
@@ -72,7 +74,7 @@ class ProductRepository extends ServiceEntityRepository
         $dir = $query['sort'] == 'high' ? 'DESC' : 'ASC';
         $qb->orderBy('p.' . $field, $dir)
            ->setFirstResult($query['offset'])
-           ->setMaxResults($query['limit']);
+           ->setMaxResults(self::ITEMS_PER_PAGE);
                     
         return $qb->getQuery()->getResult();
     }
