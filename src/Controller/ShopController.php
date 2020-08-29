@@ -21,7 +21,7 @@ class ShopController extends AbstractController
     public function index(Request $request, ProductRepository $productRepository, shopBuilder $builder): Response
     {
         // store requested product selection values
-        $query['page'] = $request->query->getInt('page');
+        $query['page'] = max(1, $request->query->getInt('page'));
         $query['sort'] = $request->query->get('sort');
 
         foreach (['category', 'brand', 'colour'] as $key) {
@@ -32,10 +32,6 @@ class ShopController extends AbstractController
         }
 
         $query['offset'] = $query['page'] * $productRepository::ITEMS_PER_PAGE - $productRepository::ITEMS_PER_PAGE;
-
-        if ($query['offset'] < 1) {
-            $query['offset'] = 0;
-        }
 
         // get product count and products for the current page
         $doctrine = $this->getDoctrine();
