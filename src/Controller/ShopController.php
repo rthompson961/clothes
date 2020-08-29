@@ -31,8 +31,6 @@ class ShopController extends AbstractController
             }
         }
 
-        $query['offset'] = $query['page'] * $productRepository::ITEMS_PER_PAGE - $productRepository::ITEMS_PER_PAGE;
-
         // get product count and products for the current page
         $count    = $productRepository->findProductCount($query);
         $products = $productRepository->findProducts($query);

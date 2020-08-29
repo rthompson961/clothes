@@ -61,8 +61,10 @@ class ProductRepository extends ServiceEntityRepository
         }
         $dir = $query['sort'] == 'high' ? 'DESC' : 'ASC';
 
+        $offset = $query['page'] * self::ITEMS_PER_PAGE - self::ITEMS_PER_PAGE;
+
         $qb->orderBy('p.' . $field, $dir)
-           ->setFirstResult($query['offset'])
+           ->setFirstResult($offset)
            ->setMaxResults(self::ITEMS_PER_PAGE);
                     
         return $qb->getQuery()->getResult();
