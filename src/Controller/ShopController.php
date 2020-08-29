@@ -27,19 +27,10 @@ class ShopController extends AbstractController
         }
 
         foreach (['category', 'brand', 'colour'] as $key) {
-            if (is_array($request->query->get($key)) || !$request->query->get($key)) {
-                $result = [];
-            } else {
-                 // split comma separated list into array
-                $result = explode(',', $request->query->get($key));
-                // convert each element of array to positive integer
-                array_walk($result, function (&$val) {
-                    $val = abs((int) $val);
-                });
-                // remove zero value elements
-                $result = array_filter($result);
+            $query['filters'][$key] = [];
+            if (is_array($request->query->get($key))) {
+                $query['filters'][$key] = $request->query->get($key);
             }
-            $query['filters'][$key] = $result;
         }
 
         $query['limit'] = 6;

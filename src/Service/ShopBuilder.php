@@ -90,11 +90,14 @@ class ShopBuilder
         $args = ['page' => $page, 'sort' => $sort];
         foreach (['category', 'brand', 'colour'] as $key) {
             if ($filters[$key]) {
-                $args[$key] = implode(',', $filters[$key]);
+                //$args[$key] = implode(',', $filters[$key]);
+                foreach ($filters[$key] as $val) {
+                    $args[$key][] = $val;
+                }
             }
         }
 
-        return $this->router->generate('shop', $args);
+        return urldecode($this->router->generate('shop', $args));
     }
 
     private function addFilter(string $key, int $val, array $filters): array
