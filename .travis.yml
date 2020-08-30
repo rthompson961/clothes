@@ -1,0 +1,51 @@
+os: linux
+dist: bionic
+language: php
+php: 7.4
+services:
+  - docker
+cache:
+  directories:
+    - $HOME/.composer/cache/files
+env:
+  DOCKER_COMPOSE_VERSION: 1.26.2
+before_install: 
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+  - docker-compose up -d
+before_script:
+  - composer install --no-interaction
+  - composer dump-env prod --empty
+  - bin/console doctrine:database:create
+  - bin/console doctrine:migrations:migrate -q
+  - bin/console doctrine:fixtures:load -q
+  - bin/console cache:warmup --env=prod
+deploy:
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+    local_dir: clothes_upload
+    skip_cleanup: true
+    on: &2
+      repo: rthompson961/clothes
+    bucket: richard-clothes
+    region: eu-west-2
+  - provider: codedeploy
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+    bucket: richard-clothes
+    key: latest.zip
+    bundle_type: zip
+    application: richard-clothes-app
+    deployment_group: richard-clothes-group
+    region: eu-west-2
+    on: *2
+script:
+  - ./bin/phpunit
+  - zip -r latest * .env.local.php
+  - mkdir -p clothes_upload
+  - mv latest.zip clothes_upload/latest.zip
+after_script:
+  - docker-compose down
