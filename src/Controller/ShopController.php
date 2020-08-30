@@ -6,7 +6,6 @@ use App\Entity\Brand;
 use App\Entity\Category;
 use App\Entity\Colour;
 use App\Entity\Product;
-use App\Repository\ProductRepository;
 use App\Service\ShopBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,11 +17,11 @@ class ShopController extends AbstractController
     /**
      * @Route("/shop", name="shop")
      */
-    public function index(Request $request, ProductRepository $productRepository, shopBuilder $builder): Response
+    public function index(Request $request, shopBuilder $builder): Response
     {
         // store requested product selection values
         $query['page'] = max(1, $request->query->getInt('page'));
-        $query['sort'] = $request->query->get('sort');
+        $query['sort'] = $request->query->get('sort', 'first');
 
         foreach (['category', 'brand', 'colour'] as $key) {
             $query['filters'][$key] = [];
@@ -31,22 +30,22 @@ class ShopController extends AbstractController
             }
         }
 
-        // get product count and products for the current page
+        // get total product count and product details for the current page
+        $productRepository = $this->getDoctrine()->getRepository(Product::class);
         $count    = $productRepository->findProductCount($query);
         $products = $productRepository->findProducts($query);
 
         // create list of filters to add/remove categories, brands and colours
-        $builder->setQuery($query);
-        $lookup['category'] = $this->getDoctrine()->getRepository(Category::class)->findAllAsArray();
-        $lookup['brand']    = $this->getDoctrine()->getRepository(Brand::class)->findAllAsArray();
-        $lookup['colour']   = $this->getDoctrine()->getRepository(Colour::class)->findAllAsArray();
+        $list['category'] = $this->getDoctrine()->getRepository(Category::class)->findAllAsArray();
+        $list['brand']    = $this->getDoctrine()->getRepository(Brand::class)->findAllAsArray();
+        $list['colour']   = $this->getDoctrine()->getRepository(Colour::class)->findAllAsArray();
         foreach (['category', 'brand', 'colour'] as $key) {
-            $options['filters'][$key] = $builder->getFilterOptions($key, $lookup[$key]);
+            $options['filters'][$key] = $builder->getFilterOptions($key, $list, $query);
         }
         // create list of links to change sort order and page
-        $options['sort'] = $builder->getSortOptions();
+        $options['sort'] = $builder->getSortOptions(['first', 'name', 'low', 'high'], $query);
         $lastPage = (int) ceil($count / $productRepository::ITEMS_PER_PAGE);
-        $options['page'] = $builder->getPageOptions($lastPage);
+        $options['page'] = $builder->getPageOptions($lastPage, $query);
 
         return $this->render('shop/index.html.twig', [
             'options'     => $options,

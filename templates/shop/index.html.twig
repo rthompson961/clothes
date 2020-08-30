@@ -9,7 +9,7 @@
         {% for type, values in options.filters %}
             {% for val in values %}
                 {% if val.active %}
-                    <li><a href="{{ val.url }}"><b>❌ {{ type|capitalize }}: </b>{{ val.name }}</a></li>
+                    <li><a href="{{ val.url }}"><b>❌ {{ type|capitalize }}: </b>{{ val.text }}</a></li>
                 {% endif %}
             {% endfor %}
         {% endfor %}
@@ -22,7 +22,7 @@
             <ul>
             {% for val in values %}
                 {% if not val.active %}
-                    <li><a href="{{ val.url }}">{{ val.name }}</a></li>
+                    <li><a href="{{ val.url }}">{{ val.text }}</a></li>
                 {% endif %}
             {% endfor %}
             </ul>
@@ -39,22 +39,22 @@
     {% if products %}
         <p class="sort">
             <b>Sort:</b> 
-            {% for title, link in options.sort %}
-                {% if link %}
-                    <a href="{{ link }}">{{ title }}</a>
+            {% for val in options.sort %}
+                {% if val.active %}
+                    <span>{{ val.text }}</span>
                 {% else %}
-                    <span>{{ title }}</span>
+                    <a href="{{ val.url }}">{{ val.text }}</a>
                 {% endif %} 
             {% endfor %}
         </p>
 
         {% if options.page|length > 1 %}
             <p class="pages">
-                {% for title, link in options.page %}
-                    {% if link %}
-                        <a href="{{ link }}">{{ title }}</a>
+                {% for val in options.page %}
+                    {% if val.active %}
+                        <span>{{ val.text }}</span>
                     {% else %}
-                        <span>{{ title }}</span>
+                        <a href="{{ val.url }}">{{ val.text }}</a>
                     {% endif %} 
                 {% endfor %}
             </p>
@@ -84,11 +84,11 @@
 
         {% if options.page|length > 1 %}
             <p class="pages">
-                {% for title, link in options.page %}
-                    {% if link %}
-                        <a href="{{ link }}">{{ title }}</a>
+                {% for val in options.page %}
+                    {% if val.active %}
+                        <span>{{ val.text }}</span>
                     {% else %}
-                        <span>{{ title }}</span>
+                        <a href="{{ val.url }}">{{ val.text }}</a>
                     {% endif %} 
                 {% endfor %}
             </p>

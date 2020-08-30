@@ -17,15 +17,14 @@ class ShopBuilderTest extends WebTestCase
         $router = $client->getContainer()->get('router');
         $this->builder = new ShopBuilder($router);
 
-        $query['page'] = 2;
-        $query['sort'] = 'name';
-        $query['filters'] = ['category' => [], 'brand' => [2, 5], 'colour' => [3]];
-        $this->builder->setQuery($query);
+        $this->query['page'] = 2;
+        $this->query['sort'] = 'name';
+        $this->query['filters'] = ['category' => [], 'brand' => [2, 5], 'colour' => [3]];
     }
 
-    public function testFilterAttributes(): void
+    public function testFilterOptions(): void
     {
-        $choices = [
+        $list['colour'] = [
             [
                 'id' => 1,
                 'name' => 'red'
@@ -40,25 +39,22 @@ class ShopBuilderTest extends WebTestCase
             ]
         ];
 
-        $result = $this->builder->getFilterOptions('colour', $choices);
+        $result = $this->builder->getFilterOptions('colour', $list, $this->query);
         $expected = [
             [
-                'id'     => 1,
-                'name'   => 'red',
+                'text'   => 'red',
                 'active' => false,
-                'url'    => '/shop?page=2&sort=name&brand=2,5&colour=3,1'
+                'url'    => '/shop?page=2&sort=name&brand[0]=2&brand[1]=5&colour[0]=3&colour[1]=1'
             ],
             [
-                'id'     => 2,
-                'name'   => 'blue',
+                'text'   => 'blue',
                 'active' => false,
-                'url'    => '/shop?page=2&sort=name&brand=2,5&colour=3,2'
+                'url'    => '/shop?page=2&sort=name&brand[0]=2&brand[1]=5&colour[0]=3&colour[1]=2'
             ],
             [
-                'id'     => 3,
-                'name'   => 'green',
+                'text'   => 'green',
                 'active' => true,
-                'url'    => '/shop?page=2&sort=name&brand=2,5'
+                'url'    => '/shop?page=2&sort=name&brand[0]=2&brand[1]=5'
             ]
         ];
 
@@ -67,12 +63,28 @@ class ShopBuilderTest extends WebTestCase
 
     public function testSortOptions(): void
     {
-        $result = $this->builder->getSortOptions();
+        $result = $this->builder->getSortOptions(['first', 'name', 'low', 'high'], $this->query);
         $expected = [
-            'First In' => '/shop?page=2&sort=first&brand=2,5&colour=3',
-            'Name'  => null,
-            'Lowest Price'   => '/shop?page=2&sort=low&brand=2,5&colour=3',
-            'Highest Price'  => '/shop?page=2&sort=high&brand=2,5&colour=3',
+            [
+                'text'   => 'First',
+                'active' => false,
+                'url'    => '/shop?page=2&sort=first&brand[0]=2&brand[1]=5&colour[0]=3'
+            ],
+            [
+                'text'   => 'Name',
+                'active' => true,
+                'url'    => '/shop?page=2&sort=name&brand[0]=2&brand[1]=5&colour[0]=3'
+            ],
+            [
+                'text'   => 'Low',
+                'active' => false,
+                'url'    => '/shop?page=2&sort=low&brand[0]=2&brand[1]=5&colour[0]=3'
+            ],
+            [
+                'text'   => 'High',
+                'active' => false,
+                'url'    => '/shop?page=2&sort=high&brand[0]=2&brand[1]=5&colour[0]=3'
+            ]
         ];
 
         $this->assertTrue($result === $expected);
@@ -80,11 +92,23 @@ class ShopBuilderTest extends WebTestCase
 
     public function testPageOptions(): void
     {
-        $result = $this->builder->getPageOptions(3);
+        $result = $this->builder->getPageOptions(3, $this->query);
         $expected = [
-            1  => '/shop?page=1&sort=name&brand=2,5&colour=3',
-            2  => null,
-            3  => '/shop?page=3&sort=name&brand=2,5&colour=3'
+            [
+                'text'   => 1,
+                'active' => false,
+                'url'    => '/shop?page=1&sort=name&brand[0]=2&brand[1]=5&colour[0]=3'
+            ],
+            [
+                'text'   => 2,
+                'active' => true,
+                'url'    => '/shop?page=2&sort=name&brand[0]=2&brand[1]=5&colour[0]=3'
+            ],
+            [
+                'text'   => 3,
+                'active' => false,
+                'url'    => '/shop?page=3&sort=name&brand[0]=2&brand[1]=5&colour[0]=3'
+            ]
         ];
 
         $this->assertTrue($result === $expected);

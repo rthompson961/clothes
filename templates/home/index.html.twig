@@ -14,7 +14,7 @@
     </a>
 
     {% for category in categories %}
-        <a href="{{ path('shop', {'category' : category.id}) }}">
+        <a href="{{ path('shop', {'category[0]' : category.id}) }}">
             <div>
                 <img src="{{ asset('img/category/' ~ "%03d"|format(category.id) ~ '.jpg') }}" alt="{{ category.name }}" />
                 <h3>{{ category.name }}</h3>

@@ -11,6 +11,15 @@ parameters:
         - %rootDir%/../../../src/Security/LoginFormAuthenticator.php
     ignoreErrors:
         -
+            message: '#Call to function compact\(\) contains undefined variable \$brand.#'
+            path: src/Service/ShopBuilder.php
+        -
+            message: '#Call to function compact\(\) contains undefined variable \$category.#'
+            path: src/Service/ShopBuilder.php
+        -
+            message: '#Call to function compact\(\) contains undefined variable \$colour.#'
+            path: src/Service/ShopBuilder.php
+        -
             message: '#Parameter \#1 \$user of method App\\Repository\\AddressRepository::findUserAddresses\(\) expects App\\Entity\\User, object\|null given.#'
             path: src/Controller/CheckoutController.php
         -

@@ -7,107 +7,78 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class ShopBuilder
 {
     private UrlGeneratorInterface $router;
-    private int $page;
-    private string $sort;
-    private array $filters;
 
     public function __construct(UrlGeneratorInterface $router)
     {
         $this->router = $router;
     }
 
-    public function setQuery(array $query): void
+    public function getFilterOptions(string $key, array $list, array $query): array
     {
-        list(
-            'page' => $this->page,
-            'sort' => $this->sort,
-            'filters' => $this->filters
-        ) = $query;
-    }
-
-    public function getFilterOptions(string $key, array $options): array
-    {
-        foreach ($options as &$row) {
-            if (in_array($row['id'], $this->filters[$key])) {
-                $row['active'] = true;
-                $row['url'] = $this->buildUrl(
-                    $this->page,
-                    $this->sort,
-                    $this->removeFilter($key, $row['id'], $this->filters)
-                );
-            } else {
-                $row['active'] = false;
-                $row['url'] = $this->buildUrl(
-                    $this->page,
-                    $this->sort,
-                    $this->addFilter($key, $row['id'], $this->filters)
-                );
-            }
-        }
-
-        return $options;
-    }
-
-    public function getSortOptions(): array
-    {
-        $choices = [
-            'first' => 'First In',
-            'name'  => 'Name',
-            'low'   => 'Lowest Price',
-            'high'  => 'Highest Price'
-        ];
-
         $result = [];
-        foreach ($choices as $key => $val) {
-            // set url to apply setting if current value not already selected
-            if ($key == $this->sort) {
-                $result[$val] = null;
+        foreach ($list[$key] as $listItem) {
+            $option = [];
+            $option['text'] = $listItem['name'];
+            if (in_array($listItem['id'], $query['filters'][$key])) {
+                $option['active'] = true;
+                $filters = $this->removeFilter($query['filters'], $key, $listItem['id']);
             } else {
-                $result[$val] = $this->buildUrl($this->page, $key, $this->filters);
+                $option['active'] = false;
+                $filters = $this->addFilter($query['filters'], $key, $listItem['id']);
             }
+            $option['url'] = $this->buildUrl($query['page'], $query['sort'], $filters);
+            $result[] = $option;
         }
 
         return $result;
     }
 
-    public function getPageOptions(int $max): array
+    public function getSortOptions(array $list, array $query): array
     {
-        $pages = [];
-        for ($i = 1; $i <= $max; $i++) {
-            // set url to apply setting if current value not already selected
-            if ($i == $this->page) {
-                $pages[$i] = null;
-            } else {
-                $pages[$i] = $this->buildUrl($i, $this->sort, $this->filters);
-            }
+        $result = [];
+        foreach ($list as $listItem) {
+            $option['text'] = ucfirst($listItem);
+            $option['active'] = $listItem === $query['sort'] ? true : false;
+            $option['url'] = $this->buildUrl($query['page'], $listItem, $query['filters']);
+
+            $result[] = $option;
         }
 
-        return $pages;
+        return $result;
+    }
+
+    public function getPageOptions(int $max, array $query): array
+    {
+        $result = [];
+        for ($i = 1; $i <= $max; $i++) {
+            $option['text'] = $i;
+            $option['active'] = $i === $query['page'] ? true : false;
+            $option['url'] = $this->buildUrl($i, $query['sort'], $query['filters']);
+
+            $result[] = $option;
+        }
+
+        return $result;
     }
 
     private function buildUrl(int $page, string $sort, array $filters): string
     {
-        $args = ['page' => $page, 'sort' => $sort];
-        foreach (['category', 'brand', 'colour'] as $key) {
-            if ($filters[$key]) {
-                //$args[$key] = implode(',', $filters[$key]);
-                foreach ($filters[$key] as $val) {
-                    $args[$key][] = $val;
-                }
-            }
-        }
+        // convert filter sub-arrays into own variables
+        extract($filters);
+        // add all variables into one array on the same level
+        $args = compact('page', 'sort', 'category', 'brand', 'colour');
 
         return urldecode($this->router->generate('shop', $args));
     }
 
-    private function addFilter(string $key, int $val, array $filters): array
+    private function addFilter(array $filters, string $key, int $val): array
     {
         $filters[$key][] = $val;
 
         return $filters;
     }
 
-    private function removeFilter(string $key, int $val, array $filters): array
+    private function removeFilter(array $filters, string $key, int $val): array
     {
         $filters[$key] = array_diff($filters[$key], [$val]);
 
