@@ -20,7 +20,7 @@ class UserController extends AbstractController
     }
 
    /**
-     * @Route("/address_add", name="address_add")
+     * @Route("/address/add", name="address_add")
      */
     public function addAddress(Request $request): Response
     {

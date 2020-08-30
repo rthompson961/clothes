@@ -25,7 +25,7 @@ class CheckoutController extends AbstractController
     }
 
     /**
-     * @Route("/address_select", name="address_select")
+     * @Route("/address/select", name="address_select")
      */
     public function address(Request $request): Response
     {

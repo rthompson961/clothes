@@ -23,7 +23,7 @@ class UserControllerTest extends WebTestCase
 
     public function testAddAddressSuccess(): void
     {
-        $crawler = $this->client->request('GET', '/address_add');
+        $crawler = $this->client->request('GET', '/address/add');
         $crawler = $this->client->submitForm('address_add[submit]', [
             'address_add[address1]' => '1 street',
             'address_add[address2]' => 'neighbourhood',
@@ -32,7 +32,7 @@ class UserControllerTest extends WebTestCase
             'address_add[postcode]' => 'ab123cd',
         ]);
 
-        $this->assertResponseRedirects('/address_select');
+        $this->assertResponseRedirects('/address/select');
     }
 
    /**
@@ -40,7 +40,7 @@ class UserControllerTest extends WebTestCase
      */
     public function testAddAddressValidation(array $vals, string $error, int $count): void
     {
-        $crawler = $this->client->request('GET', '/address_add');
+        $crawler = $this->client->request('GET', '/address/add');
         $crawler = $this->client->submitForm('address_add[submit]', [
             'address_add[address1]' => $vals['address1'],
             'address_add[address2]' => $vals['address2'],

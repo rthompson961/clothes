@@ -14,6 +14,6 @@ class ProductControllerTest extends WebTestCase
             'product[product]' => '1'
         ]);
 
-        $this->assertResponseRedirects('/basket_add/1/1');
+        $this->assertResponseRedirects('/basket/add/1/1');
     }
 }

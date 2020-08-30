@@ -29,7 +29,6 @@ class CheckoutControllerTest extends WebTestCase
     {
         // destroy session
         $this->client->restart();
-
         $this->client->request('GET', '/' . $page);
 
         $this->assertResponseRedirects('/login');
@@ -37,7 +36,7 @@ class CheckoutControllerTest extends WebTestCase
 
     public function membersOnlyPageProvider(): array
     {
-        return [['address_add'], ['address_select'], ['payment']];
+        return [['address/add'], ['address/select'], ['payment']];
     }
 
    /**
@@ -52,15 +51,15 @@ class CheckoutControllerTest extends WebTestCase
 
     public function nonEmptyBasketPageProvider(): array
     {
-        return [['address_select'], ['payment']];
+        return [['address/select'], ['payment']];
     }
 
     public function testSelectAddressSuccess(): void
     {
         // add product to basket
-        $this->client->request('GET', '/basket_add/1/1');
+        $this->client->request('GET', '/basket/add/1/1');
 
-        $crawler = $this->client->request('GET', '/address_select');
+        $crawler = $this->client->request('GET', '/address/select');
         $crawler = $this->client->submitForm('address_select[submit]', [
             'address_select[address]' => '1'
         ]);
@@ -76,8 +75,8 @@ class CheckoutControllerTest extends WebTestCase
         $missingId = '3'; // 1 = data fixture, 2 = added in earlier test
 
         // add product to basket
-        $this->client->request('GET', '/basket_add/1/1');
-        $crawler = $this->client->request('GET', '/address_select');
+        $this->client->request('GET', '/basket/add/1/1');
+        $crawler = $this->client->request('GET', '/address/select');
         $crawler = $this->client->submitForm('address_select[submit]', [
             'address_select[address]' => $missingId
         ]);
@@ -93,10 +92,10 @@ class CheckoutControllerTest extends WebTestCase
         $this->client->followRedirects();
 
         // add product
-        $this->client->request('GET', '/basket_add/1/1');
+        $this->client->request('GET', '/basket/add/1/1');
 
         // select address
-        $crawler = $this->client->request('GET', '/address_select');
+        $crawler = $this->client->request('GET', '/address/select');
         $crawler = $this->client->submitForm('address_select[submit]', [
             'address_select[address]' => '1'
         ]);
