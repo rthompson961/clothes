@@ -6,7 +6,7 @@
 
 <div id="home">
 
-    <a href="{{ path('shop') }}">
+    <a class="all" href="{{ path('shop') }}">
         <div>
             <img src="{{ asset('img/category/all.jpg') }}" alt="All" />
             <h3>All</h3>
@@ -14,7 +14,7 @@
     </a>
 
     {% for category in categories %}
-        <a href="{{ path('shop', {'category[0]' : category.id}) }}">
+        <a class="{{ category.name|lower }}" href="{{ path('shop', {'category[0]' : category.id}) }}">
             <div>
                 <img src="{{ asset('img/category/' ~ "%03d"|format(category.id) ~ '.jpg') }}" alt="{{ category.name }}" />
                 <h3>{{ category.name }}</h3>
