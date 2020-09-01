@@ -25,7 +25,7 @@ class BasketController extends AbstractController
     {
         $items = [];
         $total = 0;
-        if ($this->session->has('basket') && count($this->session->get('basket'))) {
+        if ($this->session->has('basket')) {
             $basket = $this->session->get('basket');
             $units = $this->getDoctrine()
                 ->getRepository(ProductUnit::class)
@@ -56,7 +56,6 @@ class BasketController extends AbstractController
      */
     public function add(int $id, int $quantity): RedirectResponse
     {
-        // get the current basket if there is one
         $basket = $this->session->get('basket') ?? [];
 
         // add the current item to the basket
@@ -66,7 +65,6 @@ class BasketController extends AbstractController
             $basket[$id]  = $quantity;
         }
 
-        // update session variable to match the new basket
         $this->session->set('basket', $basket);
 
         return $this->redirectToRoute('basket');
@@ -77,8 +75,7 @@ class BasketController extends AbstractController
      */
     public function remove(int $id): RedirectResponse
     {
-        if ($this->session->has('basket') && array_key_exists($id, $this->session->get('basket'))) {
-            // remove item and update basket
+        if ($this->session->has('basket')) {
             $basket = $this->session->get('basket');
             unset($basket[$id]);
             $this->session->set('basket', $basket);
