@@ -28,11 +28,12 @@
         {% endif %}
         <p>
             <a class="basket" href="{{ path('basket') }}">
-                 {% if app.session.get('basket_count') %}
-                    {{ app.session.get('basket_count') }} Item{% if app.session.get('basket_count') > 1 %}s{% endif %}
-                 {% else %}
-                    0 Items
-                 {% endif %}
+                {% if app.session.get('basket') %}
+                    {{ app.session.get('basket')|reduce((carry, v) => carry + v) }}
+                {% else %}
+                    0
+                {% endif %}
+                Items
             </a>
         </p>
     </div>

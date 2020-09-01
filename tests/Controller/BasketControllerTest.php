@@ -42,7 +42,7 @@ class BasketControllerTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/basket');
 
-        $this->assertSelectorTextSame('a.basket', '1 Item');
+        $this->assertSelectorTextSame('a.basket', '1 Items');
         $this->assertSelectorTextSame('th.total', '£49.99');
 
         // remove last item

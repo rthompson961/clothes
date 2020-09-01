@@ -37,7 +37,6 @@ class BasketController extends AbstractController
                 $item['name']       = $unit->getProduct()->getName();
                 $item['size']       = $unit->getSize()->getName();
                 $item['price']      = $unit->getProduct()->getPrice();
-                $item['stock']      = $unit->getStock();
                 $item['quantity']   = $basket[$unit->getId()];
                 $item['subtotal']   = $item['price'] * $item['quantity'];
 
@@ -69,8 +68,6 @@ class BasketController extends AbstractController
 
         // update session variable to match the new basket
         $this->session->set('basket', $basket);
-        // update the total number of items in the basket
-        $this->session->set('basket_count', array_sum($basket));
 
         return $this->redirectToRoute('basket');
     }
@@ -85,8 +82,6 @@ class BasketController extends AbstractController
             $basket = $this->session->get('basket');
             unset($basket[$id]);
             $this->session->set('basket', $basket);
-            // update the total number of items in the basket
-            $this->session->set('basket_count', array_sum($basket));
         }
 
         return $this->redirectToRoute('basket');
@@ -97,7 +92,7 @@ class BasketController extends AbstractController
      */
     public function empty(): RedirectResponse
     {
-        $this->session->clear();
+        $this->session->remove('basket');
 
         return $this->redirectToRoute('basket');
     }

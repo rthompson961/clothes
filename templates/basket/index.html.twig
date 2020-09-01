@@ -7,9 +7,7 @@
     <h2>Basket</h2>
 
     {% if items %}
-        <p class="count">
-        You have {{ app.session.get('basket_count') }} Item{% if app.session.get('basket_count') > 1 %}s{% endif %}
-        </p>
+        <p class="count">You have {{ app.session.get('basket')|reduce((carry, v) => carry + v) }} Items</p>
 
         <table>
             <tr>
@@ -24,12 +22,10 @@
             <tr>
                 <td>
                     <a href="{{ path('product', {'id' : item.product_id}) }}">
-                        <img src="{{ asset('img/product/' ~ "%03d"|format(item.product_id) ~ '.jpg') }}" 
-                            alt="{{ item.name }}" 
-                        />
+                        <img src="{{ asset('img/product/' ~ "%03d"|format(item.product_id) ~ '.jpg') }}" alt="{{ item.name }}" />
                     </a>
                 </td>
-                <td class="name">{{ item.name }}</td>
+                <td class="name"><a href="{{ path('product', {'id' : item.product_id}) }}">{{ item.name }}</a></td>
                 <td>{{ item.size }}</td>
                 <td>&pound;{{ (item.price / 100)|number_format(2, '.', ',') }}</td>
                 <td>{{ item.quantity }}</td>
