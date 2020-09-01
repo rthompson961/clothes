@@ -22,4 +22,4 @@ security:
     access_control:
         - { path: ^/address/add, roles: ROLE_USER }
         - { path: ^/address/select, roles: ROLE_USER }
-        - { path: ^/payment, roles: ROLE_USER }
+        - { path: ^/checkout, roles: ROLE_USER }

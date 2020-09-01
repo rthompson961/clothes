@@ -77,7 +77,7 @@ class UserController extends AbstractController
             $data = $form->getData();
             $this->session->set('address', $data['address']);
 
-            return $this->redirectToRoute('payment');
+            return $this->redirectToRoute('checkout');
         }
 
         return $this->render('checkout/address.html.twig', [

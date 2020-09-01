@@ -127,7 +127,7 @@ class UserControllerTest extends WebTestCase
             'address_select[address]' => '1'
         ]);
 
-        $this->assertResponseRedirects('/payment');
+        $this->assertResponseRedirects('/checkout');
     }
 
     /**

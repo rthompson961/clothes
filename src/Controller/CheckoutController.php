@@ -24,9 +24,9 @@ class CheckoutController extends AbstractController
     }
 
     /**
-     * @Route("/payment", name="payment")
+     * @Route("/checkout", name="checkout")
      */
-    public function payment(Request $request, Checkout $checkout): Response
+    public function index(Request $request, Checkout $checkout): Response
     {
         // do not allow checkout without items in basket or a selected address
         if (!$this->session->has('basket') || !$this->session->has('address')) {
@@ -56,7 +56,7 @@ class CheckoutController extends AbstractController
             $response = $checkout->sendPayment($form->getData(), $total);
 
             if ($response['transactionResponse']['responseCode'] !== "1") {
-                return $this->redirectToRoute('payment');
+                return $this->redirectToRoute('checkout');
             }
 
             $address = $this->getDoctrine()

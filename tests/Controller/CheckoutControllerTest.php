@@ -25,14 +25,14 @@ class CheckoutControllerTest extends WebTestCase
     {
         // destroy session
         $this->client->restart();
-        $this->client->request('GET', '/payment');
+        $this->client->request('GET', '/checkout');
 
         $this->assertResponseRedirects('/login');
     }
 
     public function testNoBasketRedirect(): void
     {
-        $this->client->request('GET', '/payment');
+        $this->client->request('GET', '/checkout');
 
         $this->assertResponseRedirects('/basket');
     }
@@ -54,7 +54,7 @@ class CheckoutControllerTest extends WebTestCase
         ]);
 
         // card info
-        $crawler = $this->client->request('GET', '/payment');
+        $crawler = $this->client->request('GET', '/checkout');
         $crawler = $this->client->submitForm('payment[submit]', [
             'payment[card]'   => $card,
             'payment[expiry]' => '1220',
@@ -68,7 +68,7 @@ class CheckoutControllerTest extends WebTestCase
     {
         return [
             ['5424000000000015', 'shop'],
-            ['5424000000000010', 'payment'],
+            ['5424000000000010', 'checkout'],
         ];
     }
 }
