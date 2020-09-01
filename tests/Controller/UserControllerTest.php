@@ -4,6 +4,7 @@ namespace App\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 
 class UserControllerTest extends WebTestCase
 {
@@ -19,6 +20,30 @@ class UserControllerTest extends WebTestCase
             'email'    => 'user@user.com',
             'password' => 'pass'
         ]);
+    }
+
+   /**
+     * @dataProvider membersOnlyPageProvider
+     */
+    public function testGuestRedirect(string $page): void
+    {
+        // destroy session
+        $this->client->restart();
+        $this->client->request('GET', '/' . $page);
+
+        $this->assertResponseRedirects('/login');
+    }
+
+    public function membersOnlyPageProvider(): array
+    {
+        return [['address/add'], ['address/select']];
+    }
+
+    public function testNoBasketRedirect(): void
+    {
+        $this->client->request('GET', '/address/select');
+
+        $this->assertResponseRedirects('/basket');
     }
 
     public function testAddAddressSuccess(): void
@@ -90,5 +115,35 @@ class UserControllerTest extends WebTestCase
                 1
             ],
         ];
+    }
+
+    public function testSelectAddressSuccess(): void
+    {
+        // add product to basket
+        $this->client->request('GET', '/basket/add/1/1');
+
+        $crawler = $this->client->request('GET', '/address/select');
+        $crawler = $this->client->submitForm('address_select[submit]', [
+            'address_select[address]' => '1'
+        ]);
+
+        $this->assertResponseRedirects('/payment');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testSelectAddressFailure(): void
+    {
+        $missingId = '3'; // 1 = data fixture, 2 = added in earlier test
+
+        // add product to basket
+        $this->client->request('GET', '/basket/add/1/1');
+        $crawler = $this->client->request('GET', '/address/select');
+        $crawler = $this->client->submitForm('address_select[submit]', [
+            'address_select[address]' => $missingId
+        ]);
+
+        $this->expectException(InvalidArgumentException::class);
     }
 }

@@ -21,7 +21,7 @@ parameters:
             path: src/Service/ShopBuilder.php
         -
             message: '#Parameter \#1 \$user of method App\\Repository\\AddressRepository::findUserAddresses\(\) expects App\\Entity\\User, object\|null given.#'
-            path: src/Controller/CheckoutController.php
+            path: src/Controller/UserController.php
         -
             message: '#Parameter \#1 \$user of method App\\Entity\\Order::setUser\(\) expects App\\Entity\\User, object\|null given.#'
             path: src/Controller/CheckoutController.php

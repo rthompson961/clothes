@@ -4,7 +4,6 @@ namespace App\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 
 class CheckoutControllerTest extends WebTestCase
 {
@@ -22,66 +21,20 @@ class CheckoutControllerTest extends WebTestCase
         ]);
     }
 
-   /**
-     * @dataProvider membersOnlyPageProvider
-     */
-    public function testGuestRedirect(string $page): void
+    public function testGuestRedirect(): void
     {
         // destroy session
         $this->client->restart();
-        $this->client->request('GET', '/' . $page);
+        $this->client->request('GET', '/payment');
 
         $this->assertResponseRedirects('/login');
     }
 
-    public function membersOnlyPageProvider(): array
+    public function testNoBasketRedirect(): void
     {
-        return [['address/add'], ['address/select'], ['payment']];
-    }
-
-   /**
-     * @dataProvider nonEmptyBasketPageProvider
-     */
-    public function testNoBasketRedirect(string $page): void
-    {
-        $this->client->request('GET', '/' . $page);
+        $this->client->request('GET', '/payment');
 
         $this->assertResponseRedirects('/basket');
-    }
-
-    public function nonEmptyBasketPageProvider(): array
-    {
-        return [['address/select'], ['payment']];
-    }
-
-    public function testSelectAddressSuccess(): void
-    {
-        // add product to basket
-        $this->client->request('GET', '/basket/add/1/1');
-
-        $crawler = $this->client->request('GET', '/address/select');
-        $crawler = $this->client->submitForm('address_select[submit]', [
-            'address_select[address]' => '1'
-        ]);
-
-        $this->assertResponseRedirects('/payment');
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testSelectAddressFailure(): void
-    {
-        $missingId = '3'; // 1 = data fixture, 2 = added in earlier test
-
-        // add product to basket
-        $this->client->request('GET', '/basket/add/1/1');
-        $crawler = $this->client->request('GET', '/address/select');
-        $crawler = $this->client->submitForm('address_select[submit]', [
-            'address_select[address]' => $missingId
-        ]);
-
-        $this->expectException(InvalidArgumentException::class);
     }
 
    /**
