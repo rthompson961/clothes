@@ -2,14 +2,14 @@
 
 namespace App\Tests\Service;
 
-use App\Service\LoremIpsumGenerator;
+use App\Service\LoremIpsum;
 use PHPUnit\Framework\TestCase;
 
-class LoremIpsumGeneratorTest extends TestCase
+class LoremIpsumTest extends TestCase
 {
     public function testParagraph(): void
     {
-        $ipsum  = new LoremIpsumGenerator();
+        $ipsum  = new LoremIpsum();
         $result = $ipsum->getParagraph(20);
 
         $result = explode(' ', $result);

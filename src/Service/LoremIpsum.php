@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-class LoremIpsumGenerator
+class LoremIpsum
 {
     private const HISTORYSIZE = 20;
 

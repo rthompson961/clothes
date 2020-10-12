@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Service\LoremIpsumGenerator;
+use App\Service\LoremIpsum;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,7 +17,7 @@ class LoremIpsumController extends AbstractController
      * @Route("/terms", name="terms")
      * @Route("/returns", name="returns")
      */
-    public function index(string $_route, LoremIpsumGenerator $ipsum): Response
+    public function index(string $_route, LoremIpsum $ipsum): Response
     {
         switch ($_route) {
             case 'faq':
