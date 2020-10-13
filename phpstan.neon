@@ -12,13 +12,13 @@ parameters:
     ignoreErrors:
         -
             message: '#Call to function compact\(\) contains undefined variable \$brand.#'
-            path: src/Service/ShopBuilder.php
+            path: src/Service/Shop.php
         -
             message: '#Call to function compact\(\) contains undefined variable \$category.#'
-            path: src/Service/ShopBuilder.php
+            path: src/Service/Shop.php
         -
             message: '#Call to function compact\(\) contains undefined variable \$colour.#'
-            path: src/Service/ShopBuilder.php
+            path: src/Service/Shop.php
         -
             message: '#Parameter \#1 \$user of method App\\Repository\\AddressRepository::findUserAddresses\(\) expects App\\Entity\\User, object\|null given.#'
             path: src/Controller/UserController.php
@@ -27,7 +27,7 @@ parameters:
             path: src/Controller/CheckoutController.php
         -
             message: '#Cannot call method get() on Symfony\Component\DependencyInjection\ContainerInterface|null.#'
-            path: tests/Service/ShopBuilderTest.php
+            path: tests/Service/ShopTest.php
     level: 8
     symfony:
         container_xml_path: '%rootDir%/../../../var/cache/dev/App_KernelDevDebugContainer.xml'

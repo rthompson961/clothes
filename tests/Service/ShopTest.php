@@ -2,20 +2,20 @@
 
 namespace App\Tests\Service;
 
-use App\Service\ShopBuilder;
+use App\Service\Shop;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Routing\Router;
 
-class ShopBuilderTest extends WebTestCase
+class ShopTest extends WebTestCase
 {
-    private ShopBuilder $builder;
+    private Shop $builder;
     private array $query;
 
     protected function setUp(): void
     {
         $client = static::createClient();
         $router = $client->getContainer()->get('router');
-        $this->builder = new ShopBuilder($router);
+        $this->builder = new Shop($router);
 
         $this->query['page'] = 2;
         $this->query['sort'] = 'name';

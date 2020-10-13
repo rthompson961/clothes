@@ -6,7 +6,7 @@ use App\Entity\Brand;
 use App\Entity\Category;
 use App\Entity\Colour;
 use App\Entity\Product;
-use App\Service\ShopBuilder;
+use App\Service\Shop;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +17,7 @@ class ShopController extends AbstractController
     /**
      * @Route("/shop", name="shop")
      */
-    public function index(Request $request, shopBuilder $builder): Response
+    public function index(Request $request, Shop $shop): Response
     {
         // store requested product selection values
         $query['page'] = max(1, $request->query->getInt('page'));
@@ -40,12 +40,12 @@ class ShopController extends AbstractController
         $list['brand']    = $this->getDoctrine()->getRepository(Brand::class)->findAllAsArray();
         $list['colour']   = $this->getDoctrine()->getRepository(Colour::class)->findAllAsArray();
         foreach (['category', 'brand', 'colour'] as $key) {
-            $options['filters'][$key] = $builder->getFilterOptions($key, $list, $query);
+            $options['filters'][$key] = $shop->getFilterOptions($key, $list, $query);
         }
         // create list of links to change sort order and page
-        $options['sort'] = $builder->getSortOptions(['first', 'name', 'low', 'high'], $query);
+        $options['sort'] = $shop->getSortOptions(['first', 'name', 'low', 'high'], $query);
         $lastPage = (int) ceil($count / $productRepository::ITEMS_PER_PAGE);
-        $options['page'] = $builder->getPageOptions($lastPage, $query);
+        $options['page'] = $shop->getPageOptions($lastPage, $query);
 
         return $this->render('shop/index.html.twig', [
             'options'     => $options,
