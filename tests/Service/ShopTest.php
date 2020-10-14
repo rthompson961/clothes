@@ -28,10 +28,10 @@ class ShopTest extends WebTestCase
      */
     public function testFilterOptions(int $index, string $url, bool $active): void
     {
-        $options = $this->shop->getFilterOptions(self::FILTERS, self::SORT, self::PAGE);
+        $links = $this->shop->getFilterOptions(self::FILTERS, self::SORT, self::PAGE);
 
-        $this->assertTrue($options['colour'][$index]->getUrl() === $url);
-        $this->assertTrue($options['colour'][$index]->getActive() === $active);
+        $this->assertTrue($links['colour'][$index]->getUrl() === $url);
+        $this->assertTrue($links['colour'][$index]->getActive() === $active);
     }
 
     public function filterProvider(): array
@@ -55,10 +55,10 @@ class ShopTest extends WebTestCase
      */
     public function testSortOptions(int $index, string $url, bool $active): void
     {
-        $options = $this->shop->getSortOptions(self::FILTERS, self::SORT, self::PAGE);
+        $links = $this->shop->getSortOptions(self::FILTERS, self::SORT, self::PAGE);
 
-        $this->assertTrue($options[$index]['url'] === $url);
-        $this->assertTrue($options[$index]['active'] === $active);
+        $this->assertTrue($links[$index]['url'] === $url);
+        $this->assertTrue($links[$index]['active'] === $active);
     }
 
     public function sortProvider(): array
@@ -82,10 +82,10 @@ class ShopTest extends WebTestCase
      */
     public function testPageOptions(int $index, string $url, bool $active): void
     {
-        $options = $this->shop->getPageOptions(self::FILTERS, self::SORT, self::PAGE, 3);
+        $links = $this->shop->getPageOptions(self::FILTERS, self::SORT, self::PAGE, 3);
 
-        $this->assertTrue($options[$index]['url'] === $url);
-        $this->assertTrue($options[$index]['active'] === $active);
+        $this->assertTrue($links[$index]['url'] === $url);
+        $this->assertTrue($links[$index]['active'] === $active);
     }
 
     public function pageProvider(): array

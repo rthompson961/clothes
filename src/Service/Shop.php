@@ -22,12 +22,12 @@ class Shop
 
     public function getFilterOptions(array $filters, string $sort, int $page): array
     {
-        $list['category'] = $this->em->getRepository(Category::class)->findAll();
-        $list['brand']    = $this->em->getRepository(Brand::class)->findAll();
-        $list['colour']   = $this->em->getRepository(Colour::class)->findAll();
+        $options['category'] = $this->em->getRepository(Category::class)->findAll();
+        $options['brand']    = $this->em->getRepository(Brand::class)->findAll();
+        $options['colour']   = $this->em->getRepository(Colour::class)->findAll();
 
         $result = [];
-        foreach ($list as $key => $items) {
+        foreach ($options as $key => $items) {
             foreach ($items as $item) {
                 $link = new ShopLink($item->getId(), $item->getName());
                 $link->setActive($filters[$key]);

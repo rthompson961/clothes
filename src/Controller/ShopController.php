@@ -32,15 +32,15 @@ class ShopController extends AbstractController
         $products = $repo->findProducts($filters, $sort, $page);
 
         // links to add/remove categories, brands and colours
-        $options['filters'] = $shop->getFilterOptions($filters, $sort, $page);
+        $links['filters'] = $shop->getFilterOptions($filters, $sort, $page);
         // links to change sort order
-        $options['sort'] = $shop->getSortOptions($filters, $sort, $page);
+        $links['sort'] = $shop->getSortOptions($filters, $sort, $page);
         // links to change page
         $lastPage = (int) ceil($count / $repo::ITEMS_PER_PAGE);
-        $options['page'] = $shop->getPageOptions($filters, $sort, $page, $lastPage);
+        $links['page'] = $shop->getPageOptions($filters, $sort, $page, $lastPage);
 
         return $this->render('shop/index.html.twig', [
-            'options'     => $options,
+            'links'     => $links,
             'count'       => $count,
             'products'    => $products
         ]);
