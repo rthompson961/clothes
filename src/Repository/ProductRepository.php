@@ -23,31 +23,31 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-    public function findProductCount(array $query): ?int
+    public function findProductCount(array $filters): ?int
     {
         $qb = $this->createQueryBuilder('p')
             ->select('count(p.id)');
 
         foreach (['category', 'brand', 'colour'] as $key) {
-            if ($query['filters'][$key]) {
-                $qb->andWhere($qb->expr()->in('p.' . $key, $query['filters'][$key]));
+            if ($filters[$key]) {
+                $qb->andWhere($qb->expr()->in('p.' . $key, $filters[$key]));
             }
         }
 
         return $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function findProducts(array $query): ?array
+    public function findProducts(array $filters, string $sort, int $page): ?array
     {
         $qb = $this->createQueryBuilder('p');
 
         foreach (['category', 'brand', 'colour'] as $key) {
-            if ($query['filters'][$key]) {
-                $qb->andWhere($qb->expr()->in('p.' . $key, $query['filters'][$key]));
+            if ($filters[$key]) {
+                $qb->andWhere($qb->expr()->in('p.' . $key, $filters[$key]));
             }
         }
 
-        switch ($query['sort']) {
+        switch ($sort) {
             case 'name':
                 $field = 'name';
                 break;
@@ -59,9 +59,9 @@ class ProductRepository extends ServiceEntityRepository
                 $field = 'id';
                 break;
         }
-        $dir = $query['sort'] == 'high' ? 'DESC' : 'ASC';
+        $dir = $sort == 'high' ? 'DESC' : 'ASC';
 
-        $offset = $query['page'] * self::ITEMS_PER_PAGE - self::ITEMS_PER_PAGE;
+        $offset = $page * self::ITEMS_PER_PAGE - self::ITEMS_PER_PAGE;
 
         $qb->orderBy('p.' . $field, $dir)
            ->setFirstResult($offset)

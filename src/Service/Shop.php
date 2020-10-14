@@ -2,66 +2,73 @@
 
 namespace App\Service;
 
+use App\Entity\Brand;
+use App\Entity\Category;
+use App\Entity\Colour;
+use App\Entity\ShopLink;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class Shop
 {
+    private EntityManagerInterface $em;
     private UrlGeneratorInterface $router;
 
-    public function __construct(UrlGeneratorInterface $router)
+    public function __construct(EntityManagerInterface $em, UrlGeneratorInterface $router)
     {
+        $this->em = $em;
         $this->router = $router;
     }
 
-    public function getFilterOptions(string $key, array $list, array $query): array
+    public function getFilterOptions(array $filters, string $sort, int $page): array
     {
+        $list['category'] = $this->em->getRepository(Category::class)->findAll();
+        $list['brand']    = $this->em->getRepository(Brand::class)->findAll();
+        $list['colour']   = $this->em->getRepository(Colour::class)->findAll();
+
         $result = [];
-        foreach ($list[$key] as $listItem) {
-            $option = [];
-            $option['text'] = $listItem['name'];
-            if (in_array($listItem['id'], $query['filters'][$key])) {
-                $option['active'] = true;
-                $filters = $this->removeFilter($query['filters'], $key, $listItem['id']);
-            } else {
-                $option['active'] = false;
-                $filters = $this->addFilter($query['filters'], $key, $listItem['id']);
+        foreach ($list as $key => $items) {
+            foreach ($items as $item) {
+                $link = new ShopLink($item->getId(), $item->getName());
+                $link->setActive($filters[$key]);
+                $link->setFilters($filters, $key);
+                $link->setUrl($this->buildUrl($link->getFilters(), $sort, $page));
+                $result[$key][] = $link;
             }
-            $option['url'] = $this->buildUrl($query['page'], $query['sort'], $filters);
-            $result[] = $option;
         }
 
         return $result;
     }
 
-    public function getSortOptions(array $list, array $query): array
+    public function getSortOptions(array $filters, string $sort, int $page): array
     {
         $result = [];
-        foreach ($list as $listItem) {
-            $option['text'] = ucfirst($listItem);
-            $option['active'] = $listItem === $query['sort'] ? true : false;
-            $option['url'] = $this->buildUrl($query['page'], $listItem, $query['filters']);
-
-            $result[] = $option;
+        foreach (['first', 'name', 'low', 'high'] as $val) {
+            $result[] = [
+                'text' => ucfirst($val),
+                'active' => ($val === $sort) ? true : false,
+                'url' => $this->buildUrl($filters, $val, $page),
+            ];
         }
 
         return $result;
     }
 
-    public function getPageOptions(int $max, array $query): array
+    public function getPageOptions(array $filters, string $sort, int $page, int $last): array
     {
         $result = [];
-        for ($i = 1; $i <= $max; $i++) {
-            $option['text'] = $i;
-            $option['active'] = $i === $query['page'] ? true : false;
-            $option['url'] = $this->buildUrl($i, $query['sort'], $query['filters']);
-
-            $result[] = $option;
+        for ($i = 1; $i <= $last; $i++) {
+            $result[] = [
+                'text' => $i,
+                'active' => ($i === $page) ? true : false,
+                'url' => $this->buildUrl($filters, $sort, $i),
+            ];
         }
 
         return $result;
     }
 
-    private function buildUrl(int $page, string $sort, array $filters): string
+    private function buildUrl(array $filters, string $sort, int $page): string
     {
         // convert filter sub-arrays into own variables
         extract($filters);
@@ -69,19 +76,5 @@ class Shop
         $args = compact('page', 'sort', 'category', 'brand', 'colour');
 
         return urldecode($this->router->generate('shop', $args));
-    }
-
-    private function addFilter(array $filters, string $key, int $val): array
-    {
-        $filters[$key][] = $val;
-
-        return $filters;
-    }
-
-    private function removeFilter(array $filters, string $key, int $val): array
-    {
-        $filters[$key] = array_diff($filters[$key], [$val]);
-
-        return $filters;
     }
 }

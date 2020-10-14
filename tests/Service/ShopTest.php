@@ -3,114 +3,104 @@
 namespace App\Tests\Service;
 
 use App\Service\Shop;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Routing\Router;
 
 class ShopTest extends WebTestCase
 {
-    private Shop $builder;
-    private array $query;
+    private const FILTERS = ['category' => [], 'brand' => [4, 5], 'colour' => [2, 5]];
+    private const SORT = 'name';
+    private const PAGE = 2;
+
+    private Shop $shop;
 
     protected function setUp(): void
     {
         $client = static::createClient();
+        $em = $client->getContainer()->get('doctrine.orm.entity_manager');
         $router = $client->getContainer()->get('router');
-        $this->builder = new Shop($router);
-
-        $this->query['page'] = 2;
-        $this->query['sort'] = 'name';
-        $this->query['filters'] = ['category' => [], 'brand' => [2, 5], 'colour' => [3]];
+        $this->shop = new Shop($em, $router);
     }
 
-    public function testFilterOptions(): void
+    /**
+     * @dataProvider filterProvider
+     */
+    public function testFilterOptions(int $index, string $url, bool $active): void
     {
-        $list['colour'] = [
-            [
-                'id' => 1,
-                'name' => 'red'
-            ],
-            [
-                'id' => 2,
-                'name' => 'blue'
-            ],
-            [
-                'id' => 3,
-                'name' => 'green'
-            ]
-        ];
+        $options = $this->shop->getFilterOptions(self::FILTERS, self::SORT, self::PAGE);
 
-        $result = $this->builder->getFilterOptions('colour', $list, $this->query);
-        $expected = [
-            [
-                'text'   => 'red',
-                'active' => false,
-                'url'    => '/shop?page=2&sort=name&brand[0]=2&brand[1]=5&colour[0]=3&colour[1]=1'
-            ],
-            [
-                'text'   => 'blue',
-                'active' => false,
-                'url'    => '/shop?page=2&sort=name&brand[0]=2&brand[1]=5&colour[0]=3&colour[1]=2'
-            ],
-            [
-                'text'   => 'green',
-                'active' => true,
-                'url'    => '/shop?page=2&sort=name&brand[0]=2&brand[1]=5'
-            ]
-        ];
-
-        $this->assertTrue($result === $expected);
+        $this->assertTrue($options['colour'][$index]->getUrl() === $url);
+        $this->assertTrue($options['colour'][$index]->getActive() === $active);
     }
 
-    public function testSortOptions(): void
+    public function filterProvider(): array
     {
-        $result = $this->builder->getSortOptions(['first', 'name', 'low', 'high'], $this->query);
-        $expected = [
+        return [
             [
-                'text'   => 'First',
-                'active' => false,
-                'url'    => '/shop?page=2&sort=first&brand[0]=2&brand[1]=5&colour[0]=3'
+                'index'  => 0,
+                'url'    => '/shop?page=2&sort=name&brand[0]=4&brand[1]=5&colour[0]=2&colour[1]=5&colour[2]=1',
+                'active' => false
             ],
             [
-                'text'   => 'Name',
-                'active' => true,
-                'url'    => '/shop?page=2&sort=name&brand[0]=2&brand[1]=5&colour[0]=3'
-            ],
-            [
-                'text'   => 'Low',
-                'active' => false,
-                'url'    => '/shop?page=2&sort=low&brand[0]=2&brand[1]=5&colour[0]=3'
-            ],
-            [
-                'text'   => 'High',
-                'active' => false,
-                'url'    => '/shop?page=2&sort=high&brand[0]=2&brand[1]=5&colour[0]=3'
+                'index'  => 4,
+                'url'    => '/shop?page=2&sort=name&brand[0]=4&brand[1]=5&colour[0]=2',
+                'active' => true
             ]
         ];
-
-        $this->assertTrue($result === $expected);
     }
 
-    public function testPageOptions(): void
+    /**
+     * @dataProvider sortProvider
+     */
+    public function testSortOptions(int $index, string $url, bool $active): void
     {
-        $result = $this->builder->getPageOptions(3, $this->query);
-        $expected = [
+        $options = $this->shop->getSortOptions(self::FILTERS, self::SORT, self::PAGE);
+
+        $this->assertTrue($options[$index]['url'] === $url);
+        $this->assertTrue($options[$index]['active'] === $active);
+    }
+
+    public function sortProvider(): array
+    {
+        return [
             [
-                'text'   => 1,
-                'active' => false,
-                'url'    => '/shop?page=1&sort=name&brand[0]=2&brand[1]=5&colour[0]=3'
+                'index'  => 0,
+                'url'    => '/shop?page=2&sort=first&brand[0]=4&brand[1]=5&colour[0]=2&colour[1]=5',
+                'active' => false
             ],
             [
-                'text'   => 2,
-                'active' => true,
-                'url'    => '/shop?page=2&sort=name&brand[0]=2&brand[1]=5&colour[0]=3'
-            ],
-            [
-                'text'   => 3,
-                'active' => false,
-                'url'    => '/shop?page=3&sort=name&brand[0]=2&brand[1]=5&colour[0]=3'
+                'index'  => 1,
+                'url'    => '/shop?page=2&sort=name&brand[0]=4&brand[1]=5&colour[0]=2&colour[1]=5',
+                'active' => true
             ]
         ];
+    }
 
-        $this->assertTrue($result === $expected);
+    /**
+     * @dataProvider pageProvider
+     */
+    public function testPageOptions(int $index, string $url, bool $active): void
+    {
+        $options = $this->shop->getPageOptions(self::FILTERS, self::SORT, self::PAGE, 3);
+
+        $this->assertTrue($options[$index]['url'] === $url);
+        $this->assertTrue($options[$index]['active'] === $active);
+    }
+
+    public function pageProvider(): array
+    {
+        return [
+            [
+                'index'  => 0,
+                'url'    => '/shop?page=1&sort=name&brand[0]=4&brand[1]=5&colour[0]=2&colour[1]=5',
+                'active' => false
+            ],
+            [
+                'index'  => 1,
+                'url'    => '/shop?page=2&sort=name&brand[0]=4&brand[1]=5&colour[0]=2&colour[1]=5',
+                'active' => true
+            ]
+        ];
     }
 }

@@ -19,14 +19,4 @@ class CategoryRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Category::class);
     }
-
-    public function findAllAsArray(): array
-    {
-        $result = $this->createQueryBuilder('c')
-            ->orderBy('c.name')
-            ->getQuery()
-            ->getArrayResult();
-
-        return $result ?? [];
-    }
 }
