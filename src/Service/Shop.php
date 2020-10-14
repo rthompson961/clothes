@@ -20,6 +20,24 @@ class Shop
         $this->router = $router;
     }
 
+    public function csvToArray(string $list): array
+    {
+        // split comma separated list into array
+        $listArray = explode(',', $list);
+
+        // convert each element of array to positive integer
+        array_walk($listArray, function (&$val) {
+            $val = abs((int) $val);
+        });
+
+        // remove zero value elements
+        $listArray = array_filter($listArray);
+
+        sort($listArray);
+
+        return $listArray;
+    }
+
     public function getFilterOptions(array $filters, string $sort, int $page): array
     {
         $options['category'] = $this->em->getRepository(Category::class)->findAll();
@@ -70,11 +88,13 @@ class Shop
 
     private function buildUrl(array $filters, string $sort, int $page): string
     {
-        // convert filter sub-arrays into own variables
-        extract($filters);
-        // add all variables into one array on the same level
-        $args = compact('page', 'sort', 'category', 'brand', 'colour');
+        $args = ['page' => $page, 'sort' => $sort];
+        foreach (['category', 'brand', 'colour'] as $key) {
+            if ($filters[$key]) {
+                $args[$key] = implode(',', $filters[$key]);
+            }
+        }
 
-        return urldecode($this->router->generate('shop', $args));
+        return $this->router->generate('shop', $args);
     }
 }

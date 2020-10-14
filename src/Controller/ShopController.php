@@ -16,13 +16,15 @@ class ShopController extends AbstractController
      */
     public function index(Request $request, Shop $shop): Response
     {
-        // store requested product selection values
+        // store requested product selection filters
         foreach (['category', 'brand', 'colour'] as $key) {
             $filters[$key] = [];
-            if (is_array($request->query->get($key))) {
-                $filters[$key] = $request->query->get($key);
+            if ($request->query->get($key) && !is_array($request->query->get($key))) {
+                $filters[$key] = $shop->csvToArray($request->query->get($key));
             }
         }
+
+        // store requested sort order and page number
         $sort = $request->query->get('sort', 'first');
         $page = max(1, $request->query->getInt('page'));
 
@@ -33,14 +35,16 @@ class ShopController extends AbstractController
 
         // links to add/remove categories, brands and colours
         $links['filters'] = $shop->getFilterOptions($filters, $sort, $page);
+
         // links to change sort order
         $links['sort'] = $shop->getSortOptions($filters, $sort, $page);
+
         // links to change page
         $lastPage = (int) ceil($count / $repo::ITEMS_PER_PAGE);
         $links['page'] = $shop->getPageOptions($filters, $sort, $page, $lastPage);
 
         return $this->render('shop/index.html.twig', [
-            'links'     => $links,
+            'links'       => $links,
             'count'       => $count,
             'products'    => $products
         ]);

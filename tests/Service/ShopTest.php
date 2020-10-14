@@ -39,12 +39,12 @@ class ShopTest extends WebTestCase
         return [
             [
                 'index'  => 0,
-                'url'    => '/shop?page=2&sort=name&brand[0]=4&brand[1]=5&colour[0]=2&colour[1]=5&colour[2]=1',
+                'url'    => '/shop?page=2&sort=name&brand=4,5&colour=1,2,5',
                 'active' => false
             ],
             [
                 'index'  => 4,
-                'url'    => '/shop?page=2&sort=name&brand[0]=4&brand[1]=5&colour[0]=2',
+                'url'    => '/shop?page=2&sort=name&brand=4,5&colour=2',
                 'active' => true
             ]
         ];
@@ -66,12 +66,12 @@ class ShopTest extends WebTestCase
         return [
             [
                 'index'  => 0,
-                'url'    => '/shop?page=2&sort=first&brand[0]=4&brand[1]=5&colour[0]=2&colour[1]=5',
+                'url'    => '/shop?page=2&sort=first&brand=4,5&colour=2,5',
                 'active' => false
             ],
             [
                 'index'  => 1,
-                'url'    => '/shop?page=2&sort=name&brand[0]=4&brand[1]=5&colour[0]=2&colour[1]=5',
+                'url'    => '/shop?page=2&sort=name&brand=4,5&colour=2,5',
                 'active' => true
             ]
         ];
@@ -93,12 +93,12 @@ class ShopTest extends WebTestCase
         return [
             [
                 'index'  => 0,
-                'url'    => '/shop?page=1&sort=name&brand[0]=4&brand[1]=5&colour[0]=2&colour[1]=5',
+                'url'    => '/shop?page=1&sort=name&brand=4,5&colour=2,5',
                 'active' => false
             ],
             [
                 'index'  => 1,
-                'url'    => '/shop?page=2&sort=name&brand[0]=4&brand[1]=5&colour[0]=2&colour[1]=5',
+                'url'    => '/shop?page=2&sort=name&brand=4,5&colour=2,5',
                 'active' => true
             ]
         ];

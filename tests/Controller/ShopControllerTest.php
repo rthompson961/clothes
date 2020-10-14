@@ -12,7 +12,7 @@ class ShopControllerTest extends WebTestCase
         $client = static::createClient();
         $crawler = $client->request(
             'GET',
-            '/shop?page=4&sort=low&brand[0]=4&brand[1]=2&brand[2]=5&colour[0]=2&colour[1]=5'
+            '/shop?page=4&sort=low&brand=4,2,5&&colour=2,5'
         );
 
         $this->assertSelectorTextSame('h4', '22 Products');

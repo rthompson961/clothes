@@ -46,7 +46,7 @@
     <ul id="nav-links">
         <li><a class="all" href="{{ path('shop') }}">All</a></li>
         {% for category in categories %}
-            <li><a class="{{ category.name|lower }}" href="{{ path('shop', {'category[0]': category.id}) }}">{{ category.name }}</a></li>
+            <li><a class="{{ category.name|lower }}" href="{{ path('shop', {'category': category.id}) }}">{{ category.name }}</a></li>
         {% endfor %}
     </ul>
 </div>

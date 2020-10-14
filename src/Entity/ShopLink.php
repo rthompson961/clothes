@@ -43,6 +43,7 @@ class ShopLink
         } else {
             // add link to filters
             $filters[$key][] = $this->id;
+            sort($filters[$key]);
         }
 
         $this->filters = $filters;
