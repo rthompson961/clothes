@@ -13,7 +13,7 @@
             <tr>
                 <th colspan="2">Item</th>
                 <th>Size</th>
-                <th>Price</th>
+                <th>Stock</th>
                 <th>Quantity</th>
                 <th>Sub Total</th>
                 <th>Remove</th>
@@ -27,7 +27,11 @@
                 </td>
                 <td class="name"><a href="{{ path('product', {'id' : product.product_id}) }}">{{ product.name }}</a></td>
                 <td>{{ product.size }}</td>
-                <td>&pound;{{ (product.price / 100)|number_format(2, '.', ',') }}</td>
+                {% if product.stock %}
+                    <td class="green">In Stock</td>
+                {% else %}
+                    <td class="red">Out of Stock</td>
+                {% endif %}
                 <td>{{ product.quantity }}</td>
                 <td>&pound;{{ (product.subtotal / 100)|number_format(2, '.', ',') }}</td>
                 <td><a class="remove" href="{{ path('basket_remove', {'id' : product.id }) }}">❌</a></td>

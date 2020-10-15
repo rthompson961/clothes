@@ -27,6 +27,13 @@ class Basket
             $product['quantity']   = $basket[$product['id']];
             $product['subtotal']   = $product['price'] * $product['quantity'];
 
+            // enough stock to cover amount in basket
+            if ($unit->getStock() >= $product['quantity']) {
+                $product['stock'] = true;
+            } else {
+                $product['stock'] = false;
+            }
+
             $products[] = $product;
         }
 

@@ -525,6 +525,14 @@ p.pages a:hover {
     text-align: left;
 }
 
+#basket td.green {
+    color: #248f24;
+}
+
+#basket td.red {
+    color: #cc0000;
+}
+
 /* checkout page */
 
 #details {
