@@ -14,13 +14,13 @@ class BasketControllerTest extends WebTestCase
         $this->client = static::createClient();
 
         // Add ten of unit 1 and one of unit 2
-        $values = [
+        $items = [
             ['id' => '1', 'quantity' => '7'],
             ['id' => '1', 'quantity' => '3'],
             ['id' => '2', 'quantity' => '1'],
         ];
-        foreach ($values as $val) {
-            $this->client->request('GET', "/basket/add/{$val['id']}/{$val['quantity']}");
+        foreach ($items as $item) {
+            $this->client->request('GET', "/basket/add/{$item['id']}/{$item['quantity']}");
         }
     }
 

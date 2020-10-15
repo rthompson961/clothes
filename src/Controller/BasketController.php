@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\ProductUnit;
+use App\Service\Basket;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -21,32 +21,17 @@ class BasketController extends AbstractController
     /**
      * @Route("/basket", name="basket")
      */
-    public function index(): Response
+    public function index(Basket $basket): Response
     {
-        $items = [];
+        $products = [];
         $total = 0;
         if ($this->session->has('basket')) {
-            $basket = $this->session->get('basket');
-            $units = $this->getDoctrine()
-                ->getRepository(ProductUnit::class)
-                ->findBy(['id' => array_keys($basket)]);
-
-            foreach ($units as $unit) {
-                $item['id']         = $unit->getId();
-                $item['product_id'] = $unit->getProduct()->getId();
-                $item['name']       = $unit->getProduct()->getName();
-                $item['size']       = $unit->getSize()->getName();
-                $item['price']      = $unit->getProduct()->getPrice();
-                $item['quantity']   = $basket[$unit->getId()];
-                $item['subtotal']   = $item['price'] * $item['quantity'];
-
-                $items[] = $item;
-                $total  += $item['subtotal'];
-            }
+            $products = $basket->getProducts($this->session->get('basket'));
+            $total = $basket->getTotal($products);
         }
                                 
         return $this->render('basket/index.html.twig', [
-            'items' => $items,
+            'products' => $products,
             'total' => $total
         ]);
     }
