@@ -39,13 +39,6 @@ class UserControllerTest extends WebTestCase
         return [['address/add'], ['address/select']];
     }
 
-    public function testNoBasketRedirect(): void
-    {
-        $this->client->request('GET', '/address/select');
-
-        $this->assertResponseRedirects('/basket');
-    }
-
     public function testAddAddressSuccess(): void
     {
         $crawler = $this->client->request('GET', '/address/add');
@@ -57,7 +50,7 @@ class UserControllerTest extends WebTestCase
             'address_add[postcode]' => 'ab123cd',
         ]);
 
-        $this->assertResponseRedirects('/address/select');
+        $this->assertResponseRedirects('/checkout');
     }
 
    /**
