@@ -23,84 +23,42 @@ class ShopTest extends WebTestCase
         $this->shop = new Shop($em, $router);
     }
 
-    /**
-     * @dataProvider filterProvider
-     */
-    public function testFilterOptions(int $index, string $url, bool $active): void
+    public function testFilterOptions(): void
     {
         $links = $this->shop->getFilterOptions(self::FILTERS, self::SORT, self::PAGE);
 
-        $this->assertTrue($links['colour'][$index]->getUrl() === $url);
-        $this->assertTrue($links['colour'][$index]->getActive() === $active);
+        $url = '/shop?page=2&sort=name&brand=4,5&colour=1,2,5';
+        $this->assertTrue($links['colour'][0]->getUrl() == $url);
+        $this->assertTrue($links['colour'][0]->getActive() === false);
+
+        $url = '/shop?page=2&sort=name&brand=4,5&colour=2';
+        $this->assertTrue($links['colour'][4]->getUrl() == $url);
+        $this->assertTrue($links['colour'][4]->getActive() == true);
     }
 
-    public function filterProvider(): array
-    {
-        return [
-            [
-                'index'  => 0,
-                'url'    => '/shop?page=2&sort=name&brand=4,5&colour=1,2,5',
-                'active' => false
-            ],
-            [
-                'index'  => 4,
-                'url'    => '/shop?page=2&sort=name&brand=4,5&colour=2',
-                'active' => true
-            ]
-        ];
-    }
-
-    /**
-     * @dataProvider sortProvider
-     */
-    public function testSortOptions(int $index, string $url, bool $active): void
+    public function testSortOptions(): void
     {
         $links = $this->shop->getSortOptions(self::FILTERS, self::SORT, self::PAGE);
 
-        $this->assertTrue($links[$index]['url'] === $url);
-        $this->assertTrue($links[$index]['active'] === $active);
+        $url = '/shop?page=2&sort=first&brand=4,5&colour=2,5';
+        $this->assertTrue($links[0]['url'] == $url);
+        $this->assertTrue($links[0]['active'] === false);
+
+        $url = '/shop?page=2&sort=name&brand=4,5&colour=2,5';
+        $this->assertTrue($links[1]['url'] == $url);
+        $this->assertTrue($links[1]['active'] === true);
     }
 
-    public function sortProvider(): array
-    {
-        return [
-            [
-                'index'  => 0,
-                'url'    => '/shop?page=2&sort=first&brand=4,5&colour=2,5',
-                'active' => false
-            ],
-            [
-                'index'  => 1,
-                'url'    => '/shop?page=2&sort=name&brand=4,5&colour=2,5',
-                'active' => true
-            ]
-        ];
-    }
-
-    /**
-     * @dataProvider pageProvider
-     */
-    public function testPageOptions(int $index, string $url, bool $active): void
+    public function testPageOptions(): void
     {
         $links = $this->shop->getPageOptions(self::FILTERS, self::SORT, self::PAGE, 3);
 
-        $this->assertTrue($links[$index]['url'] === $url);
-        $this->assertTrue($links[$index]['active'] === $active);
-    }
+        $url = '/shop?page=1&sort=name&brand=4,5&colour=2,5';
+        $this->assertTrue($links[0]['url'] == $url);
+        $this->assertTrue($links[0]['active'] === false);
 
-    public function pageProvider(): array
-    {
-        return [
-            [
-                'index'  => 0,
-                'url'    => '/shop?page=1&sort=name&brand=4,5&colour=2,5',
-                'active' => false
-            ],
-            [
-                'index'  => 1,
-                'url'    => '/shop?page=2&sort=name&brand=4,5&colour=2,5',
-                'active' => true
-            ]
-        ];
+        $url = '/shop?page=2&sort=name&brand=4,5&colour=2,5';
+        $this->assertTrue($links[1]['url'] == $url);
+        $this->assertTrue($links[1]['active'] === true);
     }
 }
