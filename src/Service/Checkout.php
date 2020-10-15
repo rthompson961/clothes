@@ -26,6 +26,7 @@ class Checkout
                 ]
             ]
         ];
+
         $body = json_encode($body, JSON_FORCE_OBJECT);
 
         $curl = curl_init();
@@ -35,6 +36,7 @@ class Checkout
             CURLOPT_CUSTOMREQUEST  => 'POST',
             CURLOPT_POSTFIELDS     => $body
         ]);
+
         $response = curl_exec($curl);
         curl_close($curl);
         if (!is_string($response)) {
@@ -44,9 +46,18 @@ class Checkout
         // remove byte order mark from json string response to allow parsing
         $response = preg_replace('/\xEF\xBB\xBF/', '', $response);
         if (!$response) {
-            throw new \Exception('An error occurred when removing byte order mark from json string');
+            throw new \Exception('Could not remove byte order mark');
         }
 
         return json_decode($response, true);
+    }
+
+    public function responseSuccessful(array $response): bool
+    {
+        if ($response['transactionResponse']['responseCode'] === "1") {
+            return true;
+        }
+
+        return false;
     }
 }

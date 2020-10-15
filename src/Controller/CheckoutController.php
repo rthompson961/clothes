@@ -2,12 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\Address;
-use App\Entity\OrderItem;
 use App\Entity\Order;
-use App\Entity\ProductUnit;
+use App\Entity\OrderItem;
 use App\Form\PaymentType;
+use App\Repository\AddressRepository;
+use App\Service\Basket;
 use App\Service\Checkout;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,20 +17,18 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CheckoutController extends AbstractController
 {
-    private SessionInterface $session;
-
-    public function __construct(SessionInterface $session)
-    {
-        $this->session = $session;
-    }
-
     /**
      * @Route("/checkout", name="checkout")
      */
-    public function index(Request $request, Checkout $checkout): Response
-    {
-        // do not allow checkout without items in basket or a selected address
-        if (!$this->session->has('basket') || !$this->session->has('address')) {
+    public function index(
+        AddressRepository $addressRepository,
+        Basket $basket,
+        Checkout $checkout,
+        EntityManagerInterface $entityManager,
+        Request $request,
+        SessionInterface $session
+    ): Response {
+        if (!$session->has('basket') || !$session->has('address')) {
             return $this->redirectToRoute('basket');
         }
 
@@ -37,54 +36,42 @@ class CheckoutController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $basket = $this->session->get('basket');
+            $products = $basket->getProducts($session->get('basket'));
+            $total = $basket->getTotal($products);
 
-            // get data for each basket item
-            $units = $this->getDoctrine()
-                ->getRepository(ProductUnit::class)
-                ->findBy(['id' => array_keys($basket)]);
-            // get order total and check stock
-            $total = 0;
-            foreach ($units as $unit) {
-                $total += $basket[$unit->getId()] * $unit->getProduct()->getPrice();
-                if (!$unit->getStock()) {
-                    return $this->redirectToRoute('basket');
-                }
+            if (!$basket->isStock($products)) {
+                return $this->redirectToRoute('basket');
             }
 
-            // send order details and payment information to card processor
+            // process card payment
             $response = $checkout->sendPayment($form->getData(), $total);
-
-            if ($response['transactionResponse']['responseCode'] !== "1") {
+            if (!$checkout->responseSuccessful($response)) {
                 return $this->redirectToRoute('checkout');
             }
 
-            $address = $this->getDoctrine()
-                ->getRepository(Address::class)
-                ->find($this->session->get('address'));
+            $address = $addressRepository->find($session->get('address'));
             if (!$address) {
                 throw new \Exception('Could not find address');
             }
 
-            $entityManager = $this->getDoctrine()->getManager();
             $order = new Order();
             $order->setUser($this->getUser());
             $order->setAddress($address);
             $order->setTotal($total);
             $entityManager->persist($order);
 
-            foreach ($units as $unit) {
+            foreach ($products as $product) {
                 $item = new OrderItem();
                 $item->setOrder($order);
-                $item->setProductUnit($unit);
-                $item->setPrice($unit->getProduct()->getPrice());
-                $item->setQuantity($basket[$unit->getId()]);
+                $item->setProductUnit($product['unit']);
+                $item->setPrice($product['price']);
+                $item->setQuantity($product['quantity']);
                 $entityManager->persist($item);
             }
             $entityManager->flush();
 
-            // empty basket & redirect
-            $this->session->clear();
+            // success - empty basket & redirect
+            $session->clear();
             $this->addFlash('order', 'Thank you for your order!');
             return $this->redirectToRoute('shop');
         }

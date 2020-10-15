@@ -19,6 +19,7 @@ class Basket
 
         $products = [];
         foreach ($units as $unit) {
+            $product['unit']       = $unit;
             $product['id']         = $unit->getId();
             $product['product_id'] = $unit->getProduct()->getId();
             $product['name']       = $unit->getProduct()->getName();
@@ -48,5 +49,16 @@ class Basket
         }
 
         return $total;
+    }
+
+    public function isStock(array $products): bool
+    {
+        foreach ($products as $product) {
+            if ($product['stock'] === false) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
