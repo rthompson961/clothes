@@ -30,7 +30,8 @@ class ProductRepository extends ServiceEntityRepository
 
         foreach (['category', 'brand', 'colour'] as $key) {
             if ($filters[$key]) {
-                $qb->andWhere($qb->expr()->in('p.' . $key, $filters[$key]));
+                $qb->andWhere($qb->expr()->in('p.' . $key, ':' . $key));
+                $qb->setParameter($key, $filters[$key]);
             }
         }
 
@@ -43,7 +44,8 @@ class ProductRepository extends ServiceEntityRepository
 
         foreach (['category', 'brand', 'colour'] as $key) {
             if ($filters[$key]) {
-                $qb->andWhere($qb->expr()->in('p.' . $key, $filters[$key]));
+                $qb->andWhere($qb->expr()->in('p.' . $key, ':' . $key));
+                $qb->setParameter($key, $filters[$key]);
             }
         }
 
