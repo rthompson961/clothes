@@ -32,7 +32,7 @@ class Shop
         return $listArray;
     }
 
-    public function getFilterLinks(array $options, array $filters, string $sort, int $page): array
+    public function getFilterLinks(array $options, array $filters, string $sort): array
     {
         $result = [];
         foreach ($options as $key => $items) {
@@ -40,7 +40,7 @@ class Shop
                 $link = new ShopLink($item->getId(), $item->getName());
                 $link->setActive($filters[$key]);
                 $link->setFilters($filters, $key);
-                $link->setUrl($this->buildUrl($link->getFilters(), $sort, $page));
+                $link->setUrl($this->buildUrl($link->getFilters(), $sort));
                 $result[$key][] = $link;
             }
         }
@@ -48,14 +48,14 @@ class Shop
         return $result;
     }
 
-    public function getSortLinks(array $filters, string $sort, int $page): array
+    public function getSortLinks(array $filters, string $sort): array
     {
         $result = [];
         foreach (['first', 'name', 'low', 'high'] as $val) {
             $result[] = [
                 'text' => ucfirst($val),
                 'active' => ($val === $sort) ? true : false,
-                'url' => $this->buildUrl($filters, $val, $page),
+                'url' => $this->buildUrl($filters, $val),
             ];
         }
 
@@ -76,9 +76,14 @@ class Shop
         return $result;
     }
 
-    private function buildUrl(array $filters, string $sort, int $page): string
+    private function buildUrl(array $filters, string $sort, ?int $page = null): string
     {
-        $args = ['page' => $page, 'sort' => $sort];
+        if ($page) {
+            $args['page'] = $page;
+        }
+        $args['sort'] = $sort;
+
+        // add each element of filter array to csv list
         foreach (['category', 'brand', 'colour'] as $key) {
             if ($filters[$key]) {
                 $args[$key] = implode(',', $filters[$key]);

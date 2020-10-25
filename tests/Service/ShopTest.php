@@ -56,14 +56,14 @@ class ShopTest extends WebTestCase
         // inactive filter to be applied
         $this->assertTrue($links['colour'][0]->getId() === 1);
         $this->assertTrue($links['colour'][0]->getText() === 'Red');
-        $url = '/shop?page=2&sort=name&brand=4,5&colour=1,2,5';
+        $url = '/shop?sort=name&brand=4,5&colour=1,2,5';
         $this->assertTrue($links['colour'][0]->getUrl() === $url);
         $this->assertTrue($links['colour'][0]->getActive() === false);
 
         // active filter to be removed
         $this->assertTrue($links['colour'][1]->getId() === 2);
         $this->assertTrue($links['colour'][1]->getText() === 'Blue');
-        $url = '/shop?page=2&sort=name&brand=4,5&colour=5';
+        $url = '/shop?sort=name&brand=4,5&colour=5';
         $this->assertTrue($links['colour'][1]->getUrl() === $url);
         $this->assertTrue($links['colour'][1]->getActive() === true);
     }
@@ -72,11 +72,11 @@ class ShopTest extends WebTestCase
     {
         $links = $this->shop->getSortLinks(self::FILTERS, self::SORT, self::PAGE);
 
-        $url = '/shop?page=2&sort=first&brand=4,5&colour=2,5';
+        $url = '/shop?sort=first&brand=4,5&colour=2,5';
         $this->assertTrue($links[0]['url'] == $url);
         $this->assertTrue($links[0]['active'] === false);
 
-        $url = '/shop?page=2&sort=name&brand=4,5&colour=2,5';
+        $url = '/shop?sort=name&brand=4,5&colour=2,5';
         $this->assertTrue($links[1]['url'] == $url);
         $this->assertTrue($links[1]['active'] === true);
     }

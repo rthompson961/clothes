@@ -41,10 +41,10 @@ class ShopController extends AbstractController
         $options['brand']    = $this->getDoctrine()->getRepository(Brand::class)->findAll();
         $options['colour']   = $this->getDoctrine()->getRepository(Colour::class)->findAll();
         // links to add/remove categories, brands and colours
-        $links['filters'] = $shop->getFilterLinks($options, $filters, $sort, $page);
+        $links['filters'] = $shop->getFilterLinks($options, $filters, $sort);
 
         // links to change sort order
-        $links['sort'] = $shop->getSortLinks($filters, $sort, $page);
+        $links['sort'] = $shop->getSortLinks($filters, $sort);
 
         // links to change page
         $lastPage = (int) ceil($count / $repo::ITEMS_PER_PAGE);
