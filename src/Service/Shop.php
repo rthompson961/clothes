@@ -2,21 +2,15 @@
 
 namespace App\Service;
 
-use App\Entity\Brand;
-use App\Entity\Category;
-use App\Entity\Colour;
 use App\Entity\ShopLink;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class Shop
 {
-    private EntityManagerInterface $em;
     private UrlGeneratorInterface $router;
 
-    public function __construct(EntityManagerInterface $em, UrlGeneratorInterface $router)
+    public function __construct(UrlGeneratorInterface $router)
     {
-        $this->em = $em;
         $this->router = $router;
     }
 
@@ -38,12 +32,8 @@ class Shop
         return $listArray;
     }
 
-    public function getFilterOptions(array $filters, string $sort, int $page): array
+    public function getFilterOptions(array $options, array $filters, string $sort, int $page): array
     {
-        $options['category'] = $this->em->getRepository(Category::class)->findAll();
-        $options['brand']    = $this->em->getRepository(Brand::class)->findAll();
-        $options['colour']   = $this->em->getRepository(Colour::class)->findAll();
-
         $result = [];
         foreach ($options as $key => $items) {
             foreach ($items as $item) {

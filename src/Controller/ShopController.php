@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Brand;
+use App\Entity\Category;
+use App\Entity\Colour;
 use App\Entity\Product;
 use App\Service\Shop;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,8 +36,12 @@ class ShopController extends AbstractController
         $count = $repo->findProductCount($filters);
         $products = $repo->findProducts($filters, $sort, $page);
 
+        // filter options that require links to be generated for them so they can be applied
+        $options['category'] = $this->getDoctrine()->getRepository(Category::class)->findAll();
+        $options['brand']    = $this->getDoctrine()->getRepository(Brand::class)->findAll();
+        $options['colour']   = $this->getDoctrine()->getRepository(Colour::class)->findAll();
         // links to add/remove categories, brands and colours
-        $links['filters'] = $shop->getFilterOptions($filters, $sort, $page);
+        $links['filters'] = $shop->getFilterOptions($options, $filters, $sort, $page);
 
         // links to change sort order
         $links['sort'] = $shop->getSortOptions($filters, $sort, $page);
