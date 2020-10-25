@@ -4,7 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Product;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
 class ProductFixtures extends Fixture implements DependentFixtureInterface

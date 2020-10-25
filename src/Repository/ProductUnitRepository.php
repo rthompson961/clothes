@@ -6,7 +6,7 @@ use App\Entity\Product;
 use App\Entity\ProductUnit;
 use App\Entity\Size;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method ProductUnit|null find($id, $lockMode = null, $lockVersion = null)
