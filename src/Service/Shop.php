@@ -32,7 +32,7 @@ class Shop
         return $listArray;
     }
 
-    public function getFilterOptions(array $options, array $filters, string $sort, int $page): array
+    public function getFilterLinks(array $options, array $filters, string $sort, int $page): array
     {
         $result = [];
         foreach ($options as $key => $items) {
@@ -48,7 +48,7 @@ class Shop
         return $result;
     }
 
-    public function getSortOptions(array $filters, string $sort, int $page): array
+    public function getSortLinks(array $filters, string $sort, int $page): array
     {
         $result = [];
         foreach (['first', 'name', 'low', 'high'] as $val) {
@@ -62,7 +62,7 @@ class Shop
         return $result;
     }
 
-    public function getPageOptions(array $filters, string $sort, int $page, int $last): array
+    public function getPageLinks(array $filters, string $sort, int $page, int $last): array
     {
         $result = [];
         for ($i = 1; $i <= $last; $i++) {

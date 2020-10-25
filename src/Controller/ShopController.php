@@ -41,14 +41,14 @@ class ShopController extends AbstractController
         $options['brand']    = $this->getDoctrine()->getRepository(Brand::class)->findAll();
         $options['colour']   = $this->getDoctrine()->getRepository(Colour::class)->findAll();
         // links to add/remove categories, brands and colours
-        $links['filters'] = $shop->getFilterOptions($options, $filters, $sort, $page);
+        $links['filters'] = $shop->getFilterLinks($options, $filters, $sort, $page);
 
         // links to change sort order
-        $links['sort'] = $shop->getSortOptions($filters, $sort, $page);
+        $links['sort'] = $shop->getSortLinks($filters, $sort, $page);
 
         // links to change page
         $lastPage = (int) ceil($count / $repo::ITEMS_PER_PAGE);
-        $links['page'] = $shop->getPageOptions($filters, $sort, $page, $lastPage);
+        $links['page'] = $shop->getPageLinks($filters, $sort, $page, $lastPage);
 
         return $this->render('shop/index.html.twig', [
             'links'       => $links,

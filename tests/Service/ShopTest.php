@@ -20,7 +20,7 @@ class ShopTest extends WebTestCase
         $this->shop = new Shop($router);
     }
 
-    public function testFilterOptions(): void
+    public function testFilterLinks(): void
     {
         $red = new Class {
             public function getId()
@@ -51,7 +51,7 @@ class ShopTest extends WebTestCase
         $options['brand']    = [];
         $options['colour']   = [$red, $blue];
 
-        $links = $this->shop->getFilterOptions($options, self::FILTERS, self::SORT, self::PAGE);
+        $links = $this->shop->getFilterLinks($options, self::FILTERS, self::SORT, self::PAGE);
 
         // inactive filter to be applied
         $this->assertTrue($links['colour'][0]->getId() === 1);
@@ -68,9 +68,9 @@ class ShopTest extends WebTestCase
         $this->assertTrue($links['colour'][1]->getActive() === true);
     }
 
-    public function testSortOptions(): void
+    public function testSortLinks(): void
     {
-        $links = $this->shop->getSortOptions(self::FILTERS, self::SORT, self::PAGE);
+        $links = $this->shop->getSortLinks(self::FILTERS, self::SORT, self::PAGE);
 
         $url = '/shop?page=2&sort=first&brand=4,5&colour=2,5';
         $this->assertTrue($links[0]['url'] == $url);
@@ -81,9 +81,9 @@ class ShopTest extends WebTestCase
         $this->assertTrue($links[1]['active'] === true);
     }
 
-    public function testPageOptions(): void
+    public function testPageLinks(): void
     {
-        $links = $this->shop->getPageOptions(self::FILTERS, self::SORT, self::PAGE, 3);
+        $links = $this->shop->getPageLinks(self::FILTERS, self::SORT, self::PAGE, 3);
 
         $url = '/shop?page=1&sort=name&brand=4,5&colour=2,5';
         $this->assertTrue($links[0]['url'] == $url);
