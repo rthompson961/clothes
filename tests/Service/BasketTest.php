@@ -2,7 +2,6 @@
 
 namespace App\Tests\Service;
 
-use App\Entity\ProductUnit;
 use App\Service\Basket;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -12,10 +11,10 @@ class BasketTest extends KernelTestCase
 
     protected function setUp(): void
     {
-        $kernel = self::bootKernel();
-        $em = $kernel->getContainer()->get('doctrine')->getManager();
-        $repo = $em->getRepository(ProductUnit::class);
+        self::bootKernel();
+        $container = self::$container;
 
+        $repo = $container->get('App\Repository\ProductUnitRepository');
         $this->basket = new Basket($repo);
     }
 
