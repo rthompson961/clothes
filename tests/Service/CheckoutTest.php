@@ -27,7 +27,9 @@ class CheckoutTest extends KernelTestCase
             'expiry' => '1220',
             'cvs' => '999'
         ];
-        $result = $this->checkout->sendPayment($data, 15400);
+
+        $json = $this->checkout->buildRequest($data, 15400);
+        $result = $this->checkout->sendPayment($json);
         $text = $result['transactionResponse']['messages'][0]['description'];
 
         $this->assertTrue($result['transactionResponse']['responseCode'] === '1');
@@ -41,7 +43,9 @@ class CheckoutTest extends KernelTestCase
             'expiry' => '1220',
             'cvs' => '999'
         ];
-        $result = $this->checkout->sendPayment($data, 15400);
+
+        $json = $this->checkout->buildRequest($data, 15400);
+        $result = $this->checkout->sendPayment($json);
         $text = $result['transactionResponse']['errors'][0]['errorText'];
 
         $this->assertTrue($result['transactionResponse']['responseCode'] === "3");

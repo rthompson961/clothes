@@ -38,7 +38,8 @@ class CheckoutController extends AbstractController
             }
 
             // process card payment
-            $response = $checkout->sendPayment($form->getData(), $total);
+            $json = $checkout->buildRequest($form->getData(), $total);
+            $response = $checkout->sendPayment($json);
             if (!$checkout->responseSuccessful($response)) {
                 return $this->redirectToRoute('checkout');
             }

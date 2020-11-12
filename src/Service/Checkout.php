@@ -20,10 +20,9 @@ class Checkout
         $this->security = $security;
     }
 
-    public function sendPayment(array $data, int $total): array
+    public function buildRequest(array $data, int $total): string
     {
-        $endpoint = 'https://apitest.authorize.net/xml/v1/request.api';
-        $body  = [
+        $request = [
             'createTransactionRequest' => [
                 'merchantAuthentication' => [
                     'name'           => $_SERVER['AUTHDOTNET_LOGIN_ID'],
@@ -43,20 +42,28 @@ class Checkout
             ]
         ];
 
-        $body = json_encode($body, JSON_FORCE_OBJECT);
+        $request = json_encode($request, JSON_FORCE_OBJECT);
+        if (!$request) {
+            throw new \Exception('Could not build JSON request');
+        }
 
+        return $request;
+    }
+
+    public function sendPayment(string $json): array
+    {
         $curl = curl_init();
         curl_setopt_array($curl, [
-            CURLOPT_URL            => $endpoint,
+            CURLOPT_URL => 'https://apitest.authorize.net/xml/v1/request.api',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_CUSTOMREQUEST  => 'POST',
-            CURLOPT_POSTFIELDS     => $body
+            CURLOPT_POSTFIELDS     => $json
         ]);
 
         $response = curl_exec($curl);
         curl_close($curl);
         if (!is_string($response)) {
-            throw new \Exception('Checkout response did not return a string');
+            throw new \Exception('Checkout cURL session did not return a string');
         }
 
         // remove byte order mark from json string response to allow parsing
