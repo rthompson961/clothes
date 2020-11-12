@@ -3,15 +3,28 @@
 namespace App\Service;
 
 use App\Entity\ShopLink;
+use App\Repository\BrandRepository;
+use App\Repository\CategoryRepository;
+use App\Repository\ColourRepository;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class Shop
 {
     private UrlGeneratorInterface $router;
+    private BrandRepository $brandRepo;
+    private CategoryRepository $categoryRepo;
+    private ColourRepository $colourRepo;
 
-    public function __construct(UrlGeneratorInterface $router)
-    {
+    public function __construct(
+        UrlGeneratorInterface $router,
+        BrandRepository $brandRepo,
+        CategoryRepository $categoryRepo,
+        ColourRepository $colourRepo
+    ) {
         $this->router = $router;
+        $this->brandRepo = $brandRepo;
+        $this->categoryRepo = $categoryRepo;
+        $this->colourRepo = $colourRepo;
     }
 
     public function csvToArray(string $list): array
@@ -32,8 +45,12 @@ class Shop
         return $listArray;
     }
 
-    public function getFilterLinks(array $options, array $filters, string $sort): array
+    public function getFilterLinks(array $filters, string $sort): array
     {
+        $options['category'] = $this->categoryRepo->findBy([], ['name' => 'ASC']);
+        $options['brand'] = $this->brandRepo->findBy([], ['name' => 'ASC']);
+        $options['colour'] = $this->colourRepo->findBy([], ['name' => 'ASC']);
+
         $result = [];
         foreach ($options as $key => $items) {
             foreach ($items as $item) {
