@@ -2,8 +2,24 @@
 
 namespace App\Service;
 
+use App\Entity\Address;
+use App\Entity\Order;
+use App\Entity\OrderItem;
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Security;
+
 class Checkout
 {
+    private EntityManagerInterface $em;
+    private Security $security;
+
+    public function __construct(EntityManagerInterface $em, Security $security)
+    {
+        $this->em = $em;
+        $this->security = $security;
+    }
+
     public function sendPayment(array $data, int $total): array
     {
         $endpoint = 'https://apitest.authorize.net/xml/v1/request.api';
@@ -59,5 +75,35 @@ class Checkout
         }
 
         return false;
+    }
+
+    public function persistOrder(int $addressId, int $total, array $products): void
+    {
+        $address = $this->em->getRepository(Address::class)->find($addressId);
+        if (!$address) {
+            throw new \Exception('Could not find address');
+        }
+
+        $user = $this->security->getUser();
+        if (!$user) {
+            throw new \Exception('Could not find user');
+        }
+
+        $order = new Order();
+        $order->setUser($user);
+        $order->setAddress($address);
+        $order->setTotal($total);
+        $this->em->persist($order);
+
+        foreach ($products as $product) {
+            $item = new OrderItem();
+            $item->setOrder($order);
+            $item->setProductUnit($product['unit']);
+            $item->setPrice($product['price']);
+            $item->setQuantity($product['quantity']);
+            $this->em->persist($item);
+        }
+
+        $this->em->flush();
     }
 }

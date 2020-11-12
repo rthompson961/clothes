@@ -3,19 +3,31 @@
 namespace App\Tests\Service;
 
 use App\Service\Checkout;
-use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class CheckoutTest extends TestCase
+class CheckoutTest extends KernelTestCase
 {
+    private Checkout $checkout;
+
+    protected function setUp(): void
+    {
+        self::bootKernel();
+        $container = self::$container;
+
+        $em = $container->get('doctrine')->getManager();
+        $security = $container->get('security.helper');
+
+        $this->checkout = new Checkout($em, $security);
+    }
+
     public function testPaymentSuccess(): void
     {
-        $checkout = new Checkout();
         $data = [
             'card' => '5424000000000015',
             'expiry' => '1220',
             'cvs' => '999'
         ];
-        $result = $checkout->sendPayment($data, 15400);
+        $result = $this->checkout->sendPayment($data, 15400);
         $text = $result['transactionResponse']['messages'][0]['description'];
 
         $this->assertTrue($result['transactionResponse']['responseCode'] === '1');
@@ -24,13 +36,12 @@ class CheckoutTest extends TestCase
 
     public function testPaymentFailure(): void
     {
-        $checkout = new Checkout();
         $data = [
             'card' => '5424000000000014',
             'expiry' => '1220',
             'cvs' => '999'
         ];
-        $result = $checkout->sendPayment($data, 15400);
+        $result = $this->checkout->sendPayment($data, 15400);
         $text = $result['transactionResponse']['errors'][0]['errorText'];
 
         $this->assertTrue($result['transactionResponse']['responseCode'] === "3");
