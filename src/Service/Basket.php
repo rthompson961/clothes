@@ -51,14 +51,14 @@ class Basket
         return $total;
     }
 
-    public function isStock(array $products): bool
+    public function isOutOfStockItem(array $products): bool
     {
         foreach ($products as $product) {
             if ($product['stock'] === false) {
-                return false;
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 }

@@ -33,7 +33,7 @@ class CheckoutController extends AbstractController
             $products = $basket->getProducts($session->get('basket'));
             $total    = $basket->getTotal($products);
 
-            if (!$basket->isStock($products)) {
+            if ($basket->isOutOfStockItem($products)) {
                 return $this->redirectToRoute('basket');
             }
 
