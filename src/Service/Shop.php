@@ -82,13 +82,35 @@ class Shop
     public function getPageLinks(array $filters, string $sort, int $page, int $last): array
     {
         $result = [];
-        for ($i = 1; $i <= $last; $i++) {
-            $result[] = [
-                'text' => $i,
-                'active' => ($i === $page) ? true : false,
-                'url' => $this->buildUrl($filters, $sort, $i),
-            ];
+        // number of pages before and after current page to create links for
+        $depth = 2;
+
+        // no need to create links if there is only one page
+        if ($last === 1) {
+            return $result;
         }
+
+        $result[] = [
+            'text' => 'First',
+            'active' => (1 === $page) ? true : false,
+            'url' => $this->buildUrl($filters, $sort, 1),
+        ];
+
+        for ($i = $page - $depth; $i <= $page + $depth; $i++) {
+            if ($i > 1 && $i < $last) {
+                $result[] = [
+                    'text' => $i,
+                    'active' => ($i === $page) ? true : false,
+                    'url' => $this->buildUrl($filters, $sort, $i),
+                ];
+            }
+        }
+
+        $result[] = [
+            'text' => 'Last',
+            'active' => ($last === $page) ? true : false,
+            'url' => $this->buildUrl($filters, $sort, $last),
+        ];
 
         return $result;
     }
