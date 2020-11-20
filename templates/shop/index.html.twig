@@ -9,7 +9,7 @@
         {% for type, values in links.filters %}
             {% for val in values %}
                 {% if val.active %}
-                    <li><a href="{{ val.url }}"><b>❌ {{ type|capitalize }}: </b>{{ val.text }}</a></li>
+                    <li><a href="{{ val.url }}"><b>&#10005; {{ type|capitalize }}: </b>{{ val.text }}</a></li>
                 {% endif %}
             {% endfor %}
         {% endfor %}
@@ -18,8 +18,8 @@
 
     {% for type, values in links.filters %}
         {% if values|length > 1 %}
-            <p>{{ type|capitalize }}</p>
-            <ul>
+            <p class="{{ type }}">[<span class="{{ type }}">+</span>] {{ type|capitalize }}</p>
+            <ul class="{{ type }}">
             {% for val in values %}
                 {% if not val.active %}
                     <li><a href="{{ val.url }}">{{ val.text }}</a></li>

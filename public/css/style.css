@@ -10,12 +10,7 @@ tables
 forms
 clearfix
 layout
-home page
-category page
-market page
-product page
-basket page
-checkout page
+pages
 responsive
 */
 
@@ -220,10 +215,6 @@ button, input[type=submit]  {
     cursor: pointer;
 }
 
-#nav-links {
-    display: none;
-}
-
 #main {
     margin-bottom: 20px;
 }
@@ -235,6 +226,7 @@ button, input[type=submit]  {
 }
 
 #footer li {
+    margin-bottom: 4px;
     padding-left: 0;
 }
 
@@ -283,8 +275,11 @@ p.flash {
 }
 
 #sidebar p {
+    background-color: #f8f8f8;
+    border: 1px solid #e7e7e7;
+    cursor: pointer;
     font-weight: bold;
-    margin-left: 15px;
+    padding: 5px 15px;
 }
 
 #sidebar ul {
@@ -407,48 +402,16 @@ p.pages a:hover {
     background-color: #000080;
 }
 
-.product a.aqua {
-    background-color: #33ccff;
-}
-
-.product a.green {
-    background-color: #248f24;
-}
-
-.product a.pink {
-    background-color: #ff99cc;
-}
-
 .product a.red {
     background-color: #cc0000;
-}
-
-.product a.yellow {
-    background-color: #ffcc00;
 }
 
 .product a.grey {
     background-color: #c2c2b3;
 }
 
-.product a.khaki {
-    background-color: #cc9900;
-}
-
 .product a.plum {
     background-color: #660033;
-}
-
-.product a.tan {
-    background-color: #993300;
-}
-
-.product a.brown {
-    background-color: #4d1a00;
-}
-
-.product a.apple {
-    background-color: #c2f0c2;
 }
 
 .product a.olive {
@@ -461,21 +424,6 @@ p.pages a:hover {
 
 .product a.stone {
     background-color: #cc9900;
-}
-
-/* marketplace page */
-
-#market div {
-    float: left;
-    height: 580px;
-    margin: 0 90px 30px 0;
-    width: 180px;   
-}
-
-#market img {
-    height: 140px;
-    margin-bottom: 7px;
-    width: 140px;
 }
 
 /* product page */
@@ -496,14 +444,6 @@ p.pages a:hover {
 
 #product-info form {
     margin-bottom: 20px;
-}
-
-#product-info p.in {
-    color: #00cc00;
-}
-
-#product-info p.out {
-    color: #ff0000;
 }
 
 /* basket page */
@@ -544,14 +484,9 @@ p.pages a:hover {
     padding: 20px;
 }
 
-#sp-container, #submit-container {
-    clear: both;
-    float: left;
-}
-
 /* responsive */
 
-@media only screen and (min-width: 1200px){
+@media only screen and (min-width: 1200px) {
     #container {
         margin-left: auto;
         margin-right: auto;
@@ -575,11 +510,7 @@ p.pages a:hover {
     #nav-header {
         display: none;
     }
-    
-    #nav-links {
-        display: block;
-    }
-    
+        
     #nav-links li {
         float: left;
     }
@@ -596,7 +527,7 @@ p.pages a:hover {
     }
         
     #footer ul {
-        margin-bottom: 20px;
+        margin-bottom: 10px;
     }
     
     #footer li {
