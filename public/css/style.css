@@ -9,9 +9,9 @@ lists
 tables                  
 forms
 clearfix
-layout
+layout (mobile first)
 pages
-responsive
+responsive (desktop)
 */
 
 /* reset */
@@ -143,14 +143,10 @@ button, input[type=submit]  {
     display: table;
 }
 
-/* layout */
+/* layout (mobile first) */
 
 #container {
     padding: 10px 15px;
-}
-
-#header {
-    margin-bottom: 40px;
 }
 
 #header-right p {
@@ -161,7 +157,8 @@ button, input[type=submit]  {
     background-image: url('../img/basket.png');
     background-repeat: no-repeat;
     background-position: right center;
-    padding-right: 22px;
+    margin-right: 2px;
+    padding-right: 18px;
 }
 
 #search input, #search button {
@@ -224,10 +221,6 @@ button, input[type=submit]  {
     cursor: pointer;
 }
 
-#main {
-    margin-bottom: 20px;
-}
-
 #footer ul {
     list-style: none;
     margin-bottom: 0;
@@ -252,7 +245,7 @@ p.flash {
 #home div {
     border: 1px solid black;
     float: left;
-    margin: 0 55px 60px 0;
+    margin: 0 55px 20px 0;
     text-align: center;
 }
 
@@ -493,7 +486,7 @@ p.pages a:hover {
     padding: 20px;
 }
 
-/* responsive */
+/* responsive (desktop) */
 
 @media only screen and (min-width: 1200px) {
     #container {
@@ -533,6 +526,10 @@ p.pages a:hover {
         float: left;
         margin-right: 50px;
         width: 150px;
+    }
+
+    #main {
+        min-height: 550px;
     }
     
     #products {
