@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ShopTest extends WebTestCase
 {
+    private const SEARCH = null;
     private const FILTERS = ['category' => [], 'brand' => [4, 5], 'colour' => [2, 5]];
     private const SORT = 'name';
     private const PAGE = 2;
@@ -26,7 +27,7 @@ class ShopTest extends WebTestCase
 
     public function testFilterLinks(): void
     {
-        $links = $this->shop->getFilterLinks(self::FILTERS, self::SORT, self::PAGE);
+        $links = $this->shop->getFilterLinks(self::SEARCH, self::FILTERS, self::SORT, self::PAGE);
 
         // active filter to be removed
         $this->assertTrue($links['colour'][0]->getId() === 2);
@@ -45,7 +46,7 @@ class ShopTest extends WebTestCase
 
     public function testSortLinks(): void
     {
-        $links = $this->shop->getSortLinks(self::FILTERS, self::SORT, self::PAGE);
+        $links = $this->shop->getSortLinks(self::SEARCH, self::FILTERS, self::SORT, self::PAGE);
 
         $url = '/shop?sort=first&brand=4,5&colour=2,5';
         $this->assertTrue($links[0]['url'] == $url);
@@ -58,7 +59,7 @@ class ShopTest extends WebTestCase
 
     public function testPageLinks(): void
     {
-        $links = $this->shop->getPageLinks(self::FILTERS, self::SORT, self::PAGE, 3);
+        $links = $this->shop->getPageLinks(self::SEARCH, self::FILTERS, self::SORT, self::PAGE, 3);
 
         $url = '/shop?page=1&sort=name&brand=4,5&colour=2,5';
         $this->assertTrue($links[0]['url'] == $url);

@@ -2,7 +2,6 @@
 
 namespace App\Tests\Controller;
 
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ShopControllerTest extends WebTestCase
@@ -17,5 +16,20 @@ class ShopControllerTest extends WebTestCase
 
         $this->assertSelectorTextSame('h4', '22 Products');
         $this->assertEquals(4, $crawler->filter('div.product')->count());
+    }
+
+    public function testSearch(): void
+    {
+        $client = static::createClient();
+        $client->followRedirects();
+        $client->request('GET', '/');
+
+        $crawler = $client->submitForm('search[submit]', [
+            'search' => 'hooded jacket'
+        ]);
+
+        $this->assertRouteSame('shop');
+        $this->assertSelectorTextSame('h4', '5 Products');
+        $this->assertEquals(5, $crawler->filter('div.product')->count());
     }
 }

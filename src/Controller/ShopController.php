@@ -16,34 +16,36 @@ class ShopController extends AbstractController
      */
     public function index(Request $request, Shop $shop): Response
     {
-        // store requested product selection filters
+        // store requested search terms, filters, sort order and page number
+        $search = $request->query->get('search');
+        $searchArray = $search && !is_array($search) ? explode(' ', $search) : null;
+
         foreach (['category', 'brand', 'colour'] as $key) {
             $filters[$key] = [];
             if ($request->query->get($key) && !is_array($request->query->get($key))) {
                 $filters[$key] = $shop->csvToArray($request->query->get($key));
             }
         }
-        // store requested sort order and page number
+
         $sort = $request->query->get('sort', 'first');
         $page = max(1, $request->query->getInt('page'));
 
         // get total product count and product details for the current page
         $repo     = $this->getDoctrine()->getRepository(Product::class);
-        $count    = $repo->findProductCount($filters);
-        $products = $repo->findProducts($filters, $sort, $page);
+        $count    = $repo->findProductCount($searchArray, $filters);
+        $products = $repo->findProducts($searchArray, $filters, $sort, $page);
 
-        // navigation links to add/remove category, brandy and colour options
-        $links['filters'] = $shop->getFilterLinks($filters, $sort);
-        // navigation links to change sort order
-        $links['sort'] = $shop->getSortLinks($filters, $sort);
-        // navigation links to change page
-        $lastPage = (int) ceil($count / $repo::ITEMS_PER_PAGE);
-        $links['page'] = $shop->getPageLinks($filters, $sort, $page, $lastPage);
+        // create navigation links to add/remove filters and change sort order / page
+        $links['filters'] = $shop->getFilterLinks($search, $filters, $sort);
+        $links['sort'] = $shop->getSortLinks($search, $filters, $sort);
+        $pageCount = (int) ceil($count / $repo::ITEMS_PER_PAGE);
+        $links['page'] = $shop->getPageLinks($search, $filters, $sort, $page, $pageCount);
 
         return $this->render('shop/index.html.twig', [
-            'links'       => $links,
-            'count'       => $count,
-            'products'    => $products
+            'search'   => $search,
+            'links'    => $links,
+            'count'    => $count,
+            'products' => $products
         ]);
     }
 }

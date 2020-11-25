@@ -164,6 +164,15 @@ button, input[type=submit]  {
     padding-right: 22px;
 }
 
+#search input, #search button {
+    float: left;
+}
+
+#search input {
+    margin-right: 8px;
+    width: 250px;
+}
+
 #nav {
     background-color: #f8f8f8;
     border: 1px solid #e7e7e7;
@@ -503,6 +512,11 @@ p.pages a:hover {
         margin-right: 100px;
     }
     
+    #search-form {
+        margin: 0 auto;
+        width: 400px;
+    }
+
     #nav {
         margin-right: 100px;
     }

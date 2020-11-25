@@ -45,7 +45,7 @@ class Shop
         return $listArray;
     }
 
-    public function getFilterLinks(array $filters, string $sort): array
+    public function getFilterLinks(?string $search, array $filters, string $sort): array
     {
         $options['category'] = $this->categoryRepo->findBy([], ['name' => 'ASC']);
         $options['brand'] = $this->brandRepo->findBy([], ['name' => 'ASC']);
@@ -57,7 +57,7 @@ class Shop
                 $link = new ShopLink($item->getId(), $item->getName());
                 $link->setActive($filters[$key]);
                 $link->setFilters($filters, $key);
-                $link->setUrl($this->buildUrl($link->getFilters(), $sort));
+                $link->setUrl($this->buildUrl($search, $link->getFilters(), $sort));
                 $result[$key][] = $link;
             }
         }
@@ -65,22 +65,27 @@ class Shop
         return $result;
     }
 
-    public function getSortLinks(array $filters, string $sort): array
+    public function getSortLinks(?string $search, array $filters, string $sort): array
     {
         $result = [];
         foreach (['first', 'name', 'low', 'high'] as $val) {
             $result[] = [
                 'text' => ucfirst($val),
                 'active' => ($val === $sort) ? true : false,
-                'url' => $this->buildUrl($filters, $val),
+                'url' => $this->buildUrl($search, $filters, $val),
             ];
         }
 
         return $result;
     }
 
-    public function getPageLinks(array $filters, string $sort, int $page, int $last): array
-    {
+    public function getPageLinks(
+        ?string $search,
+        array $filters,
+        string $sort,
+        int $page,
+        int $last
+    ): array {
         $result = [];
         // number of pages before and after current page to create links for
         $depth = 2;
@@ -93,7 +98,7 @@ class Shop
         $result[] = [
             'text' => 'First',
             'active' => (1 === $page) ? true : false,
-            'url' => $this->buildUrl($filters, $sort, 1),
+            'url' => $this->buildUrl($search, $filters, $sort, 1),
         ];
 
         for ($i = $page - $depth; $i <= $page + $depth; $i++) {
@@ -101,7 +106,7 @@ class Shop
                 $result[] = [
                     'text' => $i,
                     'active' => ($i === $page) ? true : false,
-                    'url' => $this->buildUrl($filters, $sort, $i),
+                    'url' => $this->buildUrl($search, $filters, $sort, $i),
                 ];
             }
         }
@@ -109,14 +114,22 @@ class Shop
         $result[] = [
             'text' => 'Last',
             'active' => ($last === $page) ? true : false,
-            'url' => $this->buildUrl($filters, $sort, $last),
+            'url' => $this->buildUrl($search, $filters, $sort, $last),
         ];
 
         return $result;
     }
 
-    private function buildUrl(array $filters, string $sort, ?int $page = null): string
-    {
+    private function buildUrl(
+        ?string $search,
+        array $filters,
+        string $sort,
+        ?int $page = null
+    ): string {
+        if ($search) {
+            $args['search'] = $search;
+        }
+
         if ($page) {
             $args['page'] = $page;
         }

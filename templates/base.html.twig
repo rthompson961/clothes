@@ -15,6 +15,7 @@
     <div id="header-left">
         <h1><a href="{{ path('home') }}">Clothes Shop</a></h1>
     </div>
+
     <div id="header-right">
         {% if is_granted('ROLE_USER') %}
             <p><b>Hello,</b> {{ app.user.email }}</p>
@@ -36,6 +37,16 @@
                 Items
             </a>
         </p>
+    </div>
+</div>
+
+<div id="search" class="clearfix">
+    <div id="search-form" class="clearfix">
+        <form action="{{ path('search') }}" method="post">
+            <input type="text" name="search" placeholder="Quilted Jacket ..." />
+            <input type="hidden" name="_token" value="{{ csrf_token('search-form') }}" />
+            <button type="submit" name="search[submit]">Search</button>
+        </form>
     </div>
 </div>
 

@@ -23,29 +23,52 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-    public function findProductCount(array $filters): ?int
+    public function findProductCount(?array $search, array $filters): ?int
     {
-        $qb = $this->createQueryBuilder('p')
-            ->select('count(p.id)');
+        $param = 1;
+        $qb = $this->createQueryBuilder('p')->select('count(p.id)');
+
+        if ($search) {
+            foreach ($search as $word) {
+                $qb->andWhere($qb->expr()->like('p.name', '?' . $param));
+                $qb->setParameter($param, '%'. $word .'%');
+                $param++;
+            }
+        }
 
         foreach (['category', 'brand', 'colour'] as $key) {
             if ($filters[$key]) {
-                $qb->andWhere($qb->expr()->in('p.' . $key, ':' . $key));
-                $qb->setParameter($key, $filters[$key]);
+                $qb->andWhere($qb->expr()->in('p.' . $key, '?' . $param));
+                $qb->setParameter($param, $filters[$key]);
+                $param++;
             }
         }
 
         return $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function findProducts(array $filters, string $sort, int $page): ?array
-    {
+    public function findProducts(
+        ?array $search,
+        array $filters,
+        string $sort,
+        int $page
+    ): ?array {
+        $param = 1;
         $qb = $this->createQueryBuilder('p');
+
+        if ($search) {
+            foreach ($search as $word) {
+                $qb->andWhere($qb->expr()->like('p.name', '?' . $param));
+                $qb->setParameter($param, '%'. $word .'%');
+                $param++;
+            }
+        }
 
         foreach (['category', 'brand', 'colour'] as $key) {
             if ($filters[$key]) {
-                $qb->andWhere($qb->expr()->in('p.' . $key, ':' . $key));
-                $qb->setParameter($key, $filters[$key]);
+                $qb->andWhere($qb->expr()->in('p.' . $key, '?' . $param));
+                $qb->setParameter($param, $filters[$key]);
+                $param++;
             }
         }
 

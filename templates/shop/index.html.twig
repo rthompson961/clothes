@@ -6,6 +6,10 @@
 <div id="sidebar">
     <div id="sidebar-active">
         <ul>
+        {% if search %}
+            <li><a href="{{ path('shop') }}"><b>&#10005; Search: </b>{{ search }}</a></li>
+        {% endif %}
+
         {% for type, values in links.filters %}
             {% for val in values %}
                 {% if val.active %}
