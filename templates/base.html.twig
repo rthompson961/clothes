@@ -46,9 +46,9 @@
 
 <div id="search" class="clearfix">
     <div id="search-form" class="clearfix">
-        <form action="{{ path('search') }}" method="post">
-            <input type="text" name="search" placeholder="Hooded Jacket" />
-            <input type="hidden" name="_token" value="{{ csrf_token('search-form') }}" />
+        <form action="{{ path('search') }}" method="post" name="search">
+            <input type="text" name="search[terms]" placeholder="Hooded Jacket" />
+            <input type="hidden" name="search[_token]" value="{{ csrf_token('search-form') }}" />
             <button type="submit" name="search[submit]">Search</button>
         </form>
     </div>

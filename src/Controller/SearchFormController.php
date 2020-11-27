@@ -14,10 +14,10 @@ class SearchFormController extends AbstractController
      */
     public function index(Request $request): Response
     {
-        $token = $request->request->get('_token');
+        $token = $request->request->get('search')['_token'];
         if ($this->isCsrfTokenValid('search-form', $token)) {
             return $this->redirectToRoute('shop', [
-                'search' => substr($request->request->get('search'), 0, 20)
+                'search' => substr($request->request->get('search')['terms'], 0, 20)
             ]);
         }
 

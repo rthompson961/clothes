@@ -25,7 +25,7 @@ class ShopControllerTest extends WebTestCase
         $client->request('GET', '/');
 
         $crawler = $client->submitForm('search[submit]', [
-            'search' => 'hooded jacket'
+            'search[terms]' => 'hooded jacket'
         ]);
 
         $this->assertRouteSame('shop');
