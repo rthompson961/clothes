@@ -16,13 +16,20 @@ class ShopController extends AbstractController
      */
     public function index(Request $request, Shop $shop): Response
     {
+        // remove query strings passed as arrays to avoid type checking errors
+        foreach ($request->query->all() as $key => $val) {
+            if (is_array($val)) {
+                $request->query->remove($key);
+            }
+        }
+
         // store requested search terms, filters, sort order and page number
         $search = $request->query->get('search');
-        $searchArray = $search && !is_array($search) ? explode(' ', $search) : null;
+        $searchArray = $search ? explode(' ', $search) : null;
 
         foreach (['category', 'brand', 'colour'] as $key) {
             $filters[$key] = [];
-            if ($request->query->get($key) && !is_array($request->query->get($key))) {
+            if ($request->query->get($key)) {
                 $filters[$key] = $shop->csvToArray($request->query->get($key));
             }
         }

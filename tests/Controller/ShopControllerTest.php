@@ -32,4 +32,15 @@ class ShopControllerTest extends WebTestCase
         $this->assertSelectorTextSame('h4', '5 Products');
         $this->assertEquals(5, $crawler->filter('div.product')->count());
     }
+
+    public function testArrayQueryStringsSanitised(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request(
+            'GET',
+            '/shop?search[]=hooded%20jacket'
+        );
+
+        $this->assertResponseIsSuccessful();
+    }
 }
