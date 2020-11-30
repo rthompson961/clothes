@@ -12,43 +12,35 @@ class BasketControllerTest extends WebTestCase
     protected function setUp(): void
     {
         $this->client = static::createClient();
-
-        // Add ten of unit 1 and one of unit 2
-        $items = [
-            ['id' => '1', 'quantity' => '7'],
-            ['id' => '1', 'quantity' => '3'],
-            ['id' => '2', 'quantity' => '1'],
-        ];
-        foreach ($items as $item) {
-            $this->client->request('GET', "/basket/add/{$item['id']}/{$item['quantity']}");
-        }
+        $this->client->followRedirects();
+        
+        // Add 3 of unit 1 and 1 of unit 2
+        $this->client->request('GET', '/basket/add/1/3');
+        $this->client->request('GET', '/basket/add/2/1');
     }
 
     public function testAdd(): void
     {
-        $crawler = $this->client->request('GET', '/basket');
+        $this->client->request('GET', '/basket');
 
-        $this->assertSelectorTextSame('a.basket', '11 Items');
-        $this->assertSelectorTextSame('th.total', '£549.89');
+        $this->assertSelectorTextSame('a.basket', '4 Items');
+        $this->assertSelectorTextSame('th.total', '£199.96');
     }
 
     public function testRemove(): void
     {
+        // remove unit 1
         $crawler = $this->client->request('GET', '/basket');
         $link = $crawler->filter('a.remove')->link();
-        $crawler = $this->client->click($link);
-
-        $this->assertResponseRedirects('/basket');
-
-        $crawler = $this->client->request('GET', '/basket');
+        $this->client->click($link);
 
         $this->assertSelectorTextSame('a.basket', '1 Items');
         $this->assertSelectorTextSame('th.total', '£49.99');
 
-        // remove last item
-        $link = $crawler->filter('a.remove')->link();
-        $crawler = $this->client->click($link);
+        // remove unit 2
         $crawler = $this->client->request('GET', '/basket');
+        $link = $crawler->filter('a.remove')->link();
+        $this->client->click($link);
 
         $this->assertSelectorTextSame('p.empty', 'Your shopping basket is empty');
     }
@@ -57,12 +49,8 @@ class BasketControllerTest extends WebTestCase
     {
         $crawler = $this->client->request('GET', '/basket');
         $link = $crawler->filter('a.empty')->link();
-        $crawler = $this->client->click($link);
+        $this->client->click($link);
 
-        $this->assertResponseRedirects('/basket');
-
-        $crawler = $this->client->request('GET', '/basket');
-        
         $this->assertSelectorTextSame('a.basket', '0 Items');
         $this->assertSelectorTextSame('p.empty', 'Your shopping basket is empty');
     }
