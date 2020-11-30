@@ -9,7 +9,7 @@ class ShopControllerTest extends WebTestCase
     public function testArrayQueryStringsSanitised(): void
     {
         $client = static::createClient();
-        $crawler = $client->request(
+        $client->request(
             'GET',
             '/shop?search[]=hooded%20jacket'
         );
@@ -32,7 +32,7 @@ class ShopControllerTest extends WebTestCase
         $this->assertEquals(5, $crawler->filter('div.product')->count());
     }
 
-    public function testFilters(): void
+    public function testSearch(): void
     {
         $client = static::createClient();
         $crawler = $client->request(
@@ -44,26 +44,45 @@ class ShopControllerTest extends WebTestCase
         $this->assertEquals(4, $crawler->filter('div.product')->count());
     }
 
-    public function testSort(): void
+    public function testFilters(): void
     {
         $client = static::createClient();
         $crawler = $client->request(
             'GET',
-            '/shop?sort=name&category=1,4,6&colour=2,5,10'
+            '/shop?page=4&sort=first&category=1,4,6&brand=4,5'
         );
 
-        $this->assertSelectorTextSame('div.product p', 'Hugo Boss Authentic Sweatshirt Black');
+        $this->assertSelectorTextSame('h4', '21 Products');
+        $this->assertEquals(3, $crawler->filter('div.product')->count());
+    }
+
+    /**
+     * @dataProvider sortProvider
+     */
+    public function testSort(string $sort, string $product): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/shop?sort=' . $sort);
+
+        $this->assertSelectorTextSame('div.product p', $product);
+    }
+
+    public function sortProvider(): array
+    {
+        return [
+            ['', 'Next Down Filled Jacket Olive'],
+            ['first', 'Next Down Filled Jacket Olive'],
+            ['name', 'Berghaus Syker Sherpa Fleece White'],
+            ['low', 'Threadbare Sweat Hoodie Grey'],
+            ['high', 'Hugo Boss Curved Logo Hoodie Grey']
+        ];
     }
 
     public function testPage(): void
     {
         $client = static::createClient();
-        $crawler = $client->request(
-            'GET',
-            '/shop?page=4&sort=name&category=1,4,6&colour=2,5,10'
-        );
+        $crawler = $client->request('GET', '/shop?page=11');
 
-        $this->assertSelectorTextSame('h4', '19 Products');
-        $this->assertEquals(1, $crawler->filter('div.product')->count());
+        $this->assertEquals(6, $crawler->filter('div.product')->count());
     }
 }
