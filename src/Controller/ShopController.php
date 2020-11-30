@@ -25,22 +25,19 @@ class ShopController extends AbstractController
 
         // store requested search terms, filters, sort order and page number
         $search = $request->query->get('search');
-        $searchArray = $search ? explode(' ', $search) : null;
-
         foreach (['category', 'brand', 'colour'] as $key) {
             $filters[$key] = [];
             if ($request->query->get($key)) {
                 $filters[$key] = $shop->csvToArray($request->query->get($key));
             }
         }
-
         $sort = $request->query->get('sort', 'first');
         $page = max(1, $request->query->getInt('page'));
 
         // get total product count and product details for the current page
         $repo     = $this->getDoctrine()->getRepository(Product::class);
-        $count    = $repo->findProductCount($searchArray, $filters);
-        $products = $repo->findProducts($searchArray, $filters, $sort, $page);
+        $count    = $repo->findProductCount($search, $filters);
+        $products = $repo->findProducts($search, $filters, $sort, $page);
 
         // create navigation links to add/remove filters and change sort order / page
         $links['filters'] = $shop->getFilterLinks($search, $filters, $sort);

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,60 +18,27 @@ use Doctrine\Persistence\ManagerRegistry;
 class ProductRepository extends ServiceEntityRepository
 {
     public const ITEMS_PER_PAGE = 6;
+    private int $param = 1;
 
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Product::class);
     }
 
-    public function findProductCount(?array $search, array $filters): ?int
+    public function findProductCount(?string $search, array $filters): ?int
     {
-        $param = 1;
         $qb = $this->createQueryBuilder('p')->select('count(p.id)');
-
-        if ($search) {
-            foreach ($search as $word) {
-                $qb->andWhere($qb->expr()->like('p.name', '?' . $param));
-                $qb->setParameter($param, '%'. $word .'%');
-                $param++;
-            }
-        }
-
-        foreach (['category', 'brand', 'colour'] as $key) {
-            if ($filters[$key]) {
-                $qb->andWhere($qb->expr()->in('p.' . $key, '?' . $param));
-                $qb->setParameter($param, $filters[$key]);
-                $param++;
-            }
-        }
+        $qb = $this->addSearchQueryBuilder($qb, $search);
+        $qb = $this->addFiltersQueryBuilder($qb, $filters);
 
         return $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function findProducts(
-        ?array $search,
-        array $filters,
-        string $sort,
-        int $page
-    ): ?array {
-        $param = 1;
+    public function findProducts(?string $search, array $filters, string $sort, int $page): ?array
+    {
         $qb = $this->createQueryBuilder('p');
-
-        if ($search) {
-            foreach ($search as $word) {
-                $qb->andWhere($qb->expr()->like('p.name', '?' . $param));
-                $qb->setParameter($param, '%'. $word .'%');
-                $param++;
-            }
-        }
-
-        foreach (['category', 'brand', 'colour'] as $key) {
-            if ($filters[$key]) {
-                $qb->andWhere($qb->expr()->in('p.' . $key, '?' . $param));
-                $qb->setParameter($param, $filters[$key]);
-                $param++;
-            }
-        }
+        $qb = $this->addSearchQueryBuilder($qb, $search);
+        $qb = $this->addFiltersQueryBuilder($qb, $filters);
 
         switch ($sort) {
             case 'name':
@@ -93,5 +61,31 @@ class ProductRepository extends ServiceEntityRepository
            ->setMaxResults(self::ITEMS_PER_PAGE);
                     
         return $qb->getQuery()->getResult();
+    }
+
+    public function addSearchQueryBuilder(QueryBuilder $qb, ?string $search) : QueryBuilder
+    {
+        if ($search) {
+            $search = explode(' ', $search);
+
+            foreach ($search as $word) {
+                $qb->andWhere($qb->expr()->like('p.name', '?' . $this->param));
+                $qb->setParameter($this->param++, '%'. $word .'%');
+            }
+        }
+
+        return $qb;
+    }
+
+    public function addFiltersQueryBuilder(QueryBuilder $qb, array $filters) : QueryBuilder
+    {
+        foreach (['category', 'brand', 'colour'] as $key) {
+            if ($filters[$key]) {
+                $qb->andWhere($qb->expr()->in('p.' . $key, '?' . $this->param));
+                $qb->setParameter($this->param++, $filters[$key]);
+            }
+        }
+
+        return $qb;
     }
 }

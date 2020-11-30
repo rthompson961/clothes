@@ -6,19 +6,18 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ShopControllerTest extends WebTestCase
 {
-    public function testShop(): void
+    public function testArrayQueryStringsSanitised(): void
     {
         $client = static::createClient();
         $crawler = $client->request(
             'GET',
-            '/shop?page=4&sort=low&brand=4,2,5&&colour=2,5'
+            '/shop?search[]=hooded%20jacket'
         );
 
-        $this->assertSelectorTextSame('h4', '22 Products');
-        $this->assertEquals(4, $crawler->filter('div.product')->count());
+        $this->assertResponseIsSuccessful();
     }
 
-    public function testSearch(): void
+    public function testSearchForm(): void
     {
         $client = static::createClient();
         $client->followRedirects();
@@ -33,14 +32,38 @@ class ShopControllerTest extends WebTestCase
         $this->assertEquals(5, $crawler->filter('div.product')->count());
     }
 
-    public function testArrayQueryStringsSanitised(): void
+    public function testFilters(): void
     {
         $client = static::createClient();
         $crawler = $client->request(
             'GET',
-            '/shop?search[]=hooded%20jacket'
+            '/shop?search=next%20sweat&colour=4,5,9'
         );
 
-        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextSame('h4', '4 Products');
+        $this->assertEquals(4, $crawler->filter('div.product')->count());
+    }
+
+    public function testSort(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request(
+            'GET',
+            '/shop?sort=name&category=1,4,6&colour=2,5,10'
+        );
+
+        $this->assertSelectorTextSame('div.product p', 'Hugo Boss Authentic Sweatshirt Black');
+    }
+
+    public function testPage(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request(
+            'GET',
+            '/shop?page=4&sort=name&category=1,4,6&colour=2,5,10'
+        );
+
+        $this->assertSelectorTextSame('h4', '19 Products');
+        $this->assertEquals(1, $crawler->filter('div.product')->count());
     }
 }
