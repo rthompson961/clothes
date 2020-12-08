@@ -13,9 +13,8 @@ class LoremIpsumControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $crawler = $client->request('GET', '/');
-
         $link = $crawler->filter('#footer a.' . $page)->link();
-        $crawler = $client->click($link);
+        $client->click($link);
 
         $this->assertResponseIsSuccessful();
     }
