@@ -20,16 +20,20 @@ class SecurityController extends AbstractController
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
+        // redirect already logged in user
+        if ($this->getUser()) {
+            return $this->redirectToRoute('home');
+        }
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
+        return $this->render('security/login.html.twig', [
+            'last_username' => $lastUsername,
+            'error' => $error
+        ]);
     }
 
     /**
@@ -37,7 +41,7 @@ class SecurityController extends AbstractController
      */
     public function logout(): void
     {
-        throw new \Exception('This method can be blank - it will be intercepted by the logout key on your firewall');
+        throw new \Exception('Blank method - intercepted by firewall');
     }
 
     /**
@@ -49,11 +53,15 @@ class SecurityController extends AbstractController
         GuardAuthenticatorHandler $guard,
         LoginFormAuthenticator $authenticator
     ): ?Response {
+        // redirect already logged in user
+        if ($this->getUser()) {
+            return $this->redirectToRoute('home');
+        }
+
         $form = $this->createForm(RegisterType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var User $user */
             $user = $form->getData();
             $user->setPassword($encoder->encodePassword(
                 $user,
