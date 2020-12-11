@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller;
 
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class SecurityControllerTest extends WebTestCase
@@ -14,11 +15,6 @@ class SecurityControllerTest extends WebTestCase
             'email'    => 'user@user.com',
             'password' => 'pass'
         ]);
-
-        $this->assertResponseRedirects('/');
-
-        // test redirect when accessing login as logged in user
-        $client->request('GET', '/login');
 
         $this->assertResponseRedirects('/');
     }
@@ -43,11 +39,6 @@ class SecurityControllerTest extends WebTestCase
             'register[email]'    => 'user@gmail.com',
             'register[password]' => 'password'
         ]);
-
-        $this->assertResponseRedirects('/');
-
-        // test redirect when accessing register as logged in user
-        $client->request('GET', '/register');
 
         $this->assertResponseRedirects('/');
     }
@@ -102,5 +93,26 @@ class SecurityControllerTest extends WebTestCase
                 'This value is too long. It should have 50 characters or less.'
             ]
         ];
+    }
+
+   /**
+     * @dataProvider redirectProvider
+     */
+    public function testRedirect(string $page): void
+    {
+        $client = static::createClient();
+        $repo = static::$container->get(UserRepository::class);
+        $user = $repo->findOneByEmail('user@user.com');
+        $client->loginUser($user);
+
+        // test redirect when user is already logged in
+        $client->request('GET', '/' . $page);
+
+        $this->assertResponseRedirects('/');
+    }
+
+    public function redirectProvider(): array
+    {
+        return [['login'], ['register']];
     }
 }
