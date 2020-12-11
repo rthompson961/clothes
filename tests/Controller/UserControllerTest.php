@@ -2,47 +2,28 @@
 
 namespace App\Tests\Controller;
 
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 
 class UserControllerTest extends WebTestCase
 {
-    private KernelBrowser $client;
-
-    protected function setUp(): void
+    private function login(KernelBrowser $client): KernelBrowser
     {
-        $this->client = static::createClient();
+        $repo = static::$container->get(UserRepository::class);
+        $user = $repo->findOneByEmail('user@user.com');
+        $client->loginUser($user);
 
-        // login
-        $crawler = $this->client->request('GET', '/login');
-        $crawler = $this->client->submitForm('submit', [
-            'email'    => 'user@user.com',
-            'password' => 'pass'
-        ]);
-    }
-
-   /**
-     * @dataProvider membersOnlyPageProvider
-     */
-    public function testGuestRedirect(string $page): void
-    {
-        // destroy session
-        $this->client->restart();
-        $this->client->request('GET', '/' . $page);
-
-        $this->assertResponseRedirects('/login');
-    }
-
-    public function membersOnlyPageProvider(): array
-    {
-        return [['address/add'], ['address/select']];
+        return $client;
     }
 
     public function testAddAddressSuccess(): void
     {
-        $crawler = $this->client->request('GET', '/address/add');
-        $crawler = $this->client->submitForm('address_add[submit]', [
+        $client = $this->login(static::createClient());
+
+        $client->request('GET', '/address/add');
+        $client->submitForm('address_add[submit]', [
             'address_add[address1]' => '1 street',
             'address_add[address2]' => 'neighbourhood',
             'address_add[address3]' => 'town',
@@ -53,31 +34,34 @@ class UserControllerTest extends WebTestCase
         $this->assertResponseRedirects('/checkout');
     }
 
-   /**
+    /**
      * @dataProvider validationProvider
      */
-    public function testAddAddressValidation(array $vals, string $error, int $count): void
+    public function testAddAddressValidation(array $fields, string $error, int $count): void
     {
-        $crawler = $this->client->request('GET', '/address/add');
-        $crawler = $this->client->submitForm('address_add[submit]', [
-            'address_add[address1]' => $vals['address1'],
-            'address_add[address2]' => $vals['address2'],
-            'address_add[county]'   => $vals['county'],
-            'address_add[postcode]' => $vals['postcode'],
+        $client = $this->login(static::createClient());
+
+        $client->request('GET', '/address/add');
+        $crawler = $client->submitForm('address_add[submit]', [
+            'address_add[address1]' => $fields['address1'],
+            'address_add[address2]' => $fields['address2'],
+            'address_add[county]'   => $fields['county'],
+            'address_add[postcode]' => $fields['postcode'],
         ]);
 
+        // error message matches
         $this->assertSelectorTextSame('#address_add li', $error);
-        $this->assertEquals($count, $crawler->filter('#address_add  li')->count());
+        // correct amount of errors
+        $this->assertEquals($count, $crawler->filter('#address_add li')->count());
     }
 
     public function validationProvider(): array
     {
-        $max['text'] = 50;
-        $max['postcode'] = 15;
-        $overflow = str_repeat("a", $max['text'] + 1);
+        $longAddress  = str_repeat("a", 51);
+        $longPostcode = str_repeat("a", 16);
 
         return [
-            [
+            'Blank form' => [
                 [
                     'address1' => '',
                     'address2' => '',
@@ -87,22 +71,22 @@ class UserControllerTest extends WebTestCase
                 'This value should not be blank.',
                 4
             ],
-            [
+            'Address too long' => [
                 [
-                    'address1' => $overflow,
-                    'address2' => $overflow,
-                    'county'   => $overflow,
+                    'address1' => $longAddress,
+                    'address2' => $longAddress,
+                    'county'   => $longAddress,
                     'postcode' => 'ab123cd'
                 ],
                 'This value is too long. It should have 50 characters or less.',
                 3
             ],
-            [
+            'Postcode too long' => [
                 [
                     'address1' => 'house',
                     'address2' => 'street',
                     'county'   => 'county',
-                    'postcode' => str_repeat("a", $max['postcode'] + 1)
+                    'postcode' => $longPostcode
                 ],
                 'This value is too long. It should have 15 characters or less.',
                 1
@@ -112,11 +96,10 @@ class UserControllerTest extends WebTestCase
 
     public function testSelectAddressSuccess(): void
     {
-        // add product to basket
-        $this->client->request('GET', '/basket/add/1/1');
+        $client = $this->login(static::createClient());
 
-        $crawler = $this->client->request('GET', '/address/select');
-        $crawler = $this->client->submitForm('address_select[submit]', [
+        $client->request('GET', '/address/select');
+        $client->submitForm('address_select[submit]', [
             'address_select[address]' => '1'
         ]);
 
@@ -128,15 +111,31 @@ class UserControllerTest extends WebTestCase
      */
     public function testSelectAddressFailure(): void
     {
-        $missingId = '3'; // 1 = data fixture, 2 = added in earlier test
+        $client = $this->login(static::createClient());
 
-        // add product to basket
-        $this->client->request('GET', '/basket/add/1/1');
-        $crawler = $this->client->request('GET', '/address/select');
-        $crawler = $this->client->submitForm('address_select[submit]', [
-            'address_select[address]' => $missingId
+        // 1 = data fixture, 2 = does not exist
+        $id = '2';
+        $client->request('GET', '/address/select');
+        $client->submitForm('address_select[submit]', [
+            'address_select[address]' => $id
         ]);
 
         $this->expectException(InvalidArgumentException::class);
+    }
+
+    /**
+     * @dataProvider protectedPageProvider
+     */
+    public function testGuestRedirect(string $page): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/' . $page);
+
+        $this->assertResponseRedirects('/login');
+    }
+
+    public function protectedPageProvider(): array
+    {
+        return [['address/add'], ['address/select']];
     }
 }
