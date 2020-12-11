@@ -27,7 +27,7 @@ class ShopController extends AbstractController
         $search = $request->query->get('search');
         foreach (['category', 'brand', 'colour'] as $key) {
             $filters[$key] = [];
-            if ($request->query->get($key)) {
+            if ($request->query->get($key) !== null) {
                 $filters[$key] = $shop->csvToArray($request->query->get($key));
             }
         }
