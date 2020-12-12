@@ -45,7 +45,7 @@ class UserController extends AbstractController
             return $this->redirectToRoute('checkout');
         }
 
-        return $this->render('checkout/address.html.twig', [
+        return $this->render('user/address_select.html.twig', [
             'form' => $form->createView(),
         ]);
     }
