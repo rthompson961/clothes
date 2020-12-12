@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Order;
 use App\Entity\OrderItem;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -19,32 +20,22 @@ class OrderItemRepository extends ServiceEntityRepository
         parent::__construct($registry, OrderItem::class);
     }
 
-    // /**
-    //  * @return OrderItem[] Returns an array of OrderItem objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findItemsByOrder(Order $order): ?array
     {
-        return $this->createQueryBuilder('o')
-            ->andWhere('o.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('o.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('i')
+            ->innerJoin('i.productUnit', 'u')
+            ->innerJoin('u.product', 'p')
+            ->innerJoin('u.size', 's')
+            ->select('i.price')
+            ->addSelect('i.quantity')
+            ->addSelect('p.id as product_id')
+            ->addSelect('p.name')
+            ->addSelect('s.name as size')
+            ->where('i.order = :order')
+            ->setParameter('order', $order)
+            ->orderBy('i.id', 'ASC')
             ->getQuery()
             ->getResult()
         ;
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?OrderItem
-    {
-        return $this->createQueryBuilder('o')
-            ->andWhere('o.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

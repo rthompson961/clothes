@@ -475,6 +475,17 @@ p.pages a:hover {
     color: #cc0000;
 }
 
+/* order items page */
+
+.order-item {
+    margin-bottom: 50px;
+}
+
+.order-item img {
+    height: 164px;
+    width: 110px;
+}
+
 /* checkout page */
 
 #details {

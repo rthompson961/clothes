@@ -123,6 +123,34 @@ class UserControllerTest extends WebTestCase
         $this->expectException(InvalidArgumentException::class);
     }
 
+    public function testOrderList(): void
+    {
+        $client = $this->login(static::createClient());
+        $crawler = $client->request('GET', '/orders');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertEquals(1, $crawler->filter('div.order')->count());
+    }
+
+    public function testOrder(): void
+    {
+        $client = $this->login(static::createClient());
+        $crawler = $client->request('GET', '/order/1');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertPageTitleSame('Items - Order #1 | Clothes Shop');
+        $this->assertSelectorTextSame('h2', 'Items - Order #1');
+        $this->assertEquals(4, $crawler->filter('div.order-item')->count());
+    }
+
+    public function testOrderBelongsToUser(): void
+    {
+        $client = $this->login(static::createClient());
+        $client->request('GET', '/order/2');
+
+        $this->assertResponseRedirects('/orders');
+    }
+
     /**
      * @dataProvider protectedPageProvider
      */
@@ -136,6 +164,6 @@ class UserControllerTest extends WebTestCase
 
     public function protectedPageProvider(): array
     {
-        return [['address/add'], ['address/select']];
+        return [['address/add'], ['address/select'], ['orders'], ['order/1']];
     }
 }

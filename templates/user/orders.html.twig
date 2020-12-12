@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Orders{% endblock %}
+
+{% block body %}
+<div id="orders">
+    <h2>Orders</h2>
+
+    {% if orders %}
+        {% for order in orders %}
+            <div class="order">
+                <a href="{{ path('order', {'order' : order.id}) }}">
+                    <h3>#{{ order.id }} - &pound;{{ (order.total / 100)|number_format(2, '.', ',') }}</h3>
+                </a>
+                <p>Delivered to:</p>
+                <p>
+                    {{ order.address1 }},
+                    {{ order.address2 }},
+                    {{ order.county }},
+                    {{ order.postcode }}
+                </p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>You have not placed any orders</p>
+    {% endif %}
+</div>
+{% endblock %}

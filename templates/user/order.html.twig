@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Items - Order #{{ order }}{% endblock %}
+
+{% block body %}
+<div id="order-items">
+    <h2>Items - Order #{{ order }}</h2>
+
+    <p><a href="{{ path('orders') }}">Back to orders</a></p>
+
+    {% for item in items %}
+        <h3>{{ item.name }}</h3>
+
+        <div class="order-item">
+            <a href="{{ path('product', {'id' : item.product_id}) }}">
+                <img src="{{ asset('img/product/' ~ "%03d"|format(item.product_id) ~ '.jpg') }}" alt="{{ item.name }}" />
+            </a>
+            <p><b>Quantity:</b> {{ item.quantity }}</p>
+            <p><b>Price</b> &pound;{{ (item.price / 100)|number_format(2, '.', ',') }}</p>
+            <p><b>Size:</b> {{ item.size }}</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
