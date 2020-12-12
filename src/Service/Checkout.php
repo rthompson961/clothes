@@ -91,10 +91,8 @@ class Checkout
             throw new \Exception('Could not find address');
         }
 
+        /** @var User $user */
         $user = $this->security->getUser();
-        if (!$user) {
-            throw new \Exception('Could not find user');
-        }
 
         $order = new Order();
         $order->setUser($user);

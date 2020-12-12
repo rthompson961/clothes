@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Address;
+use App\Entity\User;
 use App\Form\AddressAddType;
 use App\Form\AddressSelectType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,10 +19,13 @@ class UserController extends AbstractController
      */
     public function selectAddress(Request $request, SessionInterface $session): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
         // get all addresses belonging to the current user
         $addresses = $this->getDoctrine()
             ->getRepository(Address::class)
-            ->findUserAddresses($this->getUser());
+            ->findUserAddresses($user);
 
         // user has no address stored so prompt them to create one
         if (!$addresses) {
