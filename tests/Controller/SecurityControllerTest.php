@@ -43,7 +43,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertResponseRedirects('/');
     }
 
-   /**
+    /**
      * @dataProvider validationProvider
      */
     public function testRegisterValidation(string $email, string $pass, string $error): void
@@ -95,7 +95,7 @@ class SecurityControllerTest extends WebTestCase
         ];
     }
 
-   /**
+    /**
      * @dataProvider redirectProvider
      */
     public function testRedirect(string $page): void
