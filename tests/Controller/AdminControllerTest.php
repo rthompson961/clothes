@@ -5,9 +5,11 @@ namespace App\Tests\Controller;
 use App\Entity\Brand;
 use App\Entity\Product;
 use App\Entity\ProductGroup;
+use App\Entity\ProductUnit;
 use App\Repository\BrandRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProductGroupRepository;
+use App\Repository\ProductUnitRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -31,27 +33,36 @@ class AdminControllerTest extends WebTestCase
      */
     public function testSuccess(string $page, array $vals): void
     {
+        // product_group becomes productgroup
         $route = str_replace('_', '', $page);
 
         $client = $this->login(static::createClient());
         $client->followRedirects();
         $client->request('GET', '/admin/' . $route);
 
+        // prepare and submit form fields
         $fields = [];
         foreach ($vals as $key => $val) {
             $fields[$page . '[' . $key . ']'] = $val;
         }
         $client->submitForm($page . '[submit]', $fields);
 
-        $repo['brand'] = static::$container->get(BrandRepository::class);
+        $repo['brand']         = static::$container->get(BrandRepository::class);
         $repo['product_group'] = static::$container->get(ProductGroupRepository::class);
-        $repo['product'] = static::$container->get(ProductRepository::class);
+        $repo['product']       = static::$container->get(ProductRepository::class);
+        $repo['product_unit']  = static::$container->get(ProductUnitRepository::class);
 
-        $object = $repo[$page]->findOneByName($vals['name']);
+        // find newly submitted row
+        if ($page == 'product_unit') {
+            $object = $repo[$page]->find(198);
+        } else {
+            $object = $repo[$page]->findOneByName($vals['name']);
+        }
 
         $this->assertFalse(is_null($object));
         $this->assertRouteSame('admin_' . $route);
-        $this->assertSelectorTextSame('p.flash', $vals['name'] . ' added!');
+        $flashText = 'New ' . str_replace('_', ' ', $page) . ' added!';
+        $this->assertSelectorTextSame('p.flash', $flashText);
     }
 
     public function successProvider(): array
@@ -72,22 +83,30 @@ class AdminControllerTest extends WebTestCase
             [
                 'product',
                 [
-                    'name'  => 'New product',
-                    'price' => '9999',
+                    'name'     => 'New product',
+                    'price'    => '9999',
                     'category' => '1',
-                    'brand' => '1',
-                    'colour' => '1'
+                    'brand'    => '1',
+                    'colour'   => '1'
                 ],
             ],
             [
                 'product',
                 [
-                    'name'  => 'New product',
-                    'price' => '9999',
-                    'category' => '1',
-                    'brand' => '1',
-                    'colour' => '1',
+                    'name'          => 'New product',
+                    'price'         => '9999',
+                    'category'      => '1',
+                    'brand'         => '1',
+                    'colour'        => '1',
                     'product_group' => '1'
+                ],
+            ],
+            [
+                'product_unit',
+                [
+                    'stock'   => '100',
+                    'product' => '1',
+                    'size'    => '1'
                 ],
             ]
         ];
@@ -167,9 +186,23 @@ class AdminControllerTest extends WebTestCase
                 'product',
                 [
                     'name' => 'My new product',
-                    'price' => '999999999'
+                    'price' => '9999999'
                 ],
                 'This value is too long. It should have 6 characters or less.'
+            ],
+            'Unit - Blank form' => [
+                'product_unit',
+                [
+                    'stock' => ''
+                ],
+                'This value should not be blank.',
+            ],
+            'Unit - Stock too long' => [
+                'product_unit',
+                [
+                    'stock' => '99999'
+                ],
+                'This value is too long. It should have 4 characters or less.',
             ]
         ];
     }
@@ -197,7 +230,8 @@ class AdminControllerTest extends WebTestCase
     public function choiceProvider(): array
     {
         $validName = 'My new product';
-        $validPrice = '9999';
+        $validPrice = '99999';
+        $validStock = '9999';
 
         return [
             'Product - Invalid Category' => [
@@ -224,6 +258,20 @@ class AdminControllerTest extends WebTestCase
                     'colour' => '99'
                 ]
             ],
+            'Unit - Invalid Product' => [
+                'product_unit',
+                [
+                    'stock'  => $validStock,
+                    'product' => '999'
+                ]
+            ],
+            'Unit - Invalid Size' => [
+                'product_unit',
+                [
+                    'stock'  => $validStock,
+                    'size' => '4'
+                ]
+            ]
         ];
     }
 
@@ -240,6 +288,6 @@ class AdminControllerTest extends WebTestCase
 
     public function forbiddenPageProvider(): array
     {
-        return [['brand'], ['productgroup'], ['product']];
+        return [['brand'], ['productgroup'], ['product'], ['productunit']];
     }
 }
