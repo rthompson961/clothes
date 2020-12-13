@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Add Brand{% endblock %}
+{% block title %}Add {{ page }}{% endblock %}
 
 {% block body %}
-    <h2>Add Brand</h2>
+    <h2>Add {{ page }}</h2>
 
-    {% for flash_message in app.session.flashBag.get('brand') %}
+    {% for flash_message in app.session.flashBag.get('success') %}
         <p class="flash">{{ flash_message }}</p>
     {% endfor %}
 

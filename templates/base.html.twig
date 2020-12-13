@@ -17,8 +17,8 @@
         {% if is_granted('ROLE_ADMIN') %}
             <p>
                 <b>Admin </b>
-                <a href="{{ path('admin_brand') }}">Brand</a>
-            
+                <a href="{{ path('admin_brand') }}">Brand</a> |
+                <a href="{{ path('admin_group') }}">Group</a>          
             </p>
         {% endif %}
     </div>

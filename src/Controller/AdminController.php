@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Brand;
+use App\Entity\ProductGroup;
 use App\Form\Admin\BrandType;
+use App\Form\Admin\ProductGroupType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,16 +26,43 @@ class AdminController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
 
             $brand = $form->getData();
-            //$brand->setUser($this->getUser());
 
             $entityManager->persist($brand);
             $entityManager->flush();
 
-            $this->addFlash('brand', 'New brand added!');
+            $this->addFlash('success', 'New brand added!');
             return $this->redirectToRoute('admin_brand');
         }
 
-        return $this->render('admin/brand.html.twig', [
+        return $this->render('admin/index.html.twig', [
+            'page' => 'Brand',
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/admin/group", name="admin_group")
+     */
+    public function group(Request $request): Response
+    {
+        $group = new ProductGroup();
+        $form = $this->createForm(ProductGroupType::class, $group);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+
+            $group = $form->getData();
+
+            $entityManager->persist($group);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'New product group added!');
+            return $this->redirectToRoute('admin_group');
+        }
+
+        return $this->render('admin/index.html.twig', [
+            'page' => 'Product Group',
             'form' => $form->createView()
         ]);
     }
