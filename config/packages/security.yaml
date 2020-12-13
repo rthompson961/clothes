@@ -20,8 +20,7 @@ security:
                 path: logout
                 target: home
     access_control:
-        - { path: ^/orders, roles: ROLE_USER }
-        - { path: ^/order/*, roles: ROLE_USER }
-        - { path: ^/address/add, roles: ROLE_USER }
-        - { path: ^/address/select, roles: ROLE_USER }
+        - { path: ^/order*, roles: ROLE_USER }
+        - { path: ^/address*, roles: ROLE_USER }
         - { path: ^/checkout, roles: ROLE_USER }
+        - { path: ^/admin/*, roles: ROLE_ADMIN }

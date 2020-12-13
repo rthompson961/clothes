@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add Brand{% endblock %}
+
+{% block body %}
+    <h2>Add Brand</h2>
+
+    {% for flash_message in app.session.flashBag.get('brand') %}
+        <p class="flash">{{ flash_message }}</p>
+    {% endfor %}
+
+    {{ form(form) }}
+{% endblock %}

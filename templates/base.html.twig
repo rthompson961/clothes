@@ -14,6 +14,13 @@
 <div id="header" class="clearfix">
     <div id="header-left">
         <h1><a href="{{ path('home') }}">Clothes Shop</a></h1>
+        {% if is_granted('ROLE_ADMIN') %}
+            <p>
+                <b>Admin </b>
+                <a href="{{ path('admin_brand') }}">Brand</a>
+            
+            </p>
+        {% endif %}
     </div>
 
     <div id="header-right">
