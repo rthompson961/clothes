@@ -41,7 +41,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/group", name="admin_group")
+     * @Route("/admin/productgroup", name="admin_productgroup")
      */
     public function group(Request $request): Response
     {
@@ -58,7 +58,7 @@ class AdminController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'New product group added!');
-            return $this->redirectToRoute('admin_group');
+            return $this->redirectToRoute('admin_productgroup');
         }
 
         return $this->render('admin/index.html.twig', [

@@ -24,98 +24,84 @@ class AdminControllerTest extends WebTestCase
         return $client;
     }
 
-    public function testBrandSuccess(): void
+    /**
+     * @dataProvider successProvider
+     */
+    public function testSuccess(string $page): void
     {
+        $route = str_replace('_', '', $page);
+        $val = 'New ' . str_replace('_', ' ', $page);
+
         $client = $this->login(static::createClient());
         $client->followRedirects();
-        $name = 'My new brand';
-        $client->request('GET', '/admin/brand');
-        $client->submitForm('brand[submit]', [
-            'brand[name]' => $name,
+        $client->request('GET', '/admin/' . $route);
+        $client->submitForm($page . '[submit]', [
+            $page . '[name]' => $val,
         ]);
 
-        $repo = static::$container->get(BrandRepository::class);
-        $brand = $repo->findOneByName($name);
+        $repo['brand'] = static::$container->get(BrandRepository::class);
+        $repo['product_group'] = static::$container->get(ProductGroupRepository::class);
 
-        $this->assertTrue($brand instanceof Brand);
-        $this->assertRouteSame('admin_brand');
-        $this->assertSelectorTextSame('p.flash', 'New brand added!');
+        $object = $repo[$page]->findOneByName($val);
+
+        $this->assertFalse(is_null($object));
+        $this->assertRouteSame('admin_' . $route);
+        $this->assertSelectorTextSame('p.flash', $val . ' added!');
     }
 
-    /**
-     * @dataProvider brandValidationProvider
-     */
-    public function testBrandValidation(string $name, string $error): void
+    public function successProvider(): array
     {
-        $client = $this->login(static::createClient());
-        $client->request('GET', '/admin/brand');
-        $client->submitForm('brand[submit]', [
-            'brand[name]' => $name,
-        ]);
-
-        // error message matches
-        $this->assertSelectorTextSame('#brand li', $error);
-    }
-
-    public function brandValidationProvider(): array
-    {
-        $longName = str_repeat('a', 16);
-
         return [
-            'Blank form' => [
-                '',
-                'This value should not be blank.'
+            [
+                'brand'
             ],
-            'Name too long' => [
-                $longName,
-                'This value is too long. It should have 15 characters or less.'
+            [
+                'product_group'
+
             ]
         ];
     }
 
-    public function testGroupSuccess(): void
-    {
-        $client = $this->login(static::createClient());
-        $client->followRedirects();
-        $name = 'My new group';
-        $client->request('GET', '/admin/group');
-        $client->submitForm('product_group[submit]', [
-            'product_group[name]' => $name,
-        ]);
-
-        $repo = static::$container->get(ProductGroupRepository::class);
-        $group = $repo->findOneByName($name);
-
-        $this->assertTrue($group instanceof ProductGroup);
-        $this->assertRouteSame('admin_group');
-        $this->assertSelectorTextSame('p.flash', 'New product group added!');
-    }
-
     /**
-     * @dataProvider groupValidationProvider
+     * @dataProvider validationProvider
      */
-    public function testGroupValidation(string $name, string $error): void
+    public function testValidation(string $page, string $field, string $error): void
     {
+        $route = str_replace('_', '', $page);
+
         $client = $this->login(static::createClient());
-        $client->request('GET', '/admin/group');
-        $client->submitForm('product_group[submit]', [
-            'product_group[name]' => $name,
+        $client->request('GET', '/admin/' . $route);
+        $client->submitForm($page . '[submit]', [
+            $page . '[name]' => $field,
         ]);
 
         // error message matches
-        $this->assertSelectorTextSame('#product_group li', $error);
+        $this->assertSelectorTextSame('#' . $page . ' li', $error);
     }
 
-    public function groupValidationProvider(): array
+    public function validationProvider(): array
     {
+        $longBrand = str_repeat('a', 16);
         $longGroup = str_repeat('a', 46);
 
         return [
-            'Blank form' => [
+            'Brand - Blank form' => [
+                'brand',
                 '',
                 'This value should not be blank.'
             ],
-            'Name too long' => [
+            'Brand - Name too long' => [
+                'brand',
+                $longBrand,
+                'This value is too long. It should have 15 characters or less.'
+            ],
+            'Group - Blank form' => [
+                'product_group',
+                '',
+                'This value should not be blank.'
+            ],
+            'Group - Name too long' => [
+                'product_group',
                 $longGroup,
                 'This value is too long. It should have 45 characters or less.'
             ]
@@ -135,6 +121,6 @@ class AdminControllerTest extends WebTestCase
 
     public function forbiddenPageProvider(): array
     {
-        return [['brand']];
+        return [['brand'], ['productgroup']];
     }
 }
