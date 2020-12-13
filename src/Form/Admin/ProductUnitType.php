@@ -16,7 +16,7 @@ class ProductUnitType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('stock', TextType::class);
+        $builder->add('stock', TextType::class, ['attr' => ['class' => 'small']]);
         $builder->add('product', EntityType::class, [
             'class' => Product::class,
             'choice_label' => 'name',

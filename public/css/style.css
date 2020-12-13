@@ -118,7 +118,7 @@ input[type=text], input[type=email], input[type=password], textarea {
 }
 
 input.small {
-    width: 55px;
+    width: 65px;
 }
 
 textarea {
