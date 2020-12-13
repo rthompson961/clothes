@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Brand;
+use App\Entity\Product;
 use App\Entity\ProductGroup;
 use App\Form\Admin\BrandType;
+use App\Form\Admin\ProductType;
 use App\Form\Admin\ProductGroupType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -63,6 +65,33 @@ class AdminController extends AbstractController
 
         return $this->render('admin/index.html.twig', [
             'page' => 'Product Group',
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/admin/product", name="admin_product")
+     */
+    public function product(Request $request): Response
+    {
+        $product = new Product();
+        $form = $this->createForm(ProductType::class, $product);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+
+            $product = $form->getData();
+
+            $entityManager->persist($product);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'New product added!');
+            return $this->redirectToRoute('admin_product');
+        }
+
+        return $this->render('admin/index.html.twig', [
+            'page' => 'Product',
             'form' => $form->createView()
         ]);
     }
