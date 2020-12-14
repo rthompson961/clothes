@@ -8,4 +8,5 @@ RUN apt-get update \
     && sed -i 's#AllowOverride None#AllowOverride All#' /etc/apache2/apache2.conf \
     && a2enmod rewrite \
     && docker-php-ext-configure pdo_mysql \
-    && docker-php-ext-install -j$(nproc) pdo_mysql
+    && docker-php-ext-install -j$(nproc) pdo_mysql \
+    && usermod -u 1000 www-data

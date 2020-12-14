@@ -14,6 +14,7 @@ use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class AdminControllerTest extends WebTestCase
 {
@@ -271,6 +272,67 @@ class AdminControllerTest extends WebTestCase
                     'stock'  => $validStock,
                     'size' => '4'
                 ]
+            ]
+        ];
+    }
+
+    public function testProductFileUploadSuccess(): void
+    {
+        $client = $this->login(static::createClient());
+        $client->request('GET', '/admin/product');
+
+        $file = new UploadedFile(
+            __DIR__ . '/../../public/img/product/testuploadsuccess.jpg',
+            'testuploadsuccess.jpg'
+        );
+
+        $client->submitForm('product[submit]', [
+            'product[image]'    => $file,
+            'product[name]'     => 'New product',
+            'product[price]'    => '9999',
+            'product[category]' => '1',
+            'product[brand]'    => '1',
+            'product[colour]'   => '1',
+        ]);
+
+        $this->assertResponseRedirects('/admin/product');
+    }
+
+    /**
+     * @dataProvider uploadProvider
+     */
+    public function testProductFileUploadFailure(string $filename, string $error): void
+    {
+        $client = $this->login(static::createClient());
+        $client->request('GET', '/admin/product');
+
+        $file = new UploadedFile(
+            __DIR__ . '/../../public/img/product/' . $filename,
+            $filename
+        );
+
+        $client->submitForm('product[submit]', [
+            'product[image]'    => $file,
+            'product[name]'     => 'New product',
+            'product[price]'    => '9999',
+            'product[category]' => '1',
+            'product[brand]'    => '1',
+            'product[colour]'   => '1',
+        ]);
+
+        $this->assertSelectorTextSame('#product li', $error);
+    }
+
+    public function uploadProvider(): array
+    {
+        return [
+            [
+                'testuploadsize.jpg',
+                'The file is too large, maximum size is 50 kB.'
+            ],
+            [
+                'testuploadtype.png',
+                'Please upload a valid JPG image.'
             ]
         ];
     }

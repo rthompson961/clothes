@@ -88,6 +88,14 @@ class AdminController extends AbstractController
             $entityManager->persist($product);
             $entityManager->flush();
 
+            // upload image
+            $file = $form['image']->getData();
+            if ($file) {
+                $dir = $this->getParameter('kernel.project_dir') . '/public/img/product';
+                $filename = sprintf('%03d', $product->getId()) . '.jpg';
+                $file->move($dir, $filename);
+            }
+
             $this->addFlash('success', 'New product added!');
             return $this->redirectToRoute('admin_product');
         }
