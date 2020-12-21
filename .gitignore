@@ -19,3 +19,8 @@
 /.phpcs-cache
 /phpcs.xml
 ###< squizlabs/php_codesniffer ###
+
+# user uploaded images
+/public/img/product/069.jpg
+/public/img/product/0[7-9]*
+/public/img/product/[1-9]*
