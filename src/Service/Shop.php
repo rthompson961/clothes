@@ -27,24 +27,6 @@ class Shop
         $this->colourRepo = $colourRepo;
     }
 
-    public function csvToArray(string $list): array
-    {
-        // split comma separated list into array
-        $listArray = explode(',', $list);
-
-        // convert each element of array to positive integer
-        array_walk($listArray, function (&$val) {
-            $val = abs((int) $val);
-        });
-
-        // remove zero value elements
-        $listArray = array_filter($listArray);
-
-        sort($listArray);
-
-        return $listArray;
-    }
-
     public function getFilterLinks(?string $search, array $filters, string $sort): array
     {
         $options['category'] = $this->categoryRepo->findBy([], ['name' => 'ASC']);

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Service\QueryString;
 use App\Service\Shop;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,8 +15,11 @@ class ShopController extends AbstractController
     /**
      * @Route("/shop", name="shop")
      */
-    public function index(Request $request, Shop $shop): Response
-    {
+    public function index(
+        Request $request,
+        QueryString $queryString,
+        Shop $shop
+    ): Response {
         // remove query strings passed as arrays to avoid type checking errors
         foreach ($request->query->all() as $key => $val) {
             if (is_array($val)) {
@@ -26,10 +30,7 @@ class ShopController extends AbstractController
         // store requested search terms, filters, sort order and page number
         $search = $request->query->get('search');
         foreach (['category', 'brand', 'colour'] as $key) {
-            $filters[$key] = [];
-            if ($request->query->get($key) !== null) {
-                $filters[$key] = $shop->csvToArray($request->query->get($key));
-            }
+            $filters[$key] = $queryString->csvToArray($request->query->get($key));
         }
         $sort = $request->query->get('sort', 'first');
         $page = max(1, $request->query->getInt('page'));
