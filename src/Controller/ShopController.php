@@ -3,6 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Repository\BrandRepository;
+use App\Repository\CategoryRepository;
+use App\Repository\ColourRepository;
+use App\Repository\ProductRepository;
 use App\Service\QueryString;
 use App\Service\Shop;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,8 +20,12 @@ class ShopController extends AbstractController
      * @Route("/shop", name="shop")
      */
     public function index(
-        Request $request,
+        BrandRepository $brandRepo,
+        CategoryRepository $categoryRepo,
+        ColourRepository $colourRepo,
+        ProductRepository $productRepo,
         QueryString $queryString,
+        Request $request,
         Shop $shop
     ): Response {
         // remove query strings passed as arrays to avoid type checking errors
@@ -27,29 +35,34 @@ class ShopController extends AbstractController
             }
         }
 
-        // store requested search terms, filters, sort order and page number
+        // store requested search terms, sort order and page number
         $search = $request->query->get('search');
+        $sort   = $request->query->get('sort', 'first');
+        $page   = max(1, $request->query->getInt('page'));
+        // store requested filters
         foreach (['category', 'brand', 'colour'] as $key) {
             $filters[$key] = $queryString->csvToArray($request->query->get($key));
         }
-        $sort = $request->query->get('sort', 'first');
-        $page = max(1, $request->query->getInt('page'));
 
         // get total product count and product details for the current page
-        $repo     = $this->getDoctrine()->getRepository(Product::class);
-        $count    = $repo->findProductCount($search, $filters);
-        $products = $repo->findProducts($search, $filters, $sort, $page);
+        $productCount = $productRepo->findProductCount($search, $filters);
+        $products     = $productRepo->findProducts($search, $filters, $sort, $page);
+        $pageCount    = (int) ceil($productCount / $productRepo::ITEMS_PER_PAGE);
+
+        // get all potential filter options that can be applied
+        $options['category'] = $categoryRepo->findAllAsKeyValuePair();
+        $options['brand']    = $brandRepo->findAllAsKeyValuePair();
+        $options['colour']   = $colourRepo->findAllAsKeyValuePair();
 
         // create navigation links to add/remove filters and change sort order / page
-        $links['filters'] = $shop->getFilterLinks($search, $filters, $sort);
-        $links['sort'] = $shop->getSortLinks($search, $filters, $sort);
-        $pageCount = (int) ceil($count / $repo::ITEMS_PER_PAGE);
-        $links['page'] = $shop->getPageLinks($search, $filters, $sort, $page, $pageCount);
+        $links['filters'] = $shop->getFilterLinks($search, $filters, $sort, $options);
+        $links['sort']    = $shop->getSortLinks($search, $filters, $sort);
+        $links['page']    = $shop->getPageLinks($search, $filters, $sort, $page, $pageCount);
 
         return $this->render('shop/index.html.twig', [
             'search'   => $search,
             'links'    => $links,
-            'count'    => $count,
+            'count'    => $productCount,
             'products' => $products
         ]);
     }

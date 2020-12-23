@@ -19,4 +19,19 @@ class ColourRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Colour::class);
     }
+
+    public function findAllAsKeyValuePair(): array
+    {
+        $colours = $this->createQueryBuilder('c')
+            ->orderBy('c.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        $result = [];
+        foreach ($colours as $colour) {
+            $result[$colour->getId()] = $colour->getName();
+        }
+
+        return $result;
+    }
 }

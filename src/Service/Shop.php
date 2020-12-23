@@ -3,40 +3,27 @@
 namespace App\Service;
 
 use App\Entity\ShopLink;
-use App\Repository\BrandRepository;
-use App\Repository\CategoryRepository;
-use App\Repository\ColourRepository;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class Shop
 {
     private UrlGeneratorInterface $router;
-    private BrandRepository $brandRepo;
-    private CategoryRepository $categoryRepo;
-    private ColourRepository $colourRepo;
 
-    public function __construct(
-        UrlGeneratorInterface $router,
-        BrandRepository $brandRepo,
-        CategoryRepository $categoryRepo,
-        ColourRepository $colourRepo
-    ) {
+    public function __construct(UrlGeneratorInterface $router)
+    {
         $this->router = $router;
-        $this->brandRepo = $brandRepo;
-        $this->categoryRepo = $categoryRepo;
-        $this->colourRepo = $colourRepo;
     }
 
-    public function getFilterLinks(?string $search, array $filters, string $sort): array
-    {
-        $options['category'] = $this->categoryRepo->findBy([], ['name' => 'ASC']);
-        $options['brand'] = $this->brandRepo->findBy([], ['name' => 'ASC']);
-        $options['colour'] = $this->colourRepo->findBy([], ['name' => 'ASC']);
-
+    public function getFilterLinks(
+        ?string $search,
+        array $filters,
+        string $sort,
+        array $options
+    ): array {
         $result = [];
         foreach ($options as $key => $items) {
-            foreach ($items as $item) {
-                $link = new ShopLink($item->getId(), $item->getName());
+            foreach ($items as $id => $name) {
+                $link = new ShopLink($id, $name);
                 $link->setActive($filters[$key]);
                 $link->setFilters($filters, $key);
                 $link->setUrl($this->buildUrl($search, $link->getFilters(), $sort));
