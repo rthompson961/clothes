@@ -1,0 +1,20 @@
+{% for product in products %}
+    <div class="product">
+        <a href="{{ path('product', {'id' : product.id}) }}">
+            <img 
+                src="{{ asset('img/product/' ~ "%03d"|format(product.id) ~ '.jpg') }}" 
+                alt="{{ product.name }}" 
+            />
+            <p class="name">{{ product.name }}</p>
+            <p><b>&pound;{{ (product.price / 100)|number_format(2, '.', ',') }}</b></p>
+        </a>
+        {% if product.productGroup %}
+            {% for productInGroup in product.productGroup.products %}
+                <a class="group {{ productInGroup.colour.name|lower }} {% if product.id == productInGroup.id %}current{% endif %}" 
+                    href="{{ path('product', {'id' : product.id}) }}" 
+                    title="{{ productInGroup.colour.name }}">
+                </a>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endfor %}

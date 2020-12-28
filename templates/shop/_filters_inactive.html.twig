@@ -1,0 +1,12 @@
+{% for type, values in links.filters %}
+    {% if values|length > 1 %}
+        <p class="{{ type }}">[<span class="{{ type }}">+</span>] {{ type|capitalize }}</p>
+        <ul class="{{ type }}">
+        {% for val in values %}
+            {% if not val.active %}
+                <li><a href="{{ val.url }}">{{ val.text }}</a></li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endfor %}

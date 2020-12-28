@@ -4,34 +4,8 @@
 
 {% block body %}
 <div id="sidebar">
-    <div id="sidebar-active">
-        <ul>
-        {% if search %}
-            <li><a href="{{ path('shop') }}"><b>&#10005; Search: </b>{{ search }}</a></li>
-        {% endif %}
-
-        {% for type, values in links.filters %}
-            {% for val in values %}
-                {% if val.active %}
-                    <li><a href="{{ val.url }}"><b>&#10005; {{ type|capitalize }}: </b>{{ val.text }}</a></li>
-                {% endif %}
-            {% endfor %}
-        {% endfor %}
-        </ul>
-    </div>
-
-    {% for type, values in links.filters %}
-        {% if values|length > 1 %}
-            <p class="{{ type }}">[<span class="{{ type }}">+</span>] {{ type|capitalize }}</p>
-            <ul class="{{ type }}">
-            {% for val in values %}
-                {% if not val.active %}
-                    <li><a href="{{ val.url }}">{{ val.text }}</a></li>
-                {% endif %}
-            {% endfor %}
-            </ul>
-        {% endif %}
-    {% endfor %}
+    {{ include('shop/_filters_active.html.twig') }}
+    {{ include('shop/_filters_inactive.html.twig') }}
 </div>
 
 <div id="products">
@@ -41,62 +15,10 @@
     <h4>{{ count }} Product{% if count != 1 %}s{% endif %}</h4>
 
     {% if products %}
-        <p class="sort">
-            <b>Sort:</b> 
-            {% for val in links.sort %}
-                {% if val.active %}
-                    <span>{{ val.text }}</span>
-                {% else %}
-                    <a href="{{ val.url }}">{{ val.text }}</a>
-                {% endif %} 
-            {% endfor %}
-        </p>
-
-        {% if links.page|length > 1 %}
-            <p class="pages">
-                {% for val in links.page %}
-                    {% if val.active %}
-                        <span>{{ val.text }}</span>
-                    {% else %}
-                        <a href="{{ val.url }}">{{ val.text }}</a>
-                    {% endif %} 
-                {% endfor %}
-            </p>
-        {% endif %}
-
-
-        {% for product in products %}
-            <div class="product">
-                <a href="{{ path('product', {'id' : product.id}) }}">
-                    <img 
-                        src="{{ asset('img/product/' ~ "%03d"|format(product.id) ~ '.jpg') }}" 
-                        alt="{{ product.name }}" 
-                    />
-                    <p class="name">{{ product.name }}</p>
-                    <p><b>&pound;{{ (product.price / 100)|number_format(2, '.', ',') }}</b></p>
-                </a>
-                {% if product.productGroup %}
-                    {% for productInGroup in product.productGroup.products %}
-                        <a class="group {{ productInGroup.colour.name|lower }} {% if product.id == productInGroup.id %}current{% endif %}" 
-                            href="{{ path('product', {'id' : product.id}) }}" 
-                            title="{{ productInGroup.colour.name }}">
-                        </a>
-                    {% endfor %}
-                {% endif %}
-            </div>
-        {% endfor %}
-
-        {% if links.page|length > 1 %}
-            <p class="pages">
-                {% for val in links.page %}
-                    {% if val.active %}
-                        <span>{{ val.text }}</span>
-                    {% else %}
-                        <a href="{{ val.url }}">{{ val.text }}</a>
-                    {% endif %} 
-                {% endfor %}
-            </p>
-        {% endif %}
+        {{ include('shop/_sort.html.twig') }}
+        {{ include('shop/_pages.html.twig') }}
+        {{ include('shop/_products.html.twig') }}
+        {{ include('shop/_pages.html.twig') }}
     {% endif %}
 </div>
 {% endblock %}

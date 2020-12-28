@@ -1,0 +1,11 @@
+{% if links.page|length > 1 %}
+    <p class="pages">
+        {% for val in links.page %}
+            {% if val.active %}
+                <span>{{ val.text }}</span>
+            {% else %}
+                <a href="{{ val.url }}">{{ val.text }}</a>
+            {% endif %} 
+        {% endfor %}
+    </p>
+{% endif %}

@@ -1,0 +1,10 @@
+<p class="sort">
+    <b>Sort:</b> 
+    {% for val in links.sort %}
+        {% if val.active %}
+            <span>{{ val.text }}</span>
+        {% else %}
+            <a href="{{ val.url }}">{{ val.text }}</a>
+        {% endif %} 
+    {% endfor %}
+</p>
