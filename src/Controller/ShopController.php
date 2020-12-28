@@ -39,7 +39,7 @@ class ShopController extends AbstractController
         $search = $request->query->get('search');
         $sort   = $request->query->get('sort', 'first');
         $page   = max(1, $request->query->getInt('page'));
-        // store requested filters
+        // store requested filter id values
         foreach (['category', 'brand', 'colour'] as $key) {
             $filters[$key] = $queryString->csvToArray($request->query->get($key));
         }
@@ -50,12 +50,12 @@ class ShopController extends AbstractController
         $pageCount    = (int) ceil($productCount / $productRepo::ITEMS_PER_PAGE);
 
         // get all potential filter options that can be applied
-        $options['category'] = $categoryRepo->findAllAsKeyValuePair();
-        $options['brand']    = $brandRepo->findAllAsKeyValuePair();
-        $options['colour']   = $colourRepo->findAllAsKeyValuePair();
+        $filterDetails['category'] = $categoryRepo->findAllAsKeyValuePair();
+        $filterDetails['brand']    = $brandRepo->findAllAsKeyValuePair();
+        $filterDetails['colour']   = $colourRepo->findAllAsKeyValuePair();
 
         // create navigation links to add/remove filters and change sort order / page
-        $links['filters'] = $shop->getFilterLinks($search, $filters, $sort, $options);
+        $links['filters'] = $shop->getFilterLinks($search, $filters, $sort, $filterDetails);
         $links['sort']    = $shop->getSortLinks($search, $filters, $sort);
         $links['page']    = $shop->getPageLinks($search, $filters, $sort, $page, $pageCount);
 

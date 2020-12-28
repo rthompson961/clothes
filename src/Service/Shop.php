@@ -18,16 +18,16 @@ class Shop
         ?string $search,
         array $filters,
         string $sort,
-        array $options
+        array $filterDetails
     ): array {
         $result = [];
-        foreach ($options as $key => $items) {
+        foreach ($filterDetails as $filterCategory => $items) {
             foreach ($items as $id => $name) {
                 $link = new ShopLink($id, $name);
-                $link->setActive($filters[$key]);
-                $link->setFilters($filters, $key);
+                $link->setActive($filters[$filterCategory]);
+                $link->setFilters($filters, $filterCategory);
                 $link->setUrl($this->buildUrl($search, $link->getFilters(), $sort));
-                $result[$key][] = $link;
+                $result[$filterCategory][] = $link;
             }
         }
 
