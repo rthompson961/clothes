@@ -57,19 +57,21 @@ class Shop
     ): array {
         $result = [];
         // number of pages before and after current page to create links for
-        $depth = 2;
+        $depth = 3;
 
         // no need to create links if there is only one page
         if ($last === 1) {
             return $result;
         }
 
+        // first page link appears regardless of current page number
         $result[] = [
-            'text' => 'First',
+            'text' => '< 1',
             'active' => (1 === $page) ? true : false,
             'url' => $this->buildUrl($search, $filters, $sort, 1),
         ];
 
+        // links for the current page and those directly before / after
         for ($i = $page - $depth; $i <= $page + $depth; $i++) {
             if ($i > 1 && $i < $last) {
                 $result[] = [
@@ -80,8 +82,9 @@ class Shop
             }
         }
 
+        // last page link appears regardless of current page number
         $result[] = [
-            'text' => 'Last',
+            'text' => $last . ' >',
             'active' => ($last === $page) ? true : false,
             'url' => $this->buildUrl($search, $filters, $sort, $last),
         ];
