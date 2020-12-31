@@ -49,15 +49,17 @@ class ShopController extends AbstractController
         $products     = $productRepo->findProducts($search, $filters, $sort, $page);
         $pageCount    = (int) ceil($productCount / $productRepo::ITEMS_PER_PAGE);
 
-        // get all potential filter options that can be applied
-        $filterDetails['category'] = $categoryRepo->findAllAsKeyValuePair();
-        $filterDetails['brand']    = $brandRepo->findAllAsKeyValuePair();
-        $filterDetails['colour']   = $colourRepo->findAllAsKeyValuePair();
+        // get data for all potential filter options that can be applied
+        $data['category'] = $categoryRepo->findAllAsArray();
+        $data['brand']    = $brandRepo->findAllAsArray();
+        $data['colour']   = $colourRepo->findAllAsArray();
 
         // create navigation links to add/remove filters and change sort order / page
-        $links['filters'] = $shop->getFilterLinks($search, $filters, $sort, $filterDetails);
-        $links['sort']    = $shop->getSortLinks($search, $filters, $sort);
-        $links['page']    = $shop->getPageLinks($search, $filters, $sort, $page, $pageCount);
+        foreach (['category', 'brand', 'colour'] as $key) {
+            $links[$key] = $shop->getFilterLinks($key, $data[$key], $filters, $sort, $search);
+        }
+        $links['sort'] = $shop->getSortLinks($search, $filters, $sort);
+        $links['page'] = $shop->getPageLinks($search, $filters, $sort, $page, $pageCount);
 
         return $this->render('shop/index.html.twig', [
             'search'   => $search,

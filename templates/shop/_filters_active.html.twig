@@ -4,12 +4,23 @@
         <li><a href="{{ path('shop') }}"><b>&#10005; Search: </b>{{ search }}</a></li>
     {% endif %}
 
-    {% for type, values in links.filters %}
-        {% for val in values %}
-            {% if val.active %}
-                <li><a href="{{ val.url }}"><b>&#10005; {{ type|capitalize }}: </b>{{ val.text }}</a></li>
-            {% endif %}
-        {% endfor %}
+    {% for val in links.category %}
+        {% if val.active %}
+            <li><a href="{{ val.url }}"><b>&#10005; Category: </b>{{ val.text }}</a></li>
+        {% endif %}
     {% endfor %}
+
+    {% for val in links.brand %}
+        {% if val.active %}
+            <li><a href="{{ val.url }}"><b>&#10005; Brand: </b>{{ val.text }}</a></li>
+        {% endif %}
+    {% endfor %}
+
+    {% for val in links.colour %}
+        {% if val.active %}
+            <li><a href="{{ val.url }}"><b>&#10005; Colour: </b>{{ val.text }}</a></li>
+        {% endif %}
+    {% endfor %}
+
     </ul>
 </div>

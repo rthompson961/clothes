@@ -1,12 +1,32 @@
-{% for type, values in links.filters %}
-    {% if values|length > 1 %}
-        <p class="{{ type }}">[<span class="{{ type }}">+</span>] {{ type|capitalize }}</p>
-        <ul class="{{ type }}">
-        {% for val in values %}
+{% if links.category|length > 1 %}
+    <p class="category">[<span class="category">+</span>] Category</p>
+        <ul class="category">
+        {% for val in links.category %}
             {% if not val.active %}
                 <li><a href="{{ val.url }}">{{ val.text }}</a></li>
             {% endif %}
         {% endfor %}
         </ul>
-    {% endif %}
-{% endfor %}
+{% endif %}
+
+{% if links.brand|length > 1 %}
+    <p class="brand">[<span class="brand">+</span>] Brand</p>
+    <ul class="brand">
+    {% for val in links.brand %}
+        {% if not val.active %}
+            <li><a href="{{ val.url }}">{{ val.text }}</a></li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+{% endif %}
+
+{% if links.colour|length > 1 %}
+    <p class="colour">[<span class="colour">+</span>] Colour</p>
+    <ul class="colour">
+    {% for val in links.colour %}
+        {% if not val.active %}
+            <li><a href="{{ val.url }}">{{ val.text }}</a></li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+{% endif %}

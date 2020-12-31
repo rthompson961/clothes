@@ -20,18 +20,11 @@ class CategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Category::class);
     }
 
-    public function findAllAsKeyValuePair(): array
+    public function findAllAsArray(): array
     {
-        $categories = $this->createQueryBuilder('c')
+        return $this->createQueryBuilder('c')
             ->orderBy('c.name', 'ASC')
             ->getQuery()
-            ->getResult();
-
-        $result = [];
-        foreach ($categories as $category) {
-            $result[$category->getId()] = $category->getName();
-        }
-
-        return $result;
+            ->getArrayResult();
     }
 }

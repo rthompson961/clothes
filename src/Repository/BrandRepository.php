@@ -20,18 +20,11 @@ class BrandRepository extends ServiceEntityRepository
         parent::__construct($registry, Brand::class);
     }
 
-    public function findAllAsKeyValuePair(): array
+    public function findAllAsArray(): array
     {
-        $brands = $this->createQueryBuilder('b')
+        return $this->createQueryBuilder('b')
             ->orderBy('b.name', 'ASC')
             ->getQuery()
-            ->getResult();
-
-        $result = [];
-        foreach ($brands as $brand) {
-            $result[$brand->getId()] = $brand->getName();
-        }
-
-        return $result;
+            ->getArrayResult();
     }
 }

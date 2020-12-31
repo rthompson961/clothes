@@ -15,23 +15,69 @@ class Shop
     }
 
     public function getFilterLinks(
-        ?string $search,
-        array $filters,
+        string $filterCategoryTitle,
+        array $filterDataCollection,
+        array $activeFilterIds,
         string $sort,
-        array $filterDetails
+        ?string $search
     ): array {
-        $result = [];
-        foreach ($filterDetails as $filterCategory => $items) {
-            foreach ($items as $id => $name) {
-                $link = new ShopLink($id, $name);
-                $link->setActive($filters[$filterCategory]);
-                $link->setFilters($filters, $filterCategory);
-                $link->setUrl($this->buildUrl($search, $link->getFilters(), $sort));
-                $result[$filterCategory][] = $link;
-            }
+        $links = [];
+        foreach ($filterDataCollection as $data) {
+            $links[] = $this->getSingleFilterLink(
+                $data,
+                $filterCategoryTitle,
+                $activeFilterIds,
+                $sort,
+                $search,
+            );
         }
 
-        return $result;
+        return $links;
+    }
+
+    private function getSingleFilterLink(
+        array $data,
+        string $key,
+        array $filters,
+        string $sort,
+        ?string $search
+    ): array {
+        $link = [];
+        if (in_array($data['id'], $filters[$key])) {
+            $filterCategory = $this->removeIdFromActiveFilterCategory($data['id'], $filters[$key]);
+            $link['active'] = true;
+        } else {
+            $filterCategory = $this->addIdToActiveFilterCategory($data['id'], $filters[$key]);
+            $link['active'] = false;
+        }
+        $updatedFilters = $this->updateFilterCategory($filters, $key, $filterCategory);
+
+        $link['text'] = $data['name'];
+        $link['url']  = $this->buildUrl($search, $updatedFilters, $sort);
+
+        return $link;
+    }
+
+    private function removeIdFromActiveFilterCategory(int $id, array $filters): array
+    {
+        $filters = array_diff($filters, [$id]);
+
+        return $filters;
+    }
+
+    private function addIdToActiveFilterCategory(int $id, array $filters): array
+    {
+        $filters[] = $id;
+        sort($filters);
+
+        return $filters;
+    }
+
+    private function updateFilterCategory(array $filters, string $key, array $values): array
+    {
+        $filters[$key] = $values;
+
+        return $filters;
     }
 
     public function getSortLinks(?string $search, array $filters, string $sort): array
