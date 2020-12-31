@@ -59,15 +59,15 @@ class ShopTest extends WebTestCase
 
     public function testSortLinks(): void
     {
-        $search = null;
         $filters = [
             'category' => [],
             'brand'    => [2, 4],
             'colour'   => []
         ];
         $sort = 'name';
+        $search = null;
 
-        $links = $this->shop->getSortLinks($search, $filters, $sort);
+        $links = $this->shop->getSortLinks($filters, $sort, $search);
 
         $this->assertTrue($links[0]['text'] === 'First');
         $this->assertTrue($links[0]['active'] === false);
@@ -88,7 +88,6 @@ class ShopTest extends WebTestCase
 
     public function testPageLinks(): void
     {
-        $search = null;
         $filters = [
             'category' => [],
             'brand'    => [2, 4],
@@ -97,8 +96,9 @@ class ShopTest extends WebTestCase
         $sort = 'name';
         $page = 3;
         $pageCount = 3;
+        $search = null;
 
-        $links = $this->shop->getPageLinks($search, $filters, $sort, $page, $pageCount);
+        $links = $this->shop->getPageLinks($filters, $sort, $page, $pageCount, $search);
 
         $this->assertTrue($links[0]['text'] === '< 1');
         $this->assertTrue($links[0]['active'] === false);

@@ -58,8 +58,8 @@ class ShopController extends AbstractController
         foreach (['category', 'brand', 'colour'] as $key) {
             $links[$key] = $shop->getFilterLinks($key, $data[$key], $filters, $sort, $search);
         }
-        $links['sort'] = $shop->getSortLinks($search, $filters, $sort);
-        $links['page'] = $shop->getPageLinks($search, $filters, $sort, $page, $pageCount);
+        $links['sort'] = $shop->getSortLinks($filters, $sort, $sort);
+        $links['page'] = $shop->getPageLinks($filters, $sort, $page, $pageCount, $search);
 
         return $this->render('shop/index.html.twig', [
             'search'   => $search,

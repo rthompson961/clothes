@@ -80,7 +80,7 @@ class Shop
         return $filters;
     }
 
-    public function getSortLinks(?string $search, array $filters, string $sort): array
+    public function getSortLinks(array $filters, string $sort, ?string $search): array
     {
         $result = [];
         foreach (['first', 'name', 'low', 'high'] as $val) {
@@ -95,11 +95,11 @@ class Shop
     }
 
     public function getPageLinks(
-        ?string $search,
         array $filters,
         string $sort,
         int $page,
-        int $last
+        int $last,
+        ?string $search
     ): array {
         $result = [];
         // number of pages before and after current page to create links for
