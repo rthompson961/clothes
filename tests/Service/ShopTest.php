@@ -98,10 +98,9 @@ class ShopTest extends WebTestCase
         $input['search'] = null;
         $pageCount = 3;
 
-
         $links = $this->shop->getPageLinks($input, $pageCount);
 
-        $this->assertTrue($links[0]['text'] === '< 1');
+        $this->assertTrue($links[0]['text'] === 1);
         $this->assertTrue($links[0]['active'] === false);
         $this->assertTrue($links[0]['url'] == '/shop?page=1&sort=name&brand=2,4');
 
@@ -109,7 +108,7 @@ class ShopTest extends WebTestCase
         $this->assertTrue($links[1]['active'] === false);
         $this->assertTrue($links[1]['url'] == '/shop?page=2&sort=name&brand=2,4');
 
-        $this->assertTrue($links[2]['text'] === '3 >');
+        $this->assertTrue($links[2]['text'] === $pageCount);
         $this->assertTrue($links[2]['active'] === true);
         $this->assertTrue($links[2]['url'] == '/shop?page=3&sort=name&brand=2,4');
     }

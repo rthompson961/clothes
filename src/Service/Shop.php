@@ -60,37 +60,48 @@ class Shop
 
     public function getPageLinks(array $input, int $lastPage): array
     {
-        $links = [];
-        // number of pages before and after current page to create links for
-        $depth = 3;
-
         // no need to create links if there is only one page
         if ($lastPage === 1) {
-            return $links;
+            return [];
         }
 
         // first page link appears regardless of current page number
         $links[] = [
-            'text' => '< 1',
-            'active' => (1 === $input['page']) ? true : false,
-            'url' => $this->buildUrl($input['search'], $input['filters'], $input['sort'], 1),
+            'text' => 1,
+            'active' => $input['page'] === 1 ? true : false,
+            'url' => $this->buildUrl($input['search'], $input['filters'], $input['sort'], 1)
         ];
 
-        // links for the current page and those directly before / after
-        for ($i = $input['page'] - $depth; $i <= $input['page'] + $depth; $i++) {
-            if ($i > 1 && $i < $lastPage) {
-                $links[] = [
-                    'text' => $i,
-                    'active' => ($i === $input['page']) ? true : false,
-                    'url' => $this->buildUrl($input['search'], $input['filters'], $input['sort'], $i),
-                ];
-            }
+        // pages to create before and after current page not including first and last
+        $range = 3;
+
+        // lowest page number that falls within range
+        $start = (int) $input['page'] - $range;
+        // count forward if start falls before or including first page
+        while ($start < 2) {
+            $start++;
+        }
+
+        // highest page number that falls within range
+        $end = (int) $input['page'] + $range;
+        // count back if end falls after or including last page
+        while ($end > $lastPage - 1) {
+            $end--;
+        }
+
+        // links for the current page and those within range before & after
+        for ($i = $start; $i <= $end; $i++) {
+            $links[] = [
+                'text' => $i,
+                'active' => $input['page'] === $i ? true : false,
+                'url' => $this->buildUrl($input['search'], $input['filters'], $input['sort'], $i)
+            ];
         }
 
         // last page link appears regardless of current page number
         $links[] = [
-            'text' => $lastPage . ' >',
-            'active' => ($lastPage === $input['page']) ? true : false,
+            'text' => $lastPage,
+            'active' => $input['page'] === $lastPage ? true : false,
             'url' => $this->buildUrl($input['search'], $input['filters'], $input['sort'], $lastPage),
         ];
 
