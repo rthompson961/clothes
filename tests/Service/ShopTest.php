@@ -34,15 +34,15 @@ class ShopTest extends WebTestCase
                 'name' => 'Yellow'
             ]
         ];
-        $filters = [
+        $input['filters'] = [
             'category' => [],
             'brand'    => [],
             'colour'   => [3]
         ];
-        $sort = 'name';
-        $search = null;
+        $input['sort']   = 'name';
+        $input['search'] = null;
 
-        $links = $this->shop->getFilterLinks($key, $data, $filters, $sort, $search);
+        $links = $this->shop->getFilterLinks($key, $data, $input);
 
         $this->assertTrue($links[0]['text']   === 'Red');
         $this->assertTrue($links[0]['active'] === false);
@@ -59,15 +59,15 @@ class ShopTest extends WebTestCase
 
     public function testSortLinks(): void
     {
-        $filters = [
+        $input['filters'] = [
             'category' => [],
             'brand'    => [2, 4],
             'colour'   => []
         ];
-        $sort = 'name';
-        $search = null;
+        $input['sort'] = 'name';
+        $input['search'] = null;
 
-        $links = $this->shop->getSortLinks($filters, $sort, $search);
+        $links = $this->shop->getSortLinks($input);
 
         $this->assertTrue($links[0]['text'] === 'First');
         $this->assertTrue($links[0]['active'] === false);
@@ -88,17 +88,18 @@ class ShopTest extends WebTestCase
 
     public function testPageLinks(): void
     {
-        $filters = [
+        $input['filters'] = [
             'category' => [],
             'brand'    => [2, 4],
             'colour'   => []
         ];
-        $sort = 'name';
-        $page = 3;
+        $input['sort'] = 'name';
+        $input['page'] = 3;
+        $input['search'] = null;
         $pageCount = 3;
-        $search = null;
 
-        $links = $this->shop->getPageLinks($filters, $sort, $page, $pageCount, $search);
+
+        $links = $this->shop->getPageLinks($input, $pageCount);
 
         $this->assertTrue($links[0]['text'] === '< 1');
         $this->assertTrue($links[0]['active'] === false);

@@ -25,22 +25,22 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-    public function findProductCount(?string $search, array $filters): ?int
+    public function findProductCount(array $input): ?int
     {
         $qb = $this->createQueryBuilder('p')->select('count(p.id)');
-        $qb = $this->addSearchQueryBuilder($qb, $search);
-        $qb = $this->addFiltersQueryBuilder($qb, $filters);
+        $qb = $this->addSearchQueryBuilder($qb, $input['search']);
+        $qb = $this->addFiltersQueryBuilder($qb, $input['filters']);
 
         return $qb->getQuery()->getSingleScalarResult();
     }
 
-    public function findProducts(?string $search, array $filters, string $sort, int $page): ?array
+    public function findProducts(array $input): ?array
     {
         $qb = $this->createQueryBuilder('p');
-        $qb = $this->addSearchQueryBuilder($qb, $search);
-        $qb = $this->addFiltersQueryBuilder($qb, $filters);
+        $qb = $this->addSearchQueryBuilder($qb, $input['search']);
+        $qb = $this->addFiltersQueryBuilder($qb, $input['filters']);
 
-        switch ($sort) {
+        switch ($input['sort']) {
             case 'name':
                 $field = 'name';
                 break;
@@ -52,9 +52,9 @@ class ProductRepository extends ServiceEntityRepository
                 $field = 'id';
                 break;
         }
-        $dir = $sort == 'high' ? 'DESC' : 'ASC';
+        $dir = $input['sort'] == 'high' ? 'DESC' : 'ASC';
 
-        $offset = $page * self::ITEMS_PER_PAGE - self::ITEMS_PER_PAGE;
+        $offset = $input['page']* self::ITEMS_PER_PAGE - self::ITEMS_PER_PAGE;
 
         $qb->orderBy('p.' . $field, $dir)
            ->setFirstResult($offset)

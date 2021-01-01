@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Product;
 use App\Repository\BrandRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\ColourRepository;
@@ -36,17 +35,18 @@ class ShopController extends AbstractController
         }
 
         // store requested search terms, sort order and page number
-        $search = $request->query->get('search');
-        $sort   = $request->query->get('sort', 'first');
-        $page   = max(1, $request->query->getInt('page'));
+        $input['search'] = $request->query->get('search');
+        $input['sort']   = $request->query->get('sort', 'first');
+        $input['page']   = max(1, $request->query->getInt('page'));
         // store requested filter id values
         foreach (['category', 'brand', 'colour'] as $key) {
-            $filters[$key] = $queryString->csvToArray($request->query->get($key));
+            $filters = $request->query->get($key);
+            $input['filters'][$key] = $queryString->csvToArray($filters);
         }
 
         // get total product count and product details for the current page
-        $productCount = $productRepo->findProductCount($search, $filters);
-        $products     = $productRepo->findProducts($search, $filters, $sort, $page);
+        $productCount = $productRepo->findProductCount($input);
+        $products     = $productRepo->findProducts($input);
         $pageCount    = (int) ceil($productCount / $productRepo::ITEMS_PER_PAGE);
 
         // get data for all potential filter options that can be applied
@@ -54,15 +54,15 @@ class ShopController extends AbstractController
         $data['brand']    = $brandRepo->findAllAsArray();
         $data['colour']   = $colourRepo->findAllAsArray();
 
-        // create navigation links to add/remove filters and change sort order / page
+        // navigation links to add/remove filters and change order/page
         foreach (['category', 'brand', 'colour'] as $key) {
-            $links[$key] = $shop->getFilterLinks($key, $data[$key], $filters, $sort, $search);
+            $links[$key] = $shop->getFilterLinks($key, $data[$key], $input);
         }
-        $links['sort'] = $shop->getSortLinks($filters, $sort, $sort);
-        $links['page'] = $shop->getPageLinks($filters, $sort, $page, $pageCount, $search);
+        $links['sort'] = $shop->getSortLinks($input);
+        $links['page'] = $shop->getPageLinks($input, $pageCount);
 
         return $this->render('shop/index.html.twig', [
-            'search'   => $search,
+            'search'   => $input['search'],
             'links'    => $links,
             'count'    => $productCount,
             'products' => $products
