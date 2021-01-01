@@ -38,7 +38,7 @@ class CheckoutControllerTest extends WebTestCase
         $client->request('GET', '/checkout');
         $client->submitForm('payment[submit]', [
             'payment[card]'   => $card,
-            'payment[expiry]' => '1220',
+            'payment[expiry]' => '1223',
             'payment[cvs]'    => '999',
         ]);
 

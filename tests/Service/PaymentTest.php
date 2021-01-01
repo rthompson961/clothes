@@ -12,7 +12,7 @@ class PaymentTest extends KernelTestCase
         $payment = new Payment();
         $data = [
             'card' => '5424000000000015',
-            'expiry' => '1220',
+            'expiry' => '1223',
             'cvs' => '999'
         ];
 
@@ -30,7 +30,7 @@ class PaymentTest extends KernelTestCase
         $payment = new Payment();
         $data = [
             'card' => '5424000000000014',
-            'expiry' => '1220',
+            'expiry' => '1223',
             'cvs' => '999'
         ];
 

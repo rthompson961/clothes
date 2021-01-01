@@ -12,7 +12,7 @@ class PaymentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $sandbox['card']   = '5424000000000015';
-        $sandbox['expiry'] = '1220';
+        $sandbox['expiry'] = '1223';
         $sandbox['cvs']    = '999';
 
         $builder->add('card', NumberType::class, [
