@@ -29,46 +29,19 @@ class Shop
         $link = [];
         if (in_array($filter['id'], $input['filters'][$category])) {
             $link['active'] = true;
-            $linkFilters = $this->updateFilters(
-                $input['filters'],
-                $category,
-                $this->removeIdFromFilters($filter['id'], $input['filters'][$category])
-            );
+            // remove current id from list of filters applied when link followed
+            $input['filters'][$category] = array_diff($input['filters'][$category], [$filter['id']]);
         } else {
             $link['active'] = false;
-            $linkFilters = $this->updateFilters(
-                $input['filters'],
-                $category,
-                $this->addIdToFilters($filter['id'], $input['filters'][$category])
-            );
+            // add current id to list of filters applied when link followed
+            $input['filters'][$category][] = $filter['id'];
+            sort($input['filters'][$category]);
         }
 
         $link['text'] = $filter['name'];
-        $link['url']  = $this->buildUrl($input['search'], $linkFilters, $input['sort']);
+        $link['url']  = $this->buildUrl($input['search'], $input['filters'], $input['sort']);
 
         return $link;
-    }
-
-    private function removeIdFromFilters(int $id, array $filters): array
-    {
-        $filters = array_diff($filters, [$id]);
-
-        return $filters;
-    }
-
-    private function addIdToFilters(int $id, array $filters): array
-    {
-        $filters[] = $id;
-        sort($filters);
-
-        return $filters;
-    }
-
-    private function updateFilters(array $filters, string $category, array $values): array
-    {
-        $filters[$category] = $values;
-
-        return $filters;
     }
 
     public function getSortLinks(array $input): array
