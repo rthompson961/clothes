@@ -14,55 +14,49 @@ class Shop
         $this->router = $router;
     }
 
-    public function getFilterLinks(
-        string $filterCategoryTitle,
-        array $filterDataCollection,
-        array $input
-    ): array {
+    public function getFilterLinks(string $category, array $data, array $input): array
+    {
         $links = [];
-        foreach ($filterDataCollection as $data) {
-            $links[] = $this->getSingleFilterLink(
-                $data,
-                $filterCategoryTitle,
-                $input
-            );
+        foreach ($data as $filter) {
+            $links[] = $this->getSingleFilterLink($category, $filter, $input);
         }
 
         return $links;
     }
 
-    private function getSingleFilterLink(array $data, string $key, array $input): array
+    private function getSingleFilterLink(string $category, array $filter, array $input): array
     {
         $link = [];
-        if (in_array($data['id'], $input['filters'][$key])) {
-            $filterCategory = $this->removeIdFromActiveFilterCategory(
-                $data['id'],
-                $input['filters'][$key]
-            );
+        if (in_array($filter['id'], $input['filters'][$category])) {
             $link['active'] = true;
-        } else {
-            $filterCategory = $this->addIdToActiveFilterCategory(
-                $data['id'],
-                $input['filters'][$key]
+            $linkFilters = $this->updateFilters(
+                $input['filters'],
+                $category,
+                $this->removeIdFromFilters($filter['id'], $input['filters'][$category])
             );
+        } else {
             $link['active'] = false;
+            $linkFilters = $this->updateFilters(
+                $input['filters'],
+                $category,
+                $this->addIdToFilters($filter['id'], $input['filters'][$category])
+            );
         }
-        $updatedFilters = $this->updateFilterCategory($input['filters'], $key, $filterCategory);
 
-        $link['text'] = $data['name'];
-        $link['url']  = $this->buildUrl($input['search'], $updatedFilters, $input['sort']);
+        $link['text'] = $filter['name'];
+        $link['url']  = $this->buildUrl($input['search'], $linkFilters, $input['sort']);
 
         return $link;
     }
 
-    private function removeIdFromActiveFilterCategory(int $id, array $filters): array
+    private function removeIdFromFilters(int $id, array $filters): array
     {
         $filters = array_diff($filters, [$id]);
 
         return $filters;
     }
 
-    private function addIdToActiveFilterCategory(int $id, array $filters): array
+    private function addIdToFilters(int $id, array $filters): array
     {
         $filters[] = $id;
         sort($filters);
@@ -70,40 +64,40 @@ class Shop
         return $filters;
     }
 
-    private function updateFilterCategory(array $filters, string $key, array $values): array
+    private function updateFilters(array $filters, string $category, array $values): array
     {
-        $filters[$key] = $values;
+        $filters[$category] = $values;
 
         return $filters;
     }
 
     public function getSortLinks(array $input): array
     {
-        $result = [];
+        $links = [];
         foreach (['first', 'name', 'low', 'high'] as $val) {
-            $result[] = [
+            $links[] = [
                 'text' => ucfirst($val),
                 'active' => ($val === $input['sort']) ? true : false,
                 'url' => $this->buildUrl($input['search'], $input['filters'], $val)
             ];
         }
 
-        return $result;
+        return $links;
     }
 
     public function getPageLinks(array $input, int $lastPage): array
     {
-        $result = [];
+        $links = [];
         // number of pages before and after current page to create links for
         $depth = 3;
 
         // no need to create links if there is only one page
         if ($lastPage === 1) {
-            return $result;
+            return $links;
         }
 
         // first page link appears regardless of current page number
-        $result[] = [
+        $links[] = [
             'text' => '< 1',
             'active' => (1 === $input['page']) ? true : false,
             'url' => $this->buildUrl($input['search'], $input['filters'], $input['sort'], 1),
@@ -112,7 +106,7 @@ class Shop
         // links for the current page and those directly before / after
         for ($i = $input['page'] - $depth; $i <= $input['page'] + $depth; $i++) {
             if ($i > 1 && $i < $lastPage) {
-                $result[] = [
+                $links[] = [
                     'text' => $i,
                     'active' => ($i === $input['page']) ? true : false,
                     'url' => $this->buildUrl($input['search'], $input['filters'], $input['sort'], $i),
@@ -121,13 +115,13 @@ class Shop
         }
 
         // last page link appears regardless of current page number
-        $result[] = [
+        $links[] = [
             'text' => $lastPage . ' >',
             'active' => ($lastPage === $input['page']) ? true : false,
             'url' => $this->buildUrl($input['search'], $input['filters'], $input['sort'], $lastPage),
         ];
 
-        return $result;
+        return $links;
     }
 
     private function buildUrl(
